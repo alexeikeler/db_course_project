@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>288</width>
+    <height>335</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>14</x>
+     <y>11</y>
+     <width>260</width>
+     <height>313</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="buy_book_layout">
+    <item row="0" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="add_info_label">
+      <property name="text">
+       <string>Additional info</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="cli_addr_check_box">
+      <property name="text">
+       <string>Use client address for delivery</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="add_button">
+        <property name="text">
+         <string>Add to shopping cart</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../images/cart.png</normaloff>../images/cart.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="cancel_button">
+        <property name="text">
+         <string>Cancel</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../images/cross_red.png</normaloff>../images/cross_red.png</iconset>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item alignment="Qt::AlignLeft">
+       <widget class="QSpinBox" name="amount_spin_box"/>
+      </item>
+      <item alignment="Qt::AlignRight">
+       <widget class="QComboBox" name="payment_type_check_box"/>
+      </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTextEdit" name="add_info_text_edit"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

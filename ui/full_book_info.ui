@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>759</width>
+    <height>749</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>367</y>
+      <width>731</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>4</y>
+      <width>20</width>
+      <height>700</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_3">
+    <property name="geometry">
+     <rect>
+      <x>742</x>
+      <y>4</y>
+      <width>20</width>
+      <height>701</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_4">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>-5</y>
+      <width>731</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>6</y>
+      <width>20</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>315</y>
+      <width>481</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>394</y>
+      <width>461</width>
+      <height>34</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QPushButton" name="return_button">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Return</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../images/check_mark.png</normaloff>../images/check_mark.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>32</width>
+         <height>16</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="Line" name="line_9">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>6</y>
+      <width>20</width>
+      <height>371</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="book_image_label">
+    <property name="geometry">
+     <rect>
+      <x>36</x>
+      <y>25</y>
+      <width>211</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="Line" name="line_7">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>695</y>
+      <width>731</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="reviews_table">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>445</y>
+      <width>711</width>
+      <height>251</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="add_review_button">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>395</y>
+      <width>161</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add review</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/leave_review.png</normaloff>../images/leave_review.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="update_reviews_button">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>395</y>
+      <width>41</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/update_icon.png</normaloff>../images/update_icon.png</iconset>
+    </property>
+   </widget>
+   <widget class="Line" name="line_8">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>425</y>
+      <width>731</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_10">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>374</y>
+      <width>20</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>30</y>
+      <width>312</width>
+      <height>290</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="book_info_left_layout">
+     <item row="3" column="0">
+      <widget class="QLineEdit" name="genre_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLineEdit" name="author_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="title_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="available_copies_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLineEdit" name="available_in_shop_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Publishing date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="number_of_pages_labels">
+       <property name="text">
+        <string>Number of pages</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Publishing agency</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="price_label">
+       <property name="text">
+        <string>Price, UAH</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="available_in_shop_label">
+       <property name="text">
+        <string>Available in shop</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLineEdit" name="number_of_pages_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="book_title_label">
+       <property name="text">
+        <string>Title</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="binding_type_label">
+       <property name="text">
+        <string>Binding type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QLineEdit" name="publishing_agency_line_edit"/>
+     </item>
+     <item row="0" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="author_label">
+       <property name="text">
+        <string>Author</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="book_genre_label">
+       <property name="text">
+        <string>Genre</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" alignment="Qt::AlignHCenter">
+      <widget class="QLabel" name="available_copies_label">
+       <property name="text">
+        <string>Available copies</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="binding_type_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QLineEdit" name="publishing_date_line_edit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1">
+      <widget class="QLineEdit" name="book_price_line_edit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>759</width>
+     <height>35</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
