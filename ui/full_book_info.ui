@@ -233,11 +233,11 @@
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>30</y>
+      <x>340</x>
+      <y>53</y>
       <width>312</width>
       <height>290</height>
      </rect>
