@@ -861,3 +861,45 @@ CREATE TRIGGER return_ordered_books_trigger
     WHEN (NEW.order_status = 'Отменён')
     EXECUTE PROCEDURE return_ordered_books();
 -----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+-- Function to get orders for specific client
+CREATE OR REPLACE FUNCTION get_client_orders(login varchar)
+RETURNS TABLE (
+    book_title_ varchar,
+    quantity_ int,
+    sum_to_pay_ numeric(7, 2),
+    order_status_ varchar,
+    date_of_order_ timestamp(0),
+    date_of_return_ timestamp(0)
+) AS
+    $$
+        BEGIN
+            RETURN QUERY
+                SELECT
+                    title,quantity, sum_to_pay, order_status, date_of_order, date_of_return
+                FROM
+                    client_order, chosen, client, book, edition, authority
+                WHERE
+                    client_order.reciever = client.client_id
+                AND
+                    client.client_login = login
+                AND
+                    chosen.order_id = client_order.order_id
+                AND
+                    chosen.edition_number = edition.edition_number
+                AND
+                    edition.authority_id = authority.authority_id
+                AND
+                    authority.edition_book = book.book_id;
+        END
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+select * from chosen;
+
+REVOKE ALL ON FUNCTION get_client_orders(client_login varchar) FROM public;
+GRANT EXECUTE ON FUNCTION get_client_orders(client_login varchar) TO user_client;
+-----------------------------------------------------------------------------------------------------

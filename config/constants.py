@@ -24,7 +24,8 @@ class Const:
     WRONG_USR_NAME_OR_PASS: str = "Wrong username or password!"
 
     # ELSE #
-    IMAGES_PATH: str = "/home/alexeikeler/OrgDB_kp/project/images/{0}.png"
+    IMAGES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
+    HTML_FILES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
 
 
 @dataclass
@@ -43,8 +44,18 @@ class Order:
         "Payment type",
         "User info",
         "Quantity",
-        "Confirm order",
+        "Pay order",
         "Delete order"
+    )
+
+    CLIENT_ORDERS_COLUMNS: tuple = (
+        "Title",
+        "Genre",
+        "Quantity",
+        "Paid price",
+        "Order status",
+        "Ordering date",
+        "Returning date"
     )
 
     ORDER_EMPTY_CELL: str = "-"
@@ -60,5 +71,11 @@ class Order:
 
     ORDER_TABLE_SIZE: tuple = (0, 0, 1, 4)
     TOTAL_SUM_TABLE_SIZE: tuple = (3, 0, 4, 4)
+
+
+@dataclass
+class HtmlFiles:
+    CLIENT_ORDER_STATUSES_HTML: str = Const.HTML_FILES_PATH.format("order_statuses_piechart")
+
 
 

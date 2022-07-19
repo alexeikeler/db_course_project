@@ -4,6 +4,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 
 from config.constants import Const, Order
 from src.database_related import psql_requests as Requests
+from src.custom_qt_widgets import message_boxes as msg
 cart_form, cart_base = uic.loadUiType(uifile=Const.SHOP_CART_TAB_UI_PATH)
 
 
@@ -19,6 +20,10 @@ class ShoppingCartTab(QtWidgets.QWidget):
         self.orders_table.setColumnCount(len(Order.ORDER_DF_COLUMNS))
         self.orders_table.setHorizontalHeaderLabels(Order.ORDER_DF_COLUMNS)
         self.orders_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+
+        header = self.orders_table.horizontalHeader()
+        for header_index in range(1, len(Order.ORDER_DF_COLUMNS) - 2):
+            header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
         self.main_layout.addWidget(self.orders_table, *Order.ORDER_TABLE_SIZE)
 
@@ -60,13 +65,26 @@ class ShoppingCartTab(QtWidgets.QWidget):
             self.orders_table.setItem(self.orders_table.rowCount() - 1, i, item)
 
     def decline_order(self):
-        current_row = self.orders_table.currentRow()
-        ordering_date = self.orders_table.item(current_row, 3).text()
-        print(type(ordering_date), ordering_date)
-        Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_DECLINED)
-        self.orders_table.removeRow(current_row)
+        try:
+            current_row = self.orders_table.currentRow()
+            ordering_date = self.orders_table.item(current_row, 3).text()
+            print(type(ordering_date), ordering_date)
+            Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_DECLINED)
+            self.orders_table.removeRow(current_row)
+
+            msg.info_message("Order successfully declined.")
+
+        except Exception as e:
+            msg.error_message(str(e))
 
     def confirm_order(self):
-        current_row = self.orders_table.currentRow()
-        ordering_date = self.orders_table.item(current_row, 3).text()
-        Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_PAYED)
+        try:
+            current_row = self.orders_table.currentRow()
+            ordering_date = self.orders_table.item(current_row, 3).text()
+            Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_PAYED)
+            self.orders_table.removeRow(current_row)
+
+            msg.info_message("Order successfully payed.")
+
+        except Exception as e:
+            msg.error_message(str(e))

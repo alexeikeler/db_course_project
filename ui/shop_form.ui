@@ -34,7 +34,7 @@
            <rect>
             <x>20</x>
             <y>20</y>
-            <width>1121</width>
+            <width>1041</width>
             <height>761</height>
            </rect>
           </property>
@@ -48,7 +48,7 @@
          <widget class="QWidget" name="gridLayoutWidget">
           <property name="geometry">
            <rect>
-            <x>1200</x>
+            <x>1160</x>
             <y>20</y>
             <width>171</width>
             <height>286</height>
@@ -148,7 +148,7 @@
      <x>0</x>
      <y>0</y>
      <width>1450</width>
-     <height>35</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

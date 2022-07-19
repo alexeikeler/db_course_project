@@ -242,9 +242,21 @@ def add_order(
 def update_user_order(connection, ordering_date, status):
     try:
         with connection.cursor() as cursor:
-            print(f"updating order with date {ordering_date} and status {status}")
             cursor.callproc("update_user_order", (ordering_date, status))
             connection.commit()
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_client_orders(connection, login):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_client_orders", (login,))
+            result = cursor.fetchall()
+            connection.commit()
+            return result
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))

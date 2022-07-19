@@ -1,14 +1,16 @@
+import pandas as pd
+
 import src.database_related.psql_requests as Requests
 import src.custom_qt_widgets.message_boxes as msg
+import src.plotter.plotter as Plotter
 
 # noinspection PyUnresolvedReferences
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from typing import Tuple
+from tabulate import tabulate
 from functools import partial
 
 from src.forms.change_password_form import ChangePasswordForm
-
-from config.constants import Const
+from config.constants import Const, Order, HtmlFiles
 
 user_acc_form, user_acc_base = uic.loadUiType(uifile=Const.USER_ACCOUNT_TAB_FORM_UI_PATH)
 
@@ -31,19 +33,26 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         }
 
         self.change_password_form = None
+        self.orders = pd.DataFrame(
+            Requests.get_client_orders(self.user.connection, self.user.login),
+            columns=Order.CLIENT_ORDERS_COLUMNS
+        ).fillna("-")
+        self.orders.insert(0, "Book", "")
 
         self.config_widgets()
-        self.load_user_data()
+        self.load_client_data()
+        self.load_client_stats()
+        self.load_client_orders()
 
     def config_widgets(self):
 
         pixmap = QtGui.QPixmap(Const.IMAGES_PATH.format("client_login_icon"))
         self.client_icon_label.setPixmap(pixmap)
         self.client_icon_label.setScaledContents(True)
-        self.client_icon_label.setSizePolicy(
-            QtWidgets.QSizePolicy.Ignored,
-            QtWidgets.QSizePolicy.Ignored
-        )
+       # self.client_icon_label.setSizePolicy(
+       #     QtWidgets.QSizePolicy.Ignored,
+       #     QtWidgets.QSizePolicy.Ignored
+       # )
 
         self.change_login_button.clicked.connect(
             partial(self.update_client_info, 'login')
@@ -66,12 +75,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
         self.change_password_button.clicked.connect(self.chg_password)
 
-    #@staticmethod
-    #def get_user_data(connection, login) -> Tuple:
-    #    data = Requests.get_client_info(connection, login)
-    #    return data
-
-    def load_user_data(self):
+    def load_client_data(self):
         login = self.user.login
 
         if login != self.login_line_edit.text() and self.login_line_edit.text():
@@ -83,6 +87,42 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         for index, column in enumerate(user_info):
             line_edits[index].setText(user_info[index])
             line_edits[index].setAlignment(QtCore.Qt.AlignCenter)
+
+    def load_client_orders(self):
+
+        rows, cols = self.orders.shape
+
+        self.all_orders.setColumnCount(cols)
+        self.all_orders.setRowCount(rows)
+        self.all_orders.setHorizontalHeaderLabels(self.orders.columns)
+        self.all_orders.setSortingEnabled(True)
+        self.all_orders.setIconSize(QtCore.QSize(150, 100))
+
+        header = self.all_orders.horizontalHeader()
+        for header_index in range(1, cols):
+            header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
+
+        for i in range(rows):
+
+            book_image = QtWidgets.QTableWidgetItem()
+            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(self.orders["Title"][i])))
+            self.all_orders.setItem(i, 0, book_image)
+
+            for j in range(1, cols):
+
+                item = QtWidgets.QTableWidgetItem(str(self.orders.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.all_orders.setItem(i, j, item)
+
+        self.all_orders.resizeColumnsToContents()
+        self.all_orders.resizeRowsToContents()
+
+    def load_client_stats(self):
+        try:
+            Plotter.order_statuses_piechart(self.web_view, self.orders)
+
+        except Exception as e:
+            msg.error_message(str(e))
 
     def update_client_info(self, update_subject):
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1230</width>
-    <height>768</height>
+    <width>1443</width>
+    <height>840</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QWidget" name="gridLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>290</y>
+      <x>20</x>
+      <y>190</y>
       <width>451</width>
       <height>238</height>
      </rect>
@@ -34,7 +34,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -61,7 +61,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -75,7 +75,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -99,7 +99,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -116,7 +116,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -130,7 +130,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_icon.png</normaloff>../images/change_icon.png</iconset>
+         <normaloff>../frontend/images/change_icon.png</normaloff>../frontend/images/change_icon.png</iconset>
        </property>
       </widget>
      </item>
@@ -182,7 +182,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../images/change_password_gold_key.png</normaloff>../images/change_password_gold_key.png</iconset>
+         <normaloff>../frontend/images/change_password_gold_key.png</normaloff>../frontend/images/change_password_gold_key.png</iconset>
        </property>
       </widget>
      </item>
@@ -194,10 +194,10 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>30</y>
-      <width>191</width>
-      <height>201</height>
+      <x>160</x>
+      <y>20</y>
+      <width>151</width>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="client_icon_layout">
@@ -210,23 +210,23 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTableWidget" name="tableWidget">
+   <widget class="QTableWidget" name="all_orders">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>58</y>
-      <width>691</width>
-      <height>471</height>
+      <x>520</x>
+      <y>30</y>
+      <width>881</width>
+      <height>401</height>
      </rect>
     </property>
    </widget>
    <widget class="Line" name="line">
     <property name="geometry">
      <rect>
-      <x>470</x>
-      <y>-70</y>
+      <x>480</x>
+      <y>-130</y>
       <width>20</width>
-      <height>811</height>
+      <height>1031</height>
      </rect>
     </property>
     <property name="orientation">
@@ -236,9 +236,9 @@
    <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>540</y>
-      <width>1231</width>
+      <x>-130</x>
+      <y>440</y>
+      <width>1671</width>
       <height>20</height>
      </rect>
     </property>
@@ -246,19 +246,60 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="Line" name="line_3">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>840</y>
+      <width>1450</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>460</y>
+      <width>921</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QWebEngineView" name="web_view" native="true">
+       <property name="url" stdset="0">
+        <url>
+         <string>about:blank</string>
+        </url>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1230</width>
-     <height>35</height>
+     <width>1443</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWebEngineView</class>
+   <extends>QWidget</extends>
+   <header location="global">QtWebEngineWidgets/QWebEngineView</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

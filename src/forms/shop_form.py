@@ -65,7 +65,7 @@ class ShopForm(shop_form, shop_base):
         )
         data.insert(0, "Book", "")
         data.insert(data.shape[1], "Full info", "")
-        data.insert(data.shape[1], "Buy", "")
+        data.insert(data.shape[1], "To cart", "")
 
         return data
 
@@ -99,11 +99,6 @@ class ShopForm(shop_form, shop_base):
     def update_form(self) -> None:
 
         books_data = self.get_books_data()
-        print(tabulate(
-            books_data,
-            headers=books_data.columns,
-            tablefmt='pretty'
-        ))
         self.load_completers(books_data)
         self.load_books_table(books_data)
 
@@ -191,7 +186,6 @@ class ShopForm(shop_form, shop_base):
         self.buy_book_form = BuyBookForm(book_data["available_amount_"])
         
         dialog_res = self.buy_book_form.exec()
-        print(dialog_res)
         if not dialog_res:
             return
         
@@ -224,14 +218,6 @@ class ShopForm(shop_form, shop_base):
         order["Payment type"] = optional_data.get("payment_type", Order.PAYMENT_TYPE_CASH)
         order["Address"] = self.user.information.get(
             optional_data.get("use_cli_address", Order.ORDER_EMPTY_CELL), Order.ORDER_EMPTY_CELL
-        )
-
-        print(
-            tabulate(
-                order,
-                headers=order.columns,
-                tablefmt="pretty"
-            )
         )
 
         self.shopping_cart_tab.add_order_in_qt_table(order)
