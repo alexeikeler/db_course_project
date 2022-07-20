@@ -23,7 +23,6 @@ class BookInfoForm(book_info_form, book_info_base):
 
         self.user = user
         self.book_data = book_data
-        print(self.book_data)
 
         self.review_form = None
 
@@ -103,11 +102,6 @@ class BookInfoForm(book_info_form, book_info_base):
             columns=["User", "Date", "Review"]
         )
         rev.insert(rev.shape[1], "Delete", "")
-
-
-        print(
-            tabulate(rev, tablefmt='pretty')
-        )
 
         self.reviews_table.clear()
         self.reviews_table.setRowCount(0)

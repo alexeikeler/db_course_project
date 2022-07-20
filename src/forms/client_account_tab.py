@@ -33,16 +33,19 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         }
 
         self.change_password_form = None
+        self.orders = None
+
+        self.config_widgets()
+        self.load_client_data()
+        self.load_client_orders()
+        self.load_client_stats()
+
+    def get_client_orders(self):
         self.orders = pd.DataFrame(
             Requests.get_client_orders(self.user.connection, self.user.login),
             columns=Order.CLIENT_ORDERS_COLUMNS
         ).fillna("-")
         self.orders.insert(0, "Book", "")
-
-        self.config_widgets()
-        self.load_client_data()
-        self.load_client_stats()
-        self.load_client_orders()
 
     def config_widgets(self):
 
@@ -74,6 +77,8 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         )
 
         self.change_password_button.clicked.connect(self.chg_password)
+        self.update_orders_button.clicked.connect(self.load_client_orders)
+        self.update_stat_button.clicked.connect(self.load_client_stats)
 
     def load_client_data(self):
         login = self.user.login
@@ -90,6 +95,8 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
     def load_client_orders(self):
 
+        self.get_client_orders()
+
         rows, cols = self.orders.shape
 
         self.all_orders.setColumnCount(cols)
@@ -99,7 +106,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         self.all_orders.setIconSize(QtCore.QSize(150, 100))
 
         header = self.all_orders.horizontalHeader()
-        for header_index in range(1, cols):
+        for header_index in range(2, cols):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
         for i in range(rows):
@@ -114,7 +121,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.all_orders.setItem(i, j, item)
 
-        self.all_orders.resizeColumnsToContents()
+        #self.all_orders.resizeColumnsToContents()
         self.all_orders.resizeRowsToContents()
 
     def load_client_stats(self):
