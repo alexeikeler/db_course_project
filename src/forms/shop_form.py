@@ -6,11 +6,12 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 from tabulate import tabulate
 from datetime import datetime
-from config.constants import Const, Order
+from config.constants import Const, Order, ShopAndEmployee
 
 from src.custom_qt_widgets import range_slider
 from src.forms.book_info_form import BookInfoForm
 from src.forms.buy_book_form import BuyBookForm
+from src.forms.employee_reviews_form import EmployeeReviewForm
 
 from src.forms.client_account_tab import ClientAccountTab
 from src.forms.shopping_cart_tab import ShoppingCartTab
@@ -28,11 +29,13 @@ class ShopForm(shop_form, shop_base):
         self.slider = None
         self.full_book_info_form = None
         self.buy_book_form = None
+        self.employee_reviews_form = None
 
         self.shopping_cart_tab = ShoppingCartTab(self.user)
         self.client_acc_tab = ClientAccountTab(self.user)
 
         self.search_button.clicked.connect(self.update_form)
+        self.employee_reviews_button.clicked.connect(self.show_employee_info)
 
         self.tab_widget.setTabText(0, "Shop")
         self.tab_widget.addTab(self.shopping_cart_tab, "Shopping cart")
@@ -43,6 +46,7 @@ class ShopForm(shop_form, shop_base):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
         self.setup_price_slider()
+        self.setup_reviews()
 
     def get_low_price_boundary(self) -> float:
         return float(self.low_price_label.text())
@@ -91,6 +95,10 @@ class ShopForm(shop_form, shop_base):
 
         self.slider.sliderMoved.connect(self.update_price_labels)
         self.user_constrains_layout.addWidget(self.slider, 9, 0)
+
+    def setup_reviews(self):
+        self.empl_shop_combo_box.addItems(ShopAndEmployee.SHOPS)
+        self.emp_pos_combo_box.addItems(ShopAndEmployee.POSITIONS)
 
     def update_price_labels(self, low: int, high: int) -> None:
         self.low_price_label.setText(str(low))
@@ -178,6 +186,16 @@ class ShopForm(shop_form, shop_base):
             book_data
         )
         self.full_book_info_form.show()
+
+    def show_employee_info(self):
+
+        employee_data = Requests.get_employee_info(
+             self.user.connection,
+             int(self.empl_shop_combo_box.currentText()),
+             self.emp_pos_combo_box.currentText()
+        )
+        self.employee_reviews_form = EmployeeReviewForm(self.user, employee_data)
+        self.employee_reviews_form.show()
 
     def buy_book(self, book_title, publishing_date):
 

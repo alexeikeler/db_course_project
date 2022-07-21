@@ -296,7 +296,7 @@
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>Update</string>
+        <string>Update    </string>
        </property>
        <property name="icon">
         <iconset>
@@ -310,7 +310,7 @@
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>Update</string>
+        <string>Update    </string>
        </property>
        <property name="icon">
         <iconset>

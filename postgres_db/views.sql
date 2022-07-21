@@ -32,7 +32,8 @@ CREATE OR REPLACE VIEW available_books_view AS
         edition.binding_type AS binding_type,
         edition.number_of_pages AS number_of_pages,
         edition.publishing_date AS publishing_date,
-        publishing_agency_name AS publising_agency_name
+        publishing_agency_name AS publising_agency_name,
+        edition.paper_quality AS paper_quality
     FROM
         edition, authority, book, author, publishing_agency
     WHERE

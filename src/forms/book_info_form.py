@@ -36,6 +36,7 @@ class BookInfoForm(book_info_form, book_info_base):
             self.number_of_pages_line_edit,
             self.publishing_date_line_edit,
             self.publishing_agency_line_edit,
+            self.paper_type_line_edit,
             self.book_price_line_edit
         )
 
@@ -87,9 +88,8 @@ class BookInfoForm(book_info_form, book_info_base):
             review_text
         )
 
-        msg.info_message('Review successfully deleted!')
+        msg.info_message(Const.REVIEW_DELETED)
 
-#TODO PARAMNS CHANGE
     def update_reviews(self):
         reviews = Requests.get_book_reviews(
             self.user.connection,

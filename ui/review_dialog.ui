@@ -79,7 +79,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../images/check_mark.png</normaloff>../images/check_mark.png</iconset>
+        <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
       </property>
      </widget>
     </item>
@@ -90,7 +90,7 @@
       </property>
       <property name="icon">
        <iconset>
-        <normaloff>../images/cross_red.png</normaloff>../images/cross_red.png</iconset>
+        <normaloff>../frontend/images/cross_red.png</normaloff>../frontend/images/cross_red.png</iconset>
       </property>
      </widget>
     </item>

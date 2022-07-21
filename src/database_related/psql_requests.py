@@ -261,3 +261,53 @@ def get_client_orders(connection, login):
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_employee_info(connection, shop_number, position):
+    try:
+        with connection.cursor(cursor_factory = pc2.extras.RealDictCursor) as cursor:
+            cursor.callproc("get_employee_info", (shop_number, position))
+            result = cursor.fetchone()
+            connection.commit()
+            return result
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_reviews_about_employee(connection, empl_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_reviews_about_employee", (empl_id,))
+            result = cursor.fetchall()
+            connection.commit()
+            return result
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def add_employee_review(connection, user_login, empl_id, user_review_text):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("add_employee_review", (user_login, empl_id, user_review_text))
+            result = cursor.fetchall()
+            connection.commit()
+            return result
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def delete_employee_review(connection, empl_id, user_login, review_date, review_text):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("add_employee_review", (empl_id, user_login, review_date, review_text))
+            connection.commit()
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

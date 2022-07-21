@@ -1,12 +1,15 @@
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from tabulate import tabulate
+
 
 def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     order_statuses = orders["Order status"].value_counts()
-    order_dates = orders["Ordering date"].apply(lambda x: "%d-%d" % (x.year, x.month)).value_counts().to_frame().reset_index()
+    order_dates = orders["Ordering date"].apply(
+        lambda x: "%d-%d" % (x.year, x.month)
+    ).value_counts().to_frame().reset_index()
+
     order_dates.columns = ["Date", "Quantity"]
 
     fig = make_subplots(

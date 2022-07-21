@@ -363,6 +363,7 @@ CREATE OR REPLACE FUNCTION concrete_book_full_info(
         number_of_pages_ int2,
         publishing_date_ date,
         publishing_agency_ varchar,
+        paper_type_ varchar,
         price_ numeric(7, 2)
     )  AS
     $$
@@ -378,6 +379,7 @@ CREATE OR REPLACE FUNCTION concrete_book_full_info(
                     number_of_pages,
                     publishing_date,
                     publising_agency_name,
+                    paper_quality,
                     price
                 FROM
                     available_books_view
@@ -461,7 +463,7 @@ RETURNS VOID AS
            publishing_date = book_publishing_date;
 
       INSERT INTO client_review (review_date, review_by, review_about_book, review_text)
-      VALUES (now()::timestamp(0), user_id, book_id, user_review_text);
+      VALUES (CURRENT_TIMESTAMP, user_id, book_id, user_review_text);
 
     END;
 $$
@@ -903,3 +905,42 @@ select * from chosen;
 REVOKE ALL ON FUNCTION get_client_orders(client_login varchar) FROM public;
 GRANT EXECUTE ON FUNCTION get_client_orders(client_login varchar) TO user_client;
 -----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+--Function to get brief info about employee
+DROP FUNCTION get_employee_info(shop_num integer, pos varchar);
+CREATE OR REPLACE FUNCTION get_employee_info(shop_num integer, pos varchar)
+RETURNS TABLE (
+    employee_id_ integer,
+    employee_name_ varchar,
+    employee_position_ varchar,
+    employee_place_of_work_ varchar
+)
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                employee.employee_id,
+                CAST(employee.firstname ||' '|| employee.lastname AS varchar) employee_name,
+                employee.employee_position,
+                book_shop.name_of_shop
+            FROM
+                book_shop, employee
+            WHERE
+                employee.employee_position = pos
+            AND
+                employee.place_of_work = shop_num
+            AND
+                book_shop.shop_id = employee.place_of_work;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_employee_info(place_of_work integer, pos varchar) FROM public;
+GRANT EXECUTE ON FUNCTION get_employee_info(place_of_work integer, pos varchar) TO user_client;
+-----------------------------------------------------------------------------------------------------
+

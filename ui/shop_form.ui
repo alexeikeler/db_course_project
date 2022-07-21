@@ -132,6 +132,135 @@
            </item>
           </layout>
          </widget>
+         <widget class="Line" name="line">
+          <property name="geometry">
+           <rect>
+            <x>1070</x>
+            <y>310</y>
+            <width>391</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="Line" name="line_3">
+          <property name="geometry">
+           <rect>
+            <x>1070</x>
+            <y>450</y>
+            <width>371</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+         <widget class="QWidget" name="gridLayoutWidget_2">
+          <property name="geometry">
+           <rect>
+            <x>1100</x>
+            <y>340</y>
+            <width>301</width>
+            <height>104</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="2" column="1">
+            <widget class="QComboBox" name="empl_shop_combo_box"/>
+           </item>
+           <item row="2" column="2">
+            <widget class="QComboBox" name="emp_pos_combo_box"/>
+           </item>
+           <item row="1" column="2" alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="position_label">
+             <property name="text">
+              <string>Position</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="employee_reviews_button">
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Employee  </string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>../frontend/images/employee.png</normaloff>../frontend/images/employee.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="subject_label">
+             <property name="text">
+              <string>Subject</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="shop_reviews">
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
+             <property name="text">
+              <string>Shop </string>
+             </property>
+             <property name="icon">
+              <iconset>
+               <normaloff>../frontend/images/shop_icon.png</normaloff>../frontend/images/shop_icon.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="shop_label">
+             <property name="text">
+              <string>Shop</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="3" alignment="Qt::AlignHCenter">
+            <widget class="QLabel" name="reviews_label">
+             <property name="text">
+              <string>Reviews</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1" colspan="2">
+            <widget class="QComboBox" name="shop_combo_box"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="Line" name="line_4">
+          <property name="geometry">
+           <rect>
+            <x>1420</x>
+            <y>-30</y>
+            <width>21</width>
+            <height>851</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+         <widget class="Line" name="line_2">
+          <property name="geometry">
+           <rect>
+            <x>1056</x>
+            <y>-42</y>
+            <width>31</width>
+            <height>851</height>
+           </rect>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </widget>
        </widget>
       </item>

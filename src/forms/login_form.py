@@ -12,7 +12,7 @@ from src.roles.user_checker_role import UserCheckerRole
 from src.forms.create_account_form import AccountForm
 from src.forms.shop_form import ShopForm
 
-from config.constants import Const
+from config.constants import Const, Errors
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
 
@@ -41,7 +41,7 @@ class LoginForm(login_form, login_base):
         user_password: str = self.password_line_edit.text()
 
         if not (user_login and user_password):
-            msg_box.error_message(Const.NO_LOG_OR_PASS)
+            msg_box.error_message(Errors.NO_LOG_OR_PASS)
             return
 
         user_checker = UserCheckerRole()
@@ -50,7 +50,7 @@ class LoginForm(login_form, login_base):
 #        user_role = db_conn.check_user(user_name, user_password)
 
         if user_role is None:
-            msg_box.error_message(Const.WRONG_USR_NAME_OR_PASS)
+            msg_box.error_message(Errors.WRONG_USR_NAME_OR_PASS)
 
         else:
             user_checker.connection.close()
