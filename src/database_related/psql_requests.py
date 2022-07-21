@@ -305,7 +305,7 @@ def add_employee_review(connection, user_login, empl_id, user_review_text):
 def delete_employee_review(connection, empl_id, user_login, review_date, review_text):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("add_employee_review", (empl_id, user_login, review_date, review_text))
+            cursor.callproc("delete_employee_review", (empl_id, user_login, review_date, review_text))
             connection.commit()
 
     except(Exception, pc2.DatabaseError) as error:

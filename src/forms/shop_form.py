@@ -1,5 +1,7 @@
 import pandas as pd
 import src.database_related.psql_requests as Requests
+import src.custom_qt_widgets.message_boxes as msg
+
 from functools import partial
 # noinspection PyUnresolvedReferences
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
@@ -12,6 +14,7 @@ from src.custom_qt_widgets import range_slider
 from src.forms.book_info_form import BookInfoForm
 from src.forms.buy_book_form import BuyBookForm
 from src.forms.employee_reviews_form import EmployeeReviewForm
+
 
 from src.forms.client_account_tab import ClientAccountTab
 from src.forms.shopping_cart_tab import ShoppingCartTab
@@ -194,6 +197,11 @@ class ShopForm(shop_form, shop_base):
              int(self.empl_shop_combo_box.currentText()),
              self.emp_pos_combo_box.currentText()
         )
+
+        if employee_data is None:
+            msg.error_message("Employee does not exist.")
+            return
+        
         self.employee_reviews_form = EmployeeReviewForm(self.user, employee_data)
         self.employee_reviews_form.show()
 
