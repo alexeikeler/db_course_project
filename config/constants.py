@@ -13,6 +13,7 @@ class Const:
     CHANGE_PSWRD_FORM_UI_PATH: str = "ui/change_password.ui"
     BUY_BOOK_UI_PATH: str = "ui/buy_book.ui"
     EMPLOYEE_REVIEWS_UI_PATH: str = 'ui/employees_reviews.ui'
+    SHOP_REVIEWS_UI_PATH: str = 'ui/shop_reviews.ui'
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
@@ -85,7 +86,8 @@ class ShopAndEmployee:
 @dataclass
 class Errors:
     # Employee data
-    EMPLOYEE_DATA_NOT_FOUNT: str = "DataNotFoundError"
+    EMPLOYEE_DATA_NOT_FOUND: str = "EmployeeDataNotFoundError"
+    SHOP_DATA_NOT_FOUND: str = "ShopDataNotFound"
 
     # Login errors
     NO_LOG_OR_PASS: str = "Error! Login or password field is empty!"

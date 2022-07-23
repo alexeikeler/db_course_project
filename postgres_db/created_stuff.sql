@@ -944,3 +944,116 @@ REVOKE ALL ON FUNCTION get_employee_info(place_of_work integer, pos varchar) FRO
 GRANT EXECUTE ON FUNCTION get_employee_info(place_of_work integer, pos varchar) TO user_client;
 -----------------------------------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------------------------------
+--Get review about employee
+
+CREATE OR REPLACE FUNCTION get_reviews_about_employee(employee_id integer)
+RETURNS TABLE (
+    review_by_ varchar,
+    review_date_ timestamp(0),
+    review_text_ text
+) AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                client_login, review_date, review_text
+            FROM
+                client_review, client
+            WHERE
+                client_review.review_about_employee = employee_id
+            AND
+                client.client_id = client_review.review_by;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_reviews_about_employee(employee_id integer) FROM public;
+GRANT EXECUTE ON FUNCTION get_reviews_about_employee(employee_id integer)TO user_client;
+-----------------------------------------------------------------------------------------------------
+-- Add review about employee
+
+CREATE OR REPLACE FUNCTION add_employee_review(user_login varchar, employee_id integer, user_review_text text)
+RETURNS VOID AS
+    $$
+    DECLARE
+        user_id integer;
+
+        BEGIN
+            SELECT client.client_id INTO user_id FROM client WHERE client.client_login = user_login;
+
+            INSERT INTO
+                client_review(review_date, review_by, review_about_employee, review_text)
+            VALUES
+                (CURRENT_TIMESTAMP, user_id, employee_id, user_review_text);
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION add_employee_review(
+    user_login varchar,
+    employee_id integer,
+    review_text text) FROM public;
+
+GRANT EXECUTE ON FUNCTION add_employee_review(
+    user_login varchar,
+    employee_id integer,
+    review_text text) TO user_client;
+-----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+-- Delete review about employee
+
+CREATE OR REPLACE FUNCTION delete_employee_review(
+employee_id_ integer,
+user_login_ varchar,
+review_date_ timestamp(0),
+review_text_ text
+)
+RETURNS VOID AS
+    $$
+    DECLARE
+        user_id integer;
+
+        BEGIN
+
+             SELECT client.client_id INTO user_id FROM client WHERE client.client_login = user_login_;
+
+
+             DELETE FROM
+                    client_review
+             WHERE
+                 client_review.review_about_employee = employee_id_
+             AND
+                 client_review.review_by = user_id
+             AND
+                 client_review.review_date = review_date_
+             AND
+                 client_review.review_text = review_text_;
+
+        END;
+
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION delete_employee_review(
+employee_id integer,
+user_login varchar,
+review_date timestamp(0),
+review_text text
+) FROM public;
+
+GRANT EXECUTE ON FUNCTION delete_employee_review(
+employee_id integer,
+user_login varchar,
+review_date timestamp(0),
+review_text text
+) TO user_client;
+-----------------------------------------------------------------------------------------------------

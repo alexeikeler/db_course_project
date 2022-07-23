@@ -14,7 +14,7 @@ from src.custom_qt_widgets import range_slider
 from src.forms.book_info_form import BookInfoForm
 from src.forms.buy_book_form import BuyBookForm
 from src.forms.employee_reviews_form import EmployeeReviewForm
-
+from src.forms.shop_reviews_form import ShopReviewForm
 
 from src.forms.client_account_tab import ClientAccountTab
 from src.forms.shopping_cart_tab import ShoppingCartTab
@@ -33,12 +33,14 @@ class ShopForm(shop_form, shop_base):
         self.full_book_info_form = None
         self.buy_book_form = None
         self.employee_reviews_form = None
+        self.shop_review_form = None
 
         self.shopping_cart_tab = ShoppingCartTab(self.user)
         self.client_acc_tab = ClientAccountTab(self.user)
 
         self.search_button.clicked.connect(self.update_form)
         self.employee_reviews_button.clicked.connect(self.show_employee_info)
+        self.shop_reviews_buttons.clicked.connect(self.show_shop_info)
 
         self.tab_widget.setTabText(0, "Shop")
         self.tab_widget.addTab(self.shopping_cart_tab, "Shopping cart")
@@ -101,7 +103,9 @@ class ShopForm(shop_form, shop_base):
 
     def setup_reviews(self):
         self.empl_shop_combo_box.addItems(ShopAndEmployee.SHOPS)
-        self.emp_pos_combo_box.addItems(ShopAndEmployee.POSITIONS)
+        self.empl_pos_combo_box.addItems(ShopAndEmployee.POSITIONS)
+
+        self.shop_combo_box.addItems(ShopAndEmployee.SHOPS)
 
     def update_price_labels(self, low: int, high: int) -> None:
         self.low_price_label.setText(str(low))
@@ -195,15 +199,29 @@ class ShopForm(shop_form, shop_base):
         employee_data = Requests.get_employee_info(
              self.user.connection,
              int(self.empl_shop_combo_box.currentText()),
-             self.emp_pos_combo_box.currentText()
+             self.empl_pos_combo_box.currentText()
         )
 
         if employee_data is None:
-            msg.error_message("Employee does not exist.")
+            msg.error_message("Employee doesn't exist.")
             return
-        
+
         self.employee_reviews_form = EmployeeReviewForm(self.user, employee_data)
         self.employee_reviews_form.show()
+
+    def show_shop_info(self):
+
+        shop_data = Requests.get_shop_info(
+            self.user.connection,
+            int(self.shop_combo_box.currentText())
+        )
+
+        if shop_data is None:
+            msg.error_message("Shop doesn't exist")
+            return
+
+        self.shop_review_form = ShopReviewForm(self.user, shop_data)
+        self.shop_review_form.show()
 
     def buy_book(self, book_title, publishing_date):
 

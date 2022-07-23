@@ -172,7 +172,7 @@
             <widget class="QComboBox" name="empl_shop_combo_box"/>
            </item>
            <item row="2" column="2">
-            <widget class="QComboBox" name="emp_pos_combo_box"/>
+            <widget class="QComboBox" name="empl_pos_combo_box"/>
            </item>
            <item row="1" column="2" alignment="Qt::AlignHCenter">
             <widget class="QLabel" name="position_label">
@@ -203,7 +203,7 @@
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QPushButton" name="shop_reviews">
+            <widget class="QPushButton" name="shop_reviews_buttons">
              <property name="layoutDirection">
               <enum>Qt::RightToLeft</enum>
              </property>

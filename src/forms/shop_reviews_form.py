@@ -11,19 +11,19 @@ from config.constants import Const, Errors
 from src.database_related import psql_requests as Requests
 from src.forms.add_review_form import ReviewForm
 
-empl_review_form, empl_review_base = uic.loadUiType(Const.EMPLOYEE_REVIEWS_UI_PATH)
+shop_review_form, shop_review_base = uic.loadUiType(Const.SHOP_REVIEWS_UI_PATH)
 
 
-class EmployeeReviewForm(empl_review_form, empl_review_base):
-    def __init__(self, user, empl_info):
+class ShopReviewForm(shop_review_form, shop_review_base):
 
-        super(empl_review_base, self).__init__()
+    def __init__(self, user, shop_info):
+
+        super(shop_review_base, self).__init__()
         self.setupUi(self)
         self.user = user
-        self.empl_info = empl_info
+        self.shop_info = shop_info
 
         self.review_form = None
-
 
         self.add_review_button.clicked.connect(self.add_review)
         self.update_reviews_button.clicked.connect(self.load_reviews)
@@ -33,25 +33,41 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
         self.load_reviews()
 
     def __setup_line_edits(self):
-        self.employee_name_line_edit.setText(
-            self.empl_info.get("employee_name_", Errors.EMPLOYEE_DATA_NOT_FOUND)
+        self.shop_line_edit.setText(
+            self.shop_info.get("name_of_shop_", Errors.SHOP_DATA_NOT_FOUND)
         )
-        self.employee_name_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+        self.shop_line_edit.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.position_line_edit.setText(
-            self.empl_info.get("employee_position_", Errors.EMPLOYEE_DATA_NOT_FOUND)
+        self.number_of_employees_line_edit.setText(
+            self.shop_info.get("employees_num_", Errors.SHOP_DATA_NOT_FOUND)
         )
-        self.position_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+        self.number_of_employees_line_edit.setAlignment(QtCore.Qt.AlignCenter)
 
-        self.place_of_work_line_edit.setText(
-            self.empl_info.get("employee_place_of_work_", Errors.EMPLOYEE_DATA_NOT_FOUND)
+        self.post_code_line_edit.setText(
+            self.shop_info.get("post_code_", Errors.SHOP_DATA_NOT_FOUND)
         )
-        self.place_of_work_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+        self.post_code_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.country_line_edit.setText(
+            self.shop_info.get("country_", Errors.SHOP_DATA_NOT_FOUND)
+        )
+        self.country_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.city_line_edit.setText(
+            self.shop_info.get("city_", Errors.SHOP_DATA_NOT_FOUND)
+        )
+        self.city_line_edit.setAlignment(QtCore.Qt.AlignCenter)
+
+        self.street_line_edit.setText(
+            self.shop_info.get("street_", Errors.SHOP_DATA_NOT_FOUND)
+        )
+        self.street_line_edit.setAlignment(QtCore.Qt.AlignCenter)
 
     def load_reviews(self):
-        reviews = Requests.get_reviews_about_employee(
+
+        reviews = Requests.get_shop_reviews(
             self.user.connection,
-            self.empl_info.get("employee_id_")
+            self.shop_info.get("shop_id_")
         )
 
         rev_df = pd.DataFrame(
@@ -79,7 +95,7 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
                 delete_review_button.clicked.connect(
                     partial(
                         self.delete_review,
-                        self.empl_info.get("employee_id_"),
+                        self.shop_info.get("shop_id_"),
                         rev_df["User"][i],
                         rev_df["Date"][i],
                         rev_df["Review"][i]
@@ -94,6 +110,7 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
         self.reviews_table.resizeRowsToContents()
 
     def add_review(self):
+
         self.review_form = ReviewForm()
         self.review_form.exec()
 
@@ -101,17 +118,17 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
 
         if review is not None and len(review):
 
-            Requests.add_employee_review(
+            Requests.add_shop_review(
                 self.user.connection,
                 self.user.login,
-                self.empl_info.get("employee_id_"),
+                self.shop_info.get("shop_id_"),
                 review
             )
 
-    def delete_review(self, emlp_id, user_login, review_date, review_text):
-        Requests.delete_employee_review(
+    def delete_review(self, shop_id, user_login, review_date, review_text):
+        Requests.delete_shop_review(
             self.user.connection,
-            emlp_id,
+            shop_id,
             user_login,
             review_date,
             review_text

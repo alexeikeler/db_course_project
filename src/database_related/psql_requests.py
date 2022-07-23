@@ -311,3 +311,64 @@ def delete_employee_review(connection, empl_id, user_login, review_date, review_
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def get_shop_info(connection, shop_id):
+    try:
+        with connection.cursor(cursor_factory = pc2.extras.RealDictCursor) as cursor:
+            cursor.callproc("get_shop_info", (shop_id,))
+            result = cursor.fetchone()
+            connection.commit()
+            return result
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_shop_reviews(connection, shop_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_shop_reviews", (shop_id,))
+            result = cursor.fetchall()
+            connection.commit()
+            return result
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def add_shop_review(connection, user_login, shop_id, user_review_text):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("add_shop_review", (user_login, shop_id, user_review_text))
+            connection.commit()
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def delete_shop_review(connection, shop_id, user_login, review_date, review_text):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("delete_shop_review", (shop_id, user_login, review_date, review_text))
+            connection.commit()
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
