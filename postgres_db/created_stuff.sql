@@ -47,6 +47,7 @@ GRANT EXECUTE ON FUNCTION
 
 ------------------------------------------------------------------
 --When client / employee account deleted delete it from users table
+DROP FUNCTION delete_user();
 CREATE OR REPLACE FUNCTION delete_user()
 RETURNS TRIGGER AS
     $$
@@ -81,12 +82,14 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
+DROP TRIGGER delete_from_users ON client;
 CREATE TRIGGER delete_from_users
     AFTER DELETE
     ON client
     FOR EACH ROW
     EXECUTE PROCEDURE delete_user();
 
+DROP TRIGGER delete_from_users ON employee;
 CREATE TRIGGER delete_from_users
     AFTER DELETE
     ON employee
@@ -104,6 +107,7 @@ GRANT EXECUTE ON FUNCTION
 
 --Function and triggers for updating users table when new employee or client created
 -----------------------------------------------
+DROP FUNCTION update_users_table();
 CREATE OR REPLACE FUNCTION update_users_table()
 RETURNS trigger AS
 $$
@@ -118,29 +122,20 @@ $$
                         UPDATE users
                         SET user_login = NEW.client_login
                         WHERE user_login = OLD.client_login;
-                  ELSE
-                    --when user changes password or new user has been created
-
-                    INSERT INTO users(user_login, user_password, user_role)
-                    VALUES (NEW."client_login", NEW."client_password", 'client')
-                    ON CONFLICT (user_login)
-                        DO UPDATE
-
-                        SET user_login = EXCLUDED.user_login,
-                            user_password = EXCLUDED.user_password;
                 END IF;
 
         END IF;
 
         IF (TG_TABLE_NAME = 'employee')
             THEN
-            RAISE INFO 'IN EMPLOYEE TABLE_NAME';
-            INSERT INTO users (user_login, user_password, user_role)
-            VALUES (NEW."employee_login", NEW."employee_password", NEW."employee_position")
-            ON CONFLICT (user_login)
-                        DO UPDATE
-                        SET user_login = EXCLUDED.user_login,
-                            user_password = EXCLUDED.user_password;
+                IF NEW.employee_login NOT LIKE OLD.employee_login
+                    THEN
+                    RAISE INFO 'Updating employee login from % to %', OLD.employee_login, NEW.employee_login;
+                    UPDATE users
+                    SET user_login = NEW.employee_login
+                    WHERE user_login = OLD.employee_login;
+                END IF;
+
         END IF;
     RETURN NEW;
         END;
@@ -149,15 +144,16 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
+DROP TRIGGER update_users_with_client ON client;
 CREATE TRIGGER update_users_with_client
-    AFTER INSERT OR UPDATE
+    AFTER UPDATE
     ON client
     FOR EACH ROW
     EXECUTE PROCEDURE update_users_table();
 
-
+DROP TRIGGER update_users_with_employee ON employee;
 CREATE TRIGGER update_users_with_employee
-    AFTER INSERT OR UPDATE
+    AFTER UPDATE
     ON employee
     FOR EACH ROW
     EXECUTE PROCEDURE update_users_table();
@@ -174,25 +170,16 @@ GRANT EXECUTE ON FUNCTION
 
 --Function and triggers for hashing passwords
 ------------------------------------------
+DROP FUNCTION hash_password();
 CREATE OR REPLACE FUNCTION hash_password()
 RETURNS trigger AS
 $$
     BEGIN
-        IF(TG_TABLE_NAME = 'client')
-        THEN
-            IF (TG_OP = 'INSERT' OR NEW.client_password NOT LIKE OLD.client_password)
-                THEN
-                    NEW.client_password = encode(digest(NEW.client_password, 'sha256'), 'hex');
-                END IF;
+        RAISE INFO 'IN TRIGGER HASH PASS';
+        IF (TG_OP = 'INSERT' OR NEW.user_password NOT LIKE OLD.user_password)
+            THEN
+                NEW.user_password = encode(digest(NEW.user_password, 'sha256'), 'hex');
             END IF;
-
-        IF(TG_TABLE_NAME = 'employee')
-        THEN
-            IF (TG_OP = 'INSERT' OR NEW.employee_password NOT LIKE OLD.employee_password)
-                THEN
-                    NEW.employee_password = encode(digest(NEW.employee_password, 'sha256'), 'hex');
-            END IF;
-        END IF;
 
     RETURN NEW;
     END;
@@ -201,23 +188,16 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
-CREATE TRIGGER make_client_password_hash
-    BEFORE INSERT OR UPDATE
-    ON client
-    FOR EACH ROW
-    EXECUTE PROCEDURE hash_password();
-
-CREATE TRIGGER make_employee_password_hash
-    BEFORE INSERT OR UPDATE
-    ON employee
-    FOR EACH ROW
-    EXECUTE PROCEDURE hash_password();
-
 ------------------------------------------
 
+DROP TRIGGER hash_users_password_trigger ON users;
+CREATE TRIGGER hash_users_password_trigger
+    BEFORE INSERT OR UPDATE
+    ON users
+    FOR EACH ROW
+    EXECUTE PROCEDURE hash_password();
 
 
---Function to create new account
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION create_client(
     client_firstname_ varchar,
@@ -233,9 +213,14 @@ $$
     BEGIN
 
         INSERT INTO
-            client(client_firstname, client_lastname, phone_number, email, client_login, client_password, delivery_address)
+            client(client_firstname, client_lastname, phone_number, email, client_login, delivery_address)
         VALUES
-            (client_firstname_, client_lastname_, phone_number_, email_, client_login_, client_password_, delivery_address_);
+            (client_firstname_, client_lastname_, phone_number_, email_, client_login_, delivery_address_);
+
+        INSERT INTO
+            users(user_login, user_role, user_password)
+        VALUES
+            (client_login_, 'client', client_password_);
 
         RETURN QUERY
         SELECT EXISTS(
@@ -271,3 +256,31 @@ GRANT EXECUTE ON FUNCTION
 )
       TO user_client;
 -----------------------------------------------------------------------
+
+--Function to check if user exists in database, if so return his role
+---------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION verify_user(login varchar, password varchar)
+RETURNS TABLE (user_role varchar) AS
+$$
+    BEGIN
+        RETURN QUERY
+        SELECT
+            users.user_role
+        FROM
+            users
+        WHERE
+            users.user_login = login
+        AND
+            users.user_password = encode(digest(password, 'sha256'), 'hex');
+    END;
+$$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION verify_user(login varchar, password varchar) FROM public;
+GRANT EXECUTE ON FUNCTION verify_user(login varchar, password varchar) TO user_checker;
+---------------------------------------------------------------------------------------
+
+
+select * from client;
