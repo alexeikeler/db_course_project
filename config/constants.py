@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-
+from collections import namedtuple
 
 @dataclass
 class Const:
+
+    CONFIG_SECTION: str = "postgresql"
 
     # UI PATH CONST #
     LOGIN_UI_PATH: str = "ui/login.ui"
@@ -17,15 +19,23 @@ class Const:
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
+
     # ROLES PATH CONST #
-    USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
+    SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
     CLIENT_ROLE_CONFIG_PATH: str = "config/client_role_config.ini"
+    USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
 
     # ELSE #
     IMAGES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
     HTML_FILES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
 
     REVIEW_DELETED: str = "Review successfully deleted! Update reviews table!"
+
+    ROLES_NMD_TPL: namedtuple = namedtuple(
+        "ROLES_NMD_TPL", "DIRECTOR_ROLE ADMIN_ROLE MANAGER_ROLE SHOP_ASSISTANT_ROLE CLIENT_ROLE USER_CHECKER_ROLE"
+    )
+    ROLES = ROLES_NMD_TPL("director", "admin", "manager", "shop_assistant", "client", "user_checker")
+
 
 @dataclass
 class Order:
@@ -79,7 +89,6 @@ class HtmlFiles:
 
 @dataclass
 class ShopAndEmployee:
-    POSITIONS: tuple = ("director", "manager", "admin", "shop_assistant")
     SHOPS: tuple = ("1", "2", "3", "4", "5")
 
 
@@ -92,6 +101,7 @@ class Errors:
     # Login errors
     NO_LOG_OR_PASS: str = "Error! Login or password field is empty!"
     WRONG_USR_NAME_OR_PASS: str = "Wrong username or password!"
+    ERROR_DB_CONNECTION: str = "Error! Couldn't connect to database!"
 
 
 

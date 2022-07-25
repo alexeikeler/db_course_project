@@ -103,7 +103,7 @@ class ShopForm(shop_form, shop_base):
 
     def setup_reviews(self):
         self.empl_shop_combo_box.addItems(ShopAndEmployee.SHOPS)
-        self.empl_pos_combo_box.addItems(ShopAndEmployee.POSITIONS)
+        self.empl_pos_combo_box.addItems(Const.ROLES[:-2])
 
         self.shop_combo_box.addItems(ShopAndEmployee.SHOPS)
 
@@ -234,7 +234,7 @@ class ShopForm(shop_form, shop_base):
             return
         
         optional_data = self.buy_book_form.data
-
+        print(optional_data)
         order = pd.DataFrame(
             [[
                 "",

@@ -23,21 +23,35 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="buy_book_layout">
-    <item row="0" column="0" alignment="Qt::AlignHCenter">
-     <widget class="QLabel" name="add_info_label">
-      <property name="text">
-       <string>Additional info</string>
+    <item row="11" column="0">
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="9" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Payment type</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" alignment="Qt::AlignHCenter">
      <widget class="QCheckBox" name="cli_addr_check_box">
       <property name="text">
        <string>Use client address for delivery</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="8" column="0">
+     <widget class="Line" name="line_2">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="12" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QPushButton" name="add_button">
@@ -63,18 +77,46 @@
       </item>
      </layout>
     </item>
-    <item row="3" column="0">
+    <item row="1" column="0">
+     <widget class="QTextEdit" name="add_info_text_edit"/>
+    </item>
+    <item row="10" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QComboBox" name="payment_type_combo_box"/>
+    </item>
+    <item row="5" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Number of copies</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item alignment="Qt::AlignLeft">
+      <item alignment="Qt::AlignHCenter">
        <widget class="QSpinBox" name="amount_spin_box"/>
-      </item>
-      <item alignment="Qt::AlignRight">
-       <widget class="QComboBox" name="payment_type_check_box"/>
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
-     <widget class="QTextEdit" name="add_info_text_edit"/>
+    <item row="4" column="0">
+     <widget class="Line" name="line_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="add_info_label">
+      <property name="text">
+       <string>Additional info</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="Line" name="line_4">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -13,6 +13,9 @@ class BuyBookForm(buy_book_form, buy_book_base):
         super(buy_book_base, self).__init__()
         self.setupUi(self)
 
+        self.data = {}
+        self.closed = False
+
         self.buy_book_layout.setContentsMargins(0, 0, 0, 0)
 
         self.amount_spin_box.setMinimum(1)
@@ -21,17 +24,12 @@ class BuyBookForm(buy_book_form, buy_book_base):
         self.add_button.clicked.connect(self.add_order_button_clicked)
         self.cancel_button.clicked.connect(self.cancel_button_clicked)
 
-        self.payment_type_check_box.addItems((Order.PAYMENT_TYPE_CASH, Order.PAYMENT_TYPE_CARD))
-        self.payment_type_check_box.activated[str].connect(
-            lambda payment_type: self.data.update({"payment_type": payment_type})
-        )
-
-        self.data = {}
-        self.closed = False
+        self.payment_type_combo_box.addItems((Order.PAYMENT_TYPE_CASH, Order.PAYMENT_TYPE_CARD))
 
     def add_order_button_clicked(self):
         self.data = {
-            "quantity":self.amount_spin_box.value()
+            "quantity":self.amount_spin_box.value(),
+            "payment_type": self.payment_type_combo_box.currentText()
         }
 
         if self.cli_addr_check_box.isChecked():

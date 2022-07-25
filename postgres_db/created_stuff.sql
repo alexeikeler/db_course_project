@@ -582,12 +582,18 @@ CREATE OR REPLACE FUNCTION add_order(
             cli_id integer;
             book_edition_number integer;
             current_order_id integer;
+            available_amount integer;
 
         BEGIN
 
             SELECT client.client_id INTO cli_id FROM client WHERE client.client_login = cli_login_;
 
-            SELECT edition.edition_number INTO book_edition_number FROM edition, authority, book
+            SELECT
+                edition.edition_number, edition.number_of_copies_in_shop
+            INTO
+                book_edition_number, available_amount
+            FROM
+                edition, authority, book
             WHERE
                 edition.authority_id = authority.authority_id
             AND
@@ -596,6 +602,10 @@ CREATE OR REPLACE FUNCTION add_order(
                 book.title = book_title_
             AND
                 edition.publishing_date = date_of_publishing_;
+
+            IF quantity_ > available_amount THEN
+                RAISE EXCEPTION 'To much books ordered. Maximum amount is: %', available_amount;
+            END IF;
 
             SELECT
                 employee.employee_id
@@ -608,9 +618,7 @@ CREATE OR REPLACE FUNCTION add_order(
             AND
                 employee.employee_position = 'shop_assistant';
 
-
             RAISE INFO 'emp_id % , cli_id %, edition_num of book %', emp_id, cli_id, book_edition_number;
-
 
             INSERT INTO client_order
                 (sender,
@@ -824,7 +832,10 @@ RETURNS VOID AS
     $$
 LANGUAGE plpgsql
 SECURITY DEFINER
-set search_path = public;
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION update_user_order(ordering_date timestamp(0), status varchar) FROM public;
+GRANT EXECUTE ON FUNCTION update_user_order(ordering_date timestamp(0), status varchar) TO user_client;
 
 -----------------------------------------------------------------------------------------------------
 
@@ -855,6 +866,9 @@ RETURNS TRIGGER AS
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
+
+REVOKE ALL ON FUNCTION return_ordered_books() FROM public;
+GRANT EXECUTE ON FUNCTION return_ordered_books() TO user_client;
 
 CREATE TRIGGER return_ordered_books_trigger
     AFTER UPDATE
@@ -1055,5 +1069,154 @@ employee_id integer,
 user_login varchar,
 review_date timestamp(0),
 review_text text
+) TO user_client;
+-----------------------------------------------------------------------------------------------------
+--Function to get reviews about particular shop
+
+CREATE OR REPLACE FUNCTION get_shop_reviews(shop_num integer)
+RETURNS TABLE (
+review_by_ varchar,
+review_date_ timestamp(0),
+review_text_ text
+)
+    AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                client_login, review_date, review_text
+            FROM
+                client_review, client
+            WHERE
+                client_review.review_about_shop = shop_num
+            AND
+                client.client_id = client_review.review_by;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_shop_reviews(shop_num integer) FROM public;
+GRANT EXECUTE ON FUNCTION get_shop_reviews(shop_num integer) TO user_client;
+-----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+--Function to get info about particular shop
+
+DROP FUNCTION get_shop_info(shop_num integer);
+CREATE OR REPLACE FUNCTION get_shop_info(shop_num integer)
+RETURNS TABLE (
+    shop_id_ integer,
+    name_of_shop_ varchar,
+    employees_num_ varchar,
+    post_code_ varchar,
+    country_ varchar,
+    city_ varchar,
+    street_ varchar
+) AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                shop_id, name_of_shop, number_of_employees::varchar, post_code, country, city, street
+            FROM
+                book_shop
+            WHERE
+                book_shop.shop_id = shop_num;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_shop_info(shop_num integer) FROM public;
+GRANT EXECUTE ON FUNCTION get_shop_info(shop_num integer) TO user_client;
+
+-----------------------------------------------------------------------------------------------------
+--Function for deleting review about particular shop
+
+CREATE OR REPLACE FUNCTION delete_shop_review(
+shop_id_ integer,
+user_login_ varchar,
+review_date_ timestamp(0),
+review_text_ text
+)
+RETURNS VOID AS
+    $$
+        DECLARE
+            user_id integer;
+
+        BEGIN
+             SELECT client.client_id INTO user_id FROM client WHERE client.client_login = user_login_;
+
+            DELETE FROM
+                    client_review
+             WHERE
+                 client_review.review_about_shop = shop_id_
+             AND
+                 client_review.review_by = user_id
+             AND
+                 client_review.review_date = review_date_
+             AND
+                 client_review.review_text = review_text_;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION delete_shop_review(
+shop_id_ integer,
+user_login_ varchar,
+review_date_ timestamp(0),
+review_text_ text
+) FROM public;
+
+GRANT EXECUTE ON FUNCTION delete_shop_review(
+shop_id_ integer,
+user_login_ varchar,
+review_date_ timestamp(0),
+review_text_ text
+) TO user_client;
+-----------------------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+--Function to add review about particular shop
+
+CREATE OR REPLACE FUNCTION add_shop_review(
+user_login_ varchar,
+shop_id_ integer,
+user_review_text_ text
+)
+    RETURNS VOID AS
+    $$
+        DECLARE
+            user_id integer;
+
+        BEGIN
+            SELECT client.client_id INTO user_id FROM client WHERE client.client_login = user_login_;
+
+            INSERT INTO
+                client_review(review_date, review_by, review_about_shop, review_text)
+            VALUES
+                (CURRENT_TIMESTAMP, user_id, shop_id_, user_review_text_);
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION add_shop_review(
+user_login_ varchar,
+shop_id_ integer,
+user_review_text_ text
+) FROM public;
+
+GRANT EXECUTE ON FUNCTION add_shop_review(
+user_login_ varchar,
+shop_id_ integer,
+user_review_text_ text
 ) TO user_client;
 -----------------------------------------------------------------------------------------------------

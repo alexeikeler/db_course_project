@@ -313,18 +313,6 @@ def delete_employee_review(connection, empl_id, user_login, review_date, review_
         connection.rollback()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 def get_shop_info(connection, shop_id):
     try:
         with connection.cursor(cursor_factory = pc2.extras.RealDictCursor) as cursor:

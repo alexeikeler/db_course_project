@@ -62,13 +62,13 @@ class ShoppingCartTab(QtWidgets.QWidget):
         for i in range(1, cols - 2):
             item = QtWidgets.QTableWidgetItem(str(order.loc[0][i]))
             item.setTextAlignment(QtCore.Qt.AlignCenter)
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.orders_table.setItem(self.orders_table.rowCount() - 1, i, item)
 
     def decline_order(self):
         try:
             current_row = self.orders_table.currentRow()
             ordering_date = self.orders_table.item(current_row, 3).text()
-            print(type(ordering_date), ordering_date)
             Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_DECLINED)
             self.orders_table.removeRow(current_row)
 
