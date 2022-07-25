@@ -176,10 +176,10 @@ def get_client_info(connection, user_login):
         connection.rollback()
 
 
-def change_client_password(connection, client_login, client_old_password, client_new_password):
+def change_password(connection, login, old_pass, new_pass):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("change_client_password", (client_login, client_old_password, client_new_password))
+            cursor.callproc("change_password", (login, old_pass, new_pass))
             result = cursor.fetchone()
             connection.commit()
             return result

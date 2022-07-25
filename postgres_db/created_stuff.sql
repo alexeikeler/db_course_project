@@ -1,6 +1,7 @@
 --Function for updating password
 --------------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION change_client_password(login varchar, old_password varchar, new_password varchar)
+--WORKING OK
+CREATE OR REPLACE FUNCTION change_password(login varchar, old_password varchar, new_password varchar)
 RETURNS boolean AS
     $$
 
@@ -8,18 +9,18 @@ RETURNS boolean AS
 
         IF EXISTS(
             SELECT *
-            FROM client
+            FROM users
             WHERE
-                client.client_login = login
+                users.user_login = login
             AND
-                client.client_password = encode(digest(old_password, 'sha256'), 'hex')
+                users.user_password = encode(digest(old_password, 'sha256'), 'hex')
             )
             THEN
-                UPDATE client
+                UPDATE users
                 SET
-                    client_password = new_password
+                    user_password = new_password
                 WHERE
-                    client_login = login;
+                    user_login = login;
                 RETURN TRUE;
 
         ELSE
@@ -35,18 +36,19 @@ SECURITY DEFINER
 SET search_path = public;
 
 REVOKE ALL ON FUNCTION
-    change_client_password(login varchar, old_password varchar, new_password varchar)
+    change_password(login varchar, old_password varchar, new_password varchar)
     FROM public;
 
 GRANT EXECUTE ON FUNCTION
-    change_client_password(login varchar, old_password varchar, new_password varchar)
+    change_password(login varchar, old_password varchar, new_password varchar)
     TO user_client;
 
 --------------------------------------------------------------------------------------
 
 
-------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 --When client / employee account deleted delete it from users table
+--WORKING OK ON CLIENT DELETE (CHECK EMPLOYEE)
 DROP FUNCTION delete_user();
 CREATE OR REPLACE FUNCTION delete_user()
 RETURNS TRIGGER AS
@@ -58,9 +60,7 @@ RETURNS TRIGGER AS
             DELETE FROM
                        users
                    WHERE
-                       users.user_login = OLD.client_login
-                    AND
-                       users.user_password = OLD.client_password;
+                       users.user_login = OLD.client_login;
             RAISE INFO 'Deleted client %', OLD.client_login;
 
         ELSIF (TG_TABLE_NAME = 'employee')
@@ -68,9 +68,8 @@ RETURNS TRIGGER AS
                 DELETE FROM
                         users
                 WHERE
-                    users.user_login = OLD.employee_login
-                AND
-                    users.user_password = OLD.employee_password;
+                    users.user_login = OLD.employee_login;
+
             RAISE INFO 'Deleted employee %', OLD.employee_login;
 
         END IF;
@@ -168,8 +167,9 @@ GRANT EXECUTE ON FUNCTION
 
 -----------------------------------------------
 
+--WORKING OK
 --Function and triggers for hashing passwords
-------------------------------------------
+---------------------------------------------------------------------------------------
 DROP FUNCTION hash_password();
 CREATE OR REPLACE FUNCTION hash_password()
 RETURNS trigger AS
@@ -188,7 +188,6 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
-------------------------------------------
 
 DROP TRIGGER hash_users_password_trigger ON users;
 CREATE TRIGGER hash_users_password_trigger
@@ -197,6 +196,9 @@ CREATE TRIGGER hash_users_password_trigger
     FOR EACH ROW
     EXECUTE PROCEDURE hash_password();
 
+---------------------------------------------------------------------------------------
+
+--WORKING OK
 
 -----------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION create_client(
@@ -255,8 +257,10 @@ GRANT EXECUTE ON FUNCTION
     delivery_address_ varchar
 )
       TO user_client;
------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
 
+--WORKING OK
+---------------------------------------------------------------------------------------
 --Function to check if user exists in database, if so return his role
 ---------------------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION verify_user(login varchar, password varchar)
