@@ -6,7 +6,7 @@ from src.forms.login_form import LoginForm
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-
+    print(123)
     login_form = LoginForm()
     login_form.show()
 
