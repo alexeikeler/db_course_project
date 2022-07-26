@@ -82,7 +82,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
     def load_client_data(self):
         login = self.user.login
-
+        print(login)
         if login != self.login_line_edit.text() and self.login_line_edit.text():
             login = self.login_line_edit.text()
 
@@ -140,7 +140,9 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
         if flag is not None and flag[0]:
             msg.info_message(f"{update_subject} changed succsessfully.")
-            self.load_user_data()
+            if update_subject == 'login':
+                self.user.login = self.login_line_edit.text()
+
         else:
             msg.error_message(f"Error occured while changing: {update_subject}")
 
