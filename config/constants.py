@@ -20,6 +20,7 @@ class Const:
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
 
+    SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
     CLIENT_ROLE_CONFIG_PATH: str = "config/client_role_config.ini"

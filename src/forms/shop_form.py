@@ -52,6 +52,8 @@ class ShopForm(shop_form, shop_base):
 
         self.setup_price_slider()
         self.setup_reviews()
+        self.update_form()
+
 
     def get_low_price_boundary(self) -> float:
         return float(self.low_price_label.text())

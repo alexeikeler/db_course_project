@@ -10,7 +10,7 @@ from tabulate import tabulate
 from functools import partial
 
 from src.forms.change_password_form import ChangePasswordForm
-from config.constants import Const, Order, HtmlFiles
+from config.constants import Const, Order
 
 user_acc_form, user_acc_base = uic.loadUiType(uifile=Const.USER_ACCOUNT_TAB_FORM_UI_PATH)
 
@@ -37,8 +37,8 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
         self.config_widgets()
         self.load_client_data()
-        self.load_client_orders()
-        self.load_client_stats()
+        # self.load_client_orders()
+        # self.load_client_stats()
 
     def get_client_orders(self):
         self.orders = pd.DataFrame(
@@ -82,7 +82,6 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
     def load_client_data(self):
         login = self.user.login
-        print(login)
         if login != self.login_line_edit.text() and self.login_line_edit.text():
             login = self.login_line_edit.text()
 
