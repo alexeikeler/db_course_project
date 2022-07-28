@@ -98,7 +98,7 @@
       </widget>
      </item>
      <item row="2" column="0">
-      <widget class="QTableWidget" name="orders_table"/>
+      <widget class="QTableWidget" name="sa_orders_table"/>
      </item>
      <item row="5" column="0">
       <widget class="Line" name="line_6">
@@ -122,6 +122,18 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>0</y>
+      <width>120</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="page"/>
+    <widget class="QWidget" name="page_2"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

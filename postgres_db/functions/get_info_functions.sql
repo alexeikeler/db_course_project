@@ -314,3 +314,78 @@ REVOKE ALL ON FUNCTION update_client_info(login varchar, subject varchar, new_va
 GRANT EXECUTE ON FUNCTION update_client_info(login varchar, subject varchar, new_value varchar) TO user_client;
 
 -----------------------------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------------------------------------
+--Function to get info about orders which must be processesed by shop assitant
+DROP FUNCTION get_shop_assistant_orders(sa_login varchar);
+CREATE OR REPLACE FUNCTION get_shop_assistant_orders(sa_login varchar)
+RETURNS TABLE (
+    state_ varchar,
+    customer_name_ varchar,
+    customer_login_ varchar,
+    ordered_book varchar,
+    quantity_ integer,
+    ordering_date_ timestamp(0)
+
+) AS
+$$
+    DECLARE
+        sa_id integer;
+    BEGIN
+
+        SELECT employee.employee_id INTO sa_id FROM employee WHERE employee.employee_login = sa_login;
+        RAISE INFO 'sa_id %', sa_id;
+        RETURN QUERY
+
+        SELECT
+            client_order.order_status,
+            CAST(client.client_firstname ||' '|| client.client_lastname AS varchar) customer_name,
+            client.client_login,
+            book.title,
+            client_order.quantity,
+            client_order.date_of_order
+
+        FROM
+            client, edition, authority, book, client_order, chosen
+        WHERE
+            client_order.sender = sa_id
+        AND
+            client.client_id = client_order.reciever
+        AND
+            client_order.order_status IN ('Оплачен', 'Обработан', 'Доставляется', 'Доставлен')
+        AND
+            client_order.order_id = chosen.order_id
+        AND
+            chosen.edition_number = edition.edition_number
+        AND
+            edition.authority_id = authority.authority_id
+        AND
+            book.book_id = authority.edition_book;
+    END;
+$$
+
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+
+REVOKE ALL ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) FROM public;
+
+GRANT EXECUTE ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) TO user_shop_assistant;
+
+-----------------------------------------------------------------------------------------------------
+select * from employee;
+select * from get_shop_assistant_orders('petrov_vasilii');
+select * from available_books_view;
+select * from client_order;
+
+alter table client_order
+add constraint order_status_constaint check(order_status in ('В корзине',
+                                                             'Оплачен',
+                                                             'Обработан',
+                                                             'Доставляется',
+                                                             'Доставлен'
+                                                             'Отменён')
+    );

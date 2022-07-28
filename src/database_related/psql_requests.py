@@ -360,3 +360,17 @@ def delete_shop_review(connection, shop_id, user_login, review_date, review_text
         msg.error_message(str(error))
         connection.rollback()
 
+
+def get_shop_assistant_orders(connection, sa_login):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_shop_assistant_orders", (sa_login,))
+            results = cursor.fetchall()
+
+            return results
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+

@@ -72,7 +72,8 @@ class Order:
 
     ORDER_IN_CART: str = "В корзине"
     ORDER_PAYED: str = "Оплачен"
-    ORDER_IN_PROCESS: str = "Обрабатывается"
+    ORDER_PROCESSED: str = "Обработан"
+    ORDER_DELIVERING:str = "Доставляется"
     ORDER_FINISHED: str = "Доставлен"
     ORDER_DECLINED: str = "Отменён"
 
@@ -81,6 +82,15 @@ class Order:
 
     ORDER_TABLE_SIZE: tuple = (0, 0, 1, 4)
     TOTAL_SUM_TABLE_SIZE: tuple = (3, 0, 4, 4)
+
+    SA_ORDER_DF_COLUMNS: tuple = (
+        "State",
+        "Customer name",
+        "Customer login",
+        "Title",
+        "Quantity",
+        "Ordering date"
+    )
 
 
 @dataclass

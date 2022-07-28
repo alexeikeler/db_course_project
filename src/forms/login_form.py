@@ -54,8 +54,8 @@ class LoginForm(login_form, login_base):
         # self.password_line_edit.setText('test_password')
 
         # For shop_assistant test
-        self.username_line_edit.setText('colcevaleksei')
-        self.password_line_edit.setText('GtImkfbccufq')
+        self.username_line_edit.setText('petrov_vasilii')
+        self.password_line_edit.setText('ptrvV1988')
 
     def __role_start(self, login, role):
         conn = db_conn.establish_db_connection(role)
@@ -91,7 +91,6 @@ class LoginForm(login_form, login_base):
             logging.info(f"\n user_checker logged off successfully.\n")
             logging.info(f"\nUser {user_login} ({user_role[0]}) logged in successfully.\n")
             self.__role_start(user_login, user_role[0])
-
 
     def toggle_password_visibility(self):
         if self.password_line_edit.echoMode() == QtWidgets.QLineEdit.Normal:
