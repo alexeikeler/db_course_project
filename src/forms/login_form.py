@@ -14,7 +14,7 @@ from src.roles.client_role import ClientRole
 from src.forms.create_account_form import AccountForm
 from src.forms.shop_form import ShopForm
 from src.forms.shop_assistant_form import ShopAssistantForm
-
+from time import sleep
 from config.constants import Const, Errors
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
@@ -81,6 +81,9 @@ class LoginForm(login_form, login_base):
 
         user_checker = UserCheckerRole()
         user_role = Requests.check_user_existence(user_checker.connection, user_login, user_password)
+
+        # To assure that user checker exists.
+        # sleep(10)
 
         if user_role is None:
             msg.error_message(Errors.WRONG_USR_NAME_OR_PASS)

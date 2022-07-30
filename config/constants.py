@@ -84,12 +84,15 @@ class Order:
     TOTAL_SUM_TABLE_SIZE: tuple = (3, 0, 4, 4)
 
     SA_ORDER_DF_COLUMNS: tuple = (
+        "Order ID",
         "State",
         "Customer name",
-        "Customer login",
+        "Phone number",
+        "Email",
+        "Login",
         "Title",
         "Quantity",
-        "Ordering date"
+        "Ordering date",
     )
 
 

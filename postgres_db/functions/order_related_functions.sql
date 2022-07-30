@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------------------------
 --Add order to client_order table
 -----------------------------------------------------------------------------------------------------
-
+DROP FUNCTION add_order(book_title_ varchar, date_of_publishing_ date, ordering_date timestamp(0), shop_number integer, cli_login_ varchar, delivery_address_ varchar, order_status_ varchar, sum_to_pay_ numeric(6,2), payment_type_ varchar, additional_info_ varchar, quantity_ integer);
 CREATE OR REPLACE FUNCTION add_order(
     book_title_ varchar,
     date_of_publishing_ date,
@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION add_order(
     payment_type_ varchar,
     additional_info_ varchar,
     quantity_ integer
-) RETURNS VOID AS
+) RETURNS INTEGER AS
     $$
         DECLARE
             emp_id integer;
@@ -89,6 +89,7 @@ CREATE OR REPLACE FUNCTION add_order(
             VALUES
                 (book_edition_number, current_order_id);
 
+            RETURN current_order_id;
             END
     $$
 
@@ -239,12 +240,12 @@ CREATE TRIGGER return_ordered_books_trigger
 
 -----------------------------------------------------------------------------------------------------
 
-
+select * from client_order;
 -----------------------------------------------------------------------------------------------------
 --Update order status
 -----------------------------------------------------------------------------------------------------
-
-CREATE OR REPLACE FUNCTION update_user_order(ordering_date timestamp(0), status varchar)
+DROP FUNCTION update_user_order(current_order_id integer, status varchar);
+CREATE OR REPLACE FUNCTION update_user_order(current_order_id integer, status varchar)
 RETURNS VOID AS
     $$
         BEGIN
@@ -255,13 +256,20 @@ RETURNS VOID AS
                 order_status = status,
                 date_of_return = now()
             WHERE
-                date_of_order = ordering_date;
+                order_id = current_order_id;
+        ELSIF status = 'Доставлен' THEN
+            UPDATE client_order
+            SET
+                order_status = status,
+                date_of_delivery = now()
+            WHERE
+                order_id = current_order_id;
         ELSE
             UPDATE client_order
             SET
                 order_status = status
             WHERE
-                date_of_order = ordering_date;
+                order_id = current_order_id;
         END IF;
 
         END;
@@ -273,9 +281,10 @@ SECURITY DEFINER
 SET search_path = public;
 
 
-REVOKE ALL ON FUNCTION update_user_order(ordering_date timestamp(0), status varchar) FROM public;
+REVOKE ALL ON FUNCTION update_user_order(current_order_id integer, status varchar) FROM public;
 
-GRANT EXECUTE ON FUNCTION update_user_order(ordering_date timestamp(0), status varchar) TO user_client;
+GRANT EXECUTE ON FUNCTION update_user_order(current_order_id integer, status varchar) TO user_client;
+GRANT EXECUTE ON FUNCTION update_user_order(current_order_id integer, status varchar) TO user_shop_assistant;
 
 -----------------------------------------------------------------------------------------------------
 

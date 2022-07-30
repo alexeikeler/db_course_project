@@ -10,130 +10,152 @@
     <height>844</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="gridLayoutWidget">
+   <widget class="QWidget" name="gridLayoutWidget_12">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>1421</width>
-      <height>781</height>
+      <x>0</x>
+      <y>0</y>
+      <width>1441</width>
+      <height>791</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="form_layout">
-     <item row="2" column="2">
-      <widget class="QTableWidget" name="reviews_table"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+    <layout class="QGridLayout" name="tab_widget_layout">
+     <item row="0" column="0">
+      <widget class="QTabWidget" name="tab_widget">
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="0" alignment="Qt::AlignHCenter">
-      <widget class="QLabel" name="order_table_title_label">
-       <property name="text">
-        <string>Orders</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="Line" name="line_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2" alignment="Qt::AlignHCenter">
-      <widget class="QLabel" name="reviews_order_title_label">
-       <property name="text">
-        <string>Reviews</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="Line" name="line_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2" alignment="Qt::AlignHCenter">
-      <widget class="QPushButton" name="update_reviews_button">
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>Update  </string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0" alignment="Qt::AlignHCenter">
-      <widget class="QPushButton" name="update_orders_button">
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>Update  </string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QTableWidget" name="sa_orders_table"/>
-     </item>
-     <item row="5" column="0">
-      <widget class="Line" name="line_6">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="Line" name="line_7">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" rowspan="6">
-      <widget class="Line" name="line">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
+       <widget class="QWidget" name="orders_tab">
+        <attribute name="title">
+         <string>Tab 1</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_13">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1441</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="orders_table_layout">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="orders_label">
+            <property name="text">
+             <string>Orders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="sa_orders_qtable"/>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="table_buttons_layout">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="update_orders_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Update orders  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="reload_orders_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Reload orders  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/table.png</normaloff>../frontend/images/table.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="reviews_tab">
+        <attribute name="title">
+         <string>Tab 2</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_14">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>1431</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="reviews_layout">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="sa_reviews_qtable"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="reviews_label">
+            <property name="text">
+             <string>Reviews</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="reviews_buttons_layout">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="update_reviews_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Update reviews  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="reload_reviews_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Reload reviews  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/leave_review.png</normaloff>../frontend/images/leave_review.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QStackedWidget" name="stackedWidget">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>120</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <widget class="QWidget" name="page"/>
-    <widget class="QWidget" name="page_2"/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

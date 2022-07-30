@@ -8,7 +8,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from tabulate import tabulate
 
 from config.constants import Order, Const
-
+from functools import partial
 shop_assistant_form, shop_assistant_base = uic.loadUiType(uifile=Const.SHOP_ASSISTANT_UI_PATH)
 
 
@@ -21,61 +21,87 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
         self.user = user
 
-        self.sa_orders_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.sa_orders_table.setIconSize(QtCore.QSize(150, 100))
+        self.orders_data = None
+        self.reviews_data = None
 
+        self.reload_orders_button.clicked.connect(self.load_orders_table)
+        self.update_orders_button.clicked.connect(self.update_orders_state)
+
+        self.sa_orders_qtable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+        self.sa_orders_qtable.setIconSize(QtCore.QSize(150, 100))
         self.load_orders_table()
 
-    def load_orders_table(self):
+        self.tab_widget_layout.setContentsMargins(0, 0, 0, 0)
+        self.menubar.hide()
+        self.statusbar.hide()
 
-        orders = pd.DataFrame(
+    def get_orders_data(self):
+        self.orders_data = pd.DataFrame(
             Requests.get_shop_assistant_orders(
                 self.user.connection,
                 self.user.login
             ),
             columns=Order.SA_ORDER_DF_COLUMNS
         )
-        orders.insert(0, "Book", "")
-        print(
-            tabulate(
-                orders, headers=orders.columns, tablefmt='pretty'
-            )
-        )
+        self.orders_data.insert(0, "Book", "")
+        self.orders_data.insert(self.orders_data.shape[1], "Update order", "")
 
-        rows, cols = orders.shape
-        self.sa_orders_table.setRowCount(rows)
-        self.sa_orders_table.setColumnCount(cols)
+    def get_reviews_data(self):
+        pass
 
-        header = self.sa_orders_table.horizontalHeader()
-        for header_index in range(2, len(Order.SA_ORDER_DF_COLUMNS)-3):
+    def load_orders_table(self):
+
+        self.get_orders_data()
+        self.sa_orders_qtable.clear()
+
+        rows, cols = self.orders_data.shape
+        self.sa_orders_qtable.setRowCount(rows)
+        self.sa_orders_qtable.setColumnCount(cols)
+
+        header = self.sa_orders_qtable.horizontalHeader()
+        for header_index in range(3, len(Order.SA_ORDER_DF_COLUMNS) - 2):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
-        self.sa_orders_table.setHorizontalHeaderLabels(orders.columns)
+        self.sa_orders_qtable.setHorizontalHeaderLabels(self.orders_data.columns)
 
         for i in range(rows):
 
             book_image = QtWidgets.QTableWidgetItem()
-            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(orders["Title"][i])))
+            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(self.orders_data["Title"][i])))
 
             order_states = QtWidgets.QComboBox()
-            order_states.addItems((Order.ORDER_PAYED, Order.ORDER_PROCESSED, Order.ORDER_DELIVERING, Order.ORDER_FINISHED))
-            print(orders["State"][i])
-            order_states.setCurrentText(orders["State"][i])
+            order_states.addItems(
+                (Order.ORDER_PAYED, Order.ORDER_PROCESSED, Order.ORDER_DELIVERING, Order.ORDER_FINISHED)
+            )
+            order_states.setCurrentText(self.orders_data["State"][i])
 
+            update_order = QtWidgets.QPushButton("")
+            update_order.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("update_icon")))
+            update_order.setIconSize(QtCore.QSize(16, 16))
+            update_order.clicked.connect(
+                partial(
+                    self.update_orders_state,
+                    self.orders_data["Order ID"][i],
+                    self.orders_data["State"][i]
+                )
+            )
 
-            self.sa_orders_table.setItem(i, 0, book_image)
-            self.sa_orders_table.setCellWidget(i, 1, order_states)
+            self.sa_orders_qtable.setItem(i, 0, book_image)
+            self.sa_orders_qtable.setCellWidget(i, 2, order_states)
+            self.sa_orders_qtable.setCellWidget(i, cols-1, update_order)
 
-
-            for j in range(2, cols):
-                item = QtWidgets.QTableWidgetItem(str(orders.loc[i][j]))
+            for j in range(1, cols-1):
+                item = QtWidgets.QTableWidgetItem(str(self.orders_data.loc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
-                self.sa_orders_table.setItem(i, j, item)
+                self.sa_orders_qtable.setItem(i, j, item)
 
-        self.sa_orders_table.resizeColumnsToContents()
-        self.sa_orders_table.resizeRowsToContents()
+        self.sa_orders_qtable.resizeColumnsToContents()
+        self.sa_orders_qtable.resizeRowsToContents()
 
     def load_reviews_table(self):
         pass
 
+    def update_orders_state(self, order_id, order_state):
+       # Requests.
+        pass

@@ -120,3 +120,6 @@ shop_id_ integer,
 user_review_text_ text
 )
     TO user_client;
+
+
+CREATE DATABASE subscr_count;

@@ -17,10 +17,8 @@ class ShoppingCartTab(QtWidgets.QWidget):
         self.main_layout = QtWidgets.QGridLayout(self)
 
         self.orders_table = QtWidgets.QTableWidget()
-        self.orders_table.setColumnCount(len(Order.ORDER_DF_COLUMNS))
-        self.orders_table.setHorizontalHeaderLabels(Order.ORDER_DF_COLUMNS)
-        self.orders_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
+        self.orders_table.setColumnCount(len(Order.ORDER_DF_COLUMNS)+1)
         header = self.orders_table.horizontalHeader()
         for header_index in range(1, len(Order.ORDER_DF_COLUMNS) - 2):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
@@ -30,11 +28,17 @@ class ShoppingCartTab(QtWidgets.QWidget):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
     def add_order_in_database(self, order_values):
-        Requests.add_order(self.user.connection, *order_values)
+        order_id = Requests.add_order(self.user.connection, *order_values)
+        return order_id[0]
 
     def add_order_in_qt_table(self, order: pd.DataFrame):
 
         rows, cols = order.shape
+
+
+        self.orders_table.setHorizontalHeaderLabels(order.columns)
+        self.orders_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+
         self.orders_table.insertRow(self.orders_table.rowCount())
 
         book_image = QtWidgets.QTableWidgetItem()
@@ -44,7 +48,7 @@ class ShoppingCartTab(QtWidgets.QWidget):
 
         self.orders_table.resizeColumnsToContents()
         header = self.orders_table.horizontalHeader()
-        for header_index in range(1, len(Order.ORDER_DF_COLUMNS) - 2):
+        for header_index in range(2, len(Order.ORDER_DF_COLUMNS) - 2):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
         self.orders_table.resizeRowsToContents()
 
@@ -68,8 +72,9 @@ class ShoppingCartTab(QtWidgets.QWidget):
     def decline_order(self):
         try:
             current_row = self.orders_table.currentRow()
-            ordering_date = self.orders_table.item(current_row, 3).text()
-            Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_DECLINED)
+            # ordering_date = self.orders_table.item(current_row, 3).text()
+            order_id = int(self.orders_table.item(current_row, 1).text())
+            Requests.update_user_order(self.user.connection, order_id, Order.ORDER_DECLINED)
             self.orders_table.removeRow(current_row)
 
             msg.info_message("Order successfully declined.")
@@ -80,8 +85,8 @@ class ShoppingCartTab(QtWidgets.QWidget):
     def confirm_order(self):
         try:
             current_row = self.orders_table.currentRow()
-            ordering_date = self.orders_table.item(current_row, 3).text()
-            Requests.update_user_order(self.user.connection, ordering_date, Order.ORDER_PAYED)
+            order_id = int(self.orders_table.item(current_row, 1).text())
+            Requests.update_user_order(self.user.connection, order_id, Order.ORDER_PAYED)
             self.orders_table.removeRow(current_row)
 
             msg.info_message("Order successfully payed.")

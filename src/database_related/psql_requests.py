@@ -232,7 +232,9 @@ def add_order(
                 quantity_,
             )
         )
+            result = cursor.fetchone()
             connection.commit()
+            return result
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
@@ -366,7 +368,6 @@ def get_shop_assistant_orders(connection, sa_login):
         with connection.cursor() as cursor:
             cursor.callproc("get_shop_assistant_orders", (sa_login,))
             results = cursor.fetchall()
-
             return results
 
     except(Exception, pc2.DatabaseError) as error:

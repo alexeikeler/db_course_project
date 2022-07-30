@@ -321,8 +321,11 @@ GRANT EXECUTE ON FUNCTION update_client_info(login varchar, subject varchar, new
 DROP FUNCTION get_shop_assistant_orders(sa_login varchar);
 CREATE OR REPLACE FUNCTION get_shop_assistant_orders(sa_login varchar)
 RETURNS TABLE (
+    order_id_ integer,
     state_ varchar,
     customer_name_ varchar,
+    customer_phone_num varchar,
+    customer_email varchar,
     customer_login_ varchar,
     ordered_book varchar,
     quantity_ integer,
@@ -339,8 +342,11 @@ $$
         RETURN QUERY
 
         SELECT
+            client_order.order_id,
             client_order.order_status,
             CAST(client.client_firstname ||' '|| client.client_lastname AS varchar) customer_name,
+            client.phone_number,
+            client.email,
             client.client_login,
             book.title,
             client_order.quantity,
@@ -376,16 +382,3 @@ REVOKE ALL ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) FROM 
 GRANT EXECUTE ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) TO user_shop_assistant;
 
 -----------------------------------------------------------------------------------------------------
-select * from employee;
-select * from get_shop_assistant_orders('petrov_vasilii');
-select * from available_books_view;
-select * from client_order;
-
-alter table client_order
-add constraint order_status_constaint check(order_status in ('В корзине',
-                                                             'Оплачен',
-                                                             'Обработан',
-                                                             'Доставляется',
-                                                             'Доставлен'
-                                                             'Отменён')
-    );
