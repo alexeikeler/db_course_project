@@ -241,6 +241,8 @@ CREATE TRIGGER return_ordered_books_trigger
 -----------------------------------------------------------------------------------------------------
 
 select * from client_order;
+select * from update_user_order(45, 'Отменён');
+
 -----------------------------------------------------------------------------------------------------
 --Update order status
 -----------------------------------------------------------------------------------------------------
@@ -249,30 +251,38 @@ CREATE OR REPLACE FUNCTION update_user_order(current_order_id integer, status va
 RETURNS VOID AS
     $$
         BEGIN
+        CASE status
 
-        IF status = 'Отменён' THEN
-            UPDATE client_order
-            SET
-                order_status = status,
-                date_of_return = now()
-            WHERE
-                order_id = current_order_id;
-        ELSIF status = 'Доставлен' THEN
-            UPDATE client_order
-            SET
-                order_status = status,
-                date_of_delivery = now()
-            WHERE
-                order_id = current_order_id;
-        ELSE
-            UPDATE client_order
-            SET
-                order_status = status
-            WHERE
-                order_id = current_order_id;
-        END IF;
+           WHEN 'Отменён'
+               THEN
+                   RAISE INFO 'Order is declined';
+                  UPDATE client_order
+                    SET
+                        order_status = status,
+                        date_of_return = now()
+                    WHERE
+                        order_id = current_order_id;
 
-        END;
+           WHEN 'Доставлен'
+               THEN
+                   RAISE INFO 'Finishing order.';
+                    UPDATE client_order
+                    SET
+                        order_status = status,
+                        date_of_delivery = now()
+                    WHERE
+                        order_id = current_order_id;
+           ELSE
+                    RAISE INFO 'Updating order % to status %', current_order_id, status;
+                    UPDATE client_order
+                    SET
+                        order_status = status
+                    WHERE
+                        order_id = current_order_id;
+
+            END CASE;
+        END
+
     $$
 
 

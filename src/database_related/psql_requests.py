@@ -241,11 +241,15 @@ def add_order(
         connection.rollback()
 
 
-def update_user_order(connection, ordering_date, status):
+def update_user_order(connection, order_id, status):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("update_user_order", (ordering_date, status))
+            print(f"Order id - {order_id}, order_status - {status}")
+            cursor.callproc("update_user_order", (order_id, status))
             connection.commit()
+
+            for notice in connection.notices:
+                print(notice)
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))

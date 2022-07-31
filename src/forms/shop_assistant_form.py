@@ -75,19 +75,21 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
             )
             order_states.setCurrentText(self.orders_data["State"][i])
 
+            self.sa_orders_qtable.setCellWidget(i, 2, order_states)
+
             update_order = QtWidgets.QPushButton("")
             update_order.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("update_icon")))
             update_order.setIconSize(QtCore.QSize(16, 16))
             update_order.clicked.connect(
                 partial(
                     self.update_orders_state,
-                    self.orders_data["Order ID"][i],
-                    self.orders_data["State"][i]
+                    int(self.orders_data["Order ID"][i]),
+                    i
                 )
             )
 
             self.sa_orders_qtable.setItem(i, 0, book_image)
-            self.sa_orders_qtable.setCellWidget(i, 2, order_states)
+
             self.sa_orders_qtable.setCellWidget(i, cols-1, update_order)
 
             for j in range(1, cols-1):
@@ -102,6 +104,6 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
     def load_reviews_table(self):
         pass
 
-    def update_orders_state(self, order_id, order_state):
-       # Requests.
-        pass
+    def update_orders_state(self, order_id, row_index):
+        print(self.sa_orders_qtable.cellWidget(row_index, 2).currentText())
+        #Requests.update_user_order(self.user.connection, order_id, order_state)
