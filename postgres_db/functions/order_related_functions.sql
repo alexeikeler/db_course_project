@@ -248,7 +248,7 @@ select * from update_user_order(45, 'Отменён');
 -----------------------------------------------------------------------------------------------------
 DROP FUNCTION update_user_order(current_order_id integer, status varchar);
 CREATE OR REPLACE FUNCTION update_user_order(current_order_id integer, status varchar)
-RETURNS VOID AS
+RETURNS BOOL AS
     $$
         BEGIN
         CASE status
@@ -262,6 +262,7 @@ RETURNS VOID AS
                         date_of_return = now()
                     WHERE
                         order_id = current_order_id;
+                   RETURN TRUE;
 
            WHEN 'Доставлен'
                THEN
@@ -272,6 +273,7 @@ RETURNS VOID AS
                         date_of_delivery = now()
                     WHERE
                         order_id = current_order_id;
+                   RETURN TRUE;
            ELSE
                     RAISE INFO 'Updating order % to status %', current_order_id, status;
                     UPDATE client_order
@@ -279,9 +281,10 @@ RETURNS VOID AS
                         order_status = status
                     WHERE
                         order_id = current_order_id;
-
+                    RETURN TRUE;
             END CASE;
-        END
+
+        END;
 
     $$
 

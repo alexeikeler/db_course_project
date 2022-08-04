@@ -244,12 +244,10 @@ def add_order(
 def update_user_order(connection, order_id, status):
     try:
         with connection.cursor() as cursor:
-            print(f"Order id - {order_id}, order_status - {status}")
             cursor.callproc("update_user_order", (order_id, status))
+            result = cursor.fetchone()
             connection.commit()
-
-            for notice in connection.notices:
-                print(notice)
+            return result[0]
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
@@ -379,3 +377,13 @@ def get_shop_assistant_orders(connection, sa_login):
         connection.rollback()
 
 
+def get_reviews_for_shop_assistant(connection, sa_login, subject):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_reviews_for_shop_assistant", (sa_login, subject))
+            results = cursor.fetchall()
+            return results
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

@@ -7,7 +7,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 from functools import partial
 
-from config.constants import Const, Errors
+from config.constants import Const, Errors, ReviewsMessages
 from src.database_related import psql_requests as Requests
 from src.forms.add_review_form import ReviewForm
 
@@ -116,4 +116,4 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
             review_date,
             review_text
         )
-        msg.info_message(Const.REVIEW_DELETED)
+        msg.info_message(ReviewsMessages.REVIEW_DELETED)

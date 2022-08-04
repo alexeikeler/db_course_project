@@ -1,3 +1,4 @@
+import PyQt5.QtWidgets
 import pandas as pd
 
 import src.custom_qt_widgets.message_boxes as msg
@@ -7,7 +8,7 @@ import src.database_related.psql_requests as Requests
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from tabulate import tabulate
 
-from config.constants import Order, Const
+from config.constants import Order, Const, WindowsNames, ReviewsMessages
 from functools import partial
 shop_assistant_form, shop_assistant_base = uic.loadUiType(uifile=Const.SHOP_ASSISTANT_UI_PATH)
 
@@ -19,21 +20,44 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         super(shop_assistant_base, self).__init__()
         self.setupUi(self)
 
-        self.user = user
+        self.tab_widget.setTabText(0, WindowsNames.ORDERS_TAB)
+        self.tab_widget.setTabText(1, WindowsNames.REVIEWS_TAB)
 
+        self.user = user
         self.orders_data = None
         self.reviews_data = None
 
         self.reload_orders_button.clicked.connect(self.load_orders_table)
-        self.update_orders_button.clicked.connect(self.update_orders_state)
 
-        self.sa_orders_qtable.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-        self.sa_orders_qtable.setIconSize(QtCore.QSize(150, 100))
-        self.load_orders_table()
+        self.__config_tables()
+        self.__load_all_tables()
 
         self.tab_widget_layout.setContentsMargins(0, 0, 0, 0)
         self.menubar.hide()
         self.statusbar.hide()
+
+    def __load_all_tables(self):
+        self.load_orders_table()
+
+        self.get_reviews_data(ReviewsMessages.EMPLOYEES_REVIEWS)
+        self.load_reviews_tables(self.employees_reviews_table)
+
+        self.get_reviews_data(ReviewsMessages.BOOKS_REVIEWS)
+        self.load_reviews_tables(self.books_reviews_table)
+
+        self.get_reviews_data(ReviewsMessages.SHOPS_REVIEWS)
+        self.load_reviews_tables(self.shop_reviews_table)
+
+    def __config_tables(self):
+        tables = (
+            self.sa_orders_qtable,
+            self.employees_reviews_table,
+            self.books_reviews_table,
+            self.shop_reviews_table
+        )
+        for table in tables:
+            table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+            table.setIconSize(QtCore.QSize(150, 100))
 
     def get_orders_data(self):
         self.orders_data = pd.DataFrame(
@@ -46,8 +70,17 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         self.orders_data.insert(0, "Book", "")
         self.orders_data.insert(self.orders_data.shape[1], "Update order", "")
 
-    def get_reviews_data(self):
-        pass
+    def get_reviews_data(self, subject: str):
+
+        self.reviews_data = pd.DataFrame(
+            Requests.get_reviews_for_shop_assistant(
+                self.user.connection,
+                self.user.login,
+                subject
+            ),
+            columns=ReviewsMessages.REVIEWS_DF_COLUMNS
+        )
+        self.reviews_data.insert(self.reviews_data.shape[1], "Delete review", "")
 
     def load_orders_table(self):
 
@@ -101,9 +134,62 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         self.sa_orders_qtable.resizeColumnsToContents()
         self.sa_orders_qtable.resizeRowsToContents()
 
-    def load_reviews_table(self):
+    # TODO CHANGE UPDATE STRINGS TO CONST.format
+    def update_orders_state(self, order_id: int, row_index: int):
+        order_state = self.sa_orders_qtable.cellWidget(row_index, 2).currentText()
+        is_updated = Requests.update_user_order(self.user.connection, order_id, order_state)
+        print(is_updated)
+
+        if is_updated:
+            msg.info_message(f"Order #{order_id} state changed to {order_state}")
+        else:
+            msg.error_message(f"Error occured while updating order # {order_id} state.")
+
+
+    def load_reviews_tables(self, table: PyQt5.QtWidgets.QTableWidget):
+
+        table.clear()
+
+        rows, cols = self.reviews_data.shape
+        table.setRowCount(rows)
+        table.setColumnCount(cols)
+
+        header = table.horizontalHeader()
+        for header_index, _ in enumerate(ReviewsMessages.REVIEWS_DF_COLUMNS):
+            header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
+
+        table.setHorizontalHeaderLabels(self.reviews_data.columns)
+
+        for i in range(rows):
+            for j in range(cols - 1):
+                item = QtWidgets.QTableWidgetItem(str(self.reviews_data.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                table.setItem(i, j, item)
+
+            delete_review_button = QtWidgets.QPushButton("")
+            delete_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("delete_review")))
+            delete_review_button.setIconSize(QtCore.QSize(16, 16))
+            delete_review_button.clicked.connect(
+                partial(
+                    self.delete_review,
+                    self.reviews_data.loc[i][0]
+                )
+            )
+
+            table.setCellWidget(i, cols-1, delete_review_button)
+
+        table.resizeColumnsToContents()
+        table.resizeRowsToContents()
+
+    def delete_review(self, review_id):
+        msg.info_message(f"Deleting review with ID {review_id}")
+
+    def load_employees_reviews_table(self):
         pass
 
-    def update_orders_state(self, order_id, row_index):
-        print(self.sa_orders_qtable.cellWidget(row_index, 2).currentText())
-        #Requests.update_user_order(self.user.connection, order_id, order_state)
+    def load_shops_reviews_table(self):
+        pass
+
+    def load_books_reviews_table(self):
+        pass

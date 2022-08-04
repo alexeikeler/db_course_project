@@ -33,7 +33,7 @@
      <item row="0" column="0">
       <widget class="QTabWidget" name="tab_widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="orders_tab">
         <attribute name="title">
@@ -61,20 +61,6 @@
           </item>
           <item row="2" column="0">
            <layout class="QHBoxLayout" name="table_buttons_layout">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QPushButton" name="update_orders_button">
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>Update orders  </string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
-              </property>
-             </widget>
-            </item>
             <item alignment="Qt::AlignHCenter">
              <widget class="QPushButton" name="reload_orders_button">
               <property name="layoutDirection">
@@ -108,32 +94,14 @@
           </rect>
          </property>
          <layout class="QGridLayout" name="reviews_layout">
-          <item row="1" column="0">
-           <widget class="QTableWidget" name="sa_reviews_qtable"/>
+          <item row="5" column="0">
+           <widget class="QTableWidget" name="shop_reviews_table"/>
           </item>
-          <item row="0" column="0" alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="reviews_label">
-            <property name="text">
-             <string>Reviews</string>
-            </property>
-           </widget>
+          <item row="3" column="0">
+           <widget class="QTableWidget" name="books_reviews_table"/>
           </item>
-          <item row="2" column="0">
+          <item row="6" column="0">
            <layout class="QHBoxLayout" name="reviews_buttons_layout">
-            <item alignment="Qt::AlignHCenter">
-             <widget class="QPushButton" name="update_reviews_button">
-              <property name="layoutDirection">
-               <enum>Qt::RightToLeft</enum>
-              </property>
-              <property name="text">
-               <string>Update reviews  </string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>../frontend/images/check_mark.png</normaloff>../frontend/images/check_mark.png</iconset>
-              </property>
-             </widget>
-            </item>
             <item alignment="Qt::AlignHCenter">
              <widget class="QPushButton" name="reload_reviews_button">
               <property name="layoutDirection">
@@ -149,6 +117,30 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="books_reviews">
+            <property name="text">
+             <string>Reviews about books</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="employees_reviews_table"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="employees_reviews">
+            <property name="text">
+             <string>Reviews about employees</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="shops_reviews">
+            <property name="text">
+             <string>Reviews about shops</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

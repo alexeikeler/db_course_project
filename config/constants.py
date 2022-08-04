@@ -21,16 +21,16 @@ class Const:
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
 
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
+
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
     CLIENT_ROLE_CONFIG_PATH: str = "config/client_role_config.ini"
     USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
 
-    # ELSE #
+    # IMAGE AND HTML FILES PATH
     IMAGES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
     HTML_FILES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
 
-    REVIEW_DELETED: str = "Review successfully deleted! Update reviews table!"
 
     ROLES_NMD_TPL: namedtuple = namedtuple(
         "ROLES_NMD_TPL", "DIRECTOR_ROLE ADMIN_ROLE MANAGER_ROLE SHOP_ASSISTANT_ROLE CLIENT_ROLE USER_CHECKER_ROLE"
@@ -107,6 +107,12 @@ class ShopAndEmployee:
 
 
 @dataclass
+class WindowsNames:
+    ORDERS_TAB: str = "Orders"
+    REVIEWS_TAB: str = "Reviews"
+
+
+@dataclass
 class Errors:
     # Employee data
     EMPLOYEE_DATA_NOT_FOUND: str = "EmployeeDataNotFoundError"
@@ -117,5 +123,21 @@ class Errors:
     WRONG_USR_NAME_OR_PASS: str = "Wrong username or password!"
     ERROR_DB_CONNECTION: str = "Error! Couldn't connect to database!"
 
+
+@dataclass
+class ReviewsMessages:
+    # REVIEWS CONST
+    REVIEW_DELETED: str = "Review successfully deleted! Update reviews table!"
+    EMPLOYEES_REVIEWS: str = "Employees"
+    BOOKS_REVIEWS: str = "Books"
+    SHOPS_REVIEWS: str = "Shops"
+
+    REVIEWS_DF_COLUMNS: tuple = (
+        "ID",
+        "Date",
+        "By",
+        "About",
+        "Text"
+    )
 
 
