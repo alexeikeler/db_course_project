@@ -15,7 +15,9 @@ class Const:
     CHANGE_PSWRD_FORM_UI_PATH: str = "ui/change_password.ui"
     BUY_BOOK_UI_PATH: str = "ui/buy_book.ui"
     EMPLOYEE_REVIEWS_UI_PATH: str = 'ui/employees_reviews.ui'
-    SHOP_REVIEWS_UI_PATH: str = 'ui/shop_reviews.ui'
+    SHOP_REVIEWS_UI_PATH: str = "ui/shop_reviews.ui"
+
+    SHOW_REVIEW_UI_PATH: str = "ui/review_show.ui"
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
@@ -109,8 +111,9 @@ class ShopAndEmployee:
 @dataclass
 class WindowsNames:
     ORDERS_TAB: str = "Orders"
-    REVIEWS_TAB: str = "Reviews"
-
+    EMPLOYEES_REVIEWS_TAB: str = "Employees reviews"
+    SHOPS_REVIEWS_TAB: str = "Shops reviews"
+    BOOKS_REVIEWS_TAB: str = "Books reviews"
 
 @dataclass
 class Errors:

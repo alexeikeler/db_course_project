@@ -9,6 +9,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from tabulate import tabulate
 
 from config.constants import Order, Const, WindowsNames, ReviewsMessages
+from src.forms.show_review_form import ShowReview
 from functools import partial
 shop_assistant_form, shop_assistant_base = uic.loadUiType(uifile=Const.SHOP_ASSISTANT_UI_PATH)
 
@@ -21,43 +22,56 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         self.setupUi(self)
 
         self.tab_widget.setTabText(0, WindowsNames.ORDERS_TAB)
-        self.tab_widget.setTabText(1, WindowsNames.REVIEWS_TAB)
+        self.tab_widget.setTabText(1, WindowsNames.EMPLOYEES_REVIEWS_TAB)
+        self.tab_widget.setTabText(2, WindowsNames.BOOKS_REVIEWS_TAB)
+        self.tab_widget.setTabText(3, WindowsNames.SHOPS_REVIEWS_TAB)
+
+        self.show_review_form = ShowReview()
 
         self.user = user
         self.orders_data = None
         self.reviews_data = None
 
         self.reload_orders_button.clicked.connect(self.load_orders_table)
+        self.reload_reviews_employees_button.clicked.connect(self.load_employees_reviews_table)
+        self.reload_books_reviews_button.clicked.connect(self.load_books_reviews_table)
+        self.reload_shops_reviews_button.clicked.connect(self.load_shops_reviews_table)
 
         self.__config_tables()
-        self.__load_all_tables()
+        self.load_orders_table()
+        self.load_employees_reviews_table()
+        self.load_books_reviews_table()
+        self.load_shops_reviews_table()
 
         self.tab_widget_layout.setContentsMargins(0, 0, 0, 0)
         self.menubar.hide()
         self.statusbar.hide()
 
-    def __load_all_tables(self):
-        self.load_orders_table()
-
-        self.get_reviews_data(ReviewsMessages.EMPLOYEES_REVIEWS)
-        self.load_reviews_tables(self.employees_reviews_table)
-
-        self.get_reviews_data(ReviewsMessages.BOOKS_REVIEWS)
-        self.load_reviews_tables(self.books_reviews_table)
-
-        self.get_reviews_data(ReviewsMessages.SHOPS_REVIEWS)
-        self.load_reviews_tables(self.shop_reviews_table)
-
     def __config_tables(self):
+
         tables = (
             self.sa_orders_qtable,
             self.employees_reviews_table,
             self.books_reviews_table,
-            self.shop_reviews_table
+            self.shops_reviews_table
         )
         for table in tables:
             table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
             table.setIconSize(QtCore.QSize(150, 100))
+            table.resizeColumnsToContents()
+            table.resizeRowsToContents()
+
+    def load_employees_reviews_table(self):
+        self.get_reviews_data(ReviewsMessages.EMPLOYEES_REVIEWS)
+        self.load_reviews_tables(self.employees_reviews_table)
+
+    def load_books_reviews_table(self):
+        self.get_reviews_data(ReviewsMessages.BOOKS_REVIEWS)
+        self.load_reviews_tables(self.books_reviews_table)
+
+    def load_shops_reviews_table(self):
+        self.get_reviews_data(ReviewsMessages.SHOPS_REVIEWS)
+        self.load_reviews_tables(self.shops_reviews_table)
 
     def get_orders_data(self):
         self.orders_data = pd.DataFrame(
@@ -131,7 +145,6 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.sa_orders_qtable.setItem(i, j, item)
 
-        self.sa_orders_qtable.resizeColumnsToContents()
         self.sa_orders_qtable.resizeRowsToContents()
 
     # TODO CHANGE UPDATE STRINGS TO CONST.format
@@ -145,7 +158,6 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         else:
             msg.error_message(f"Error occured while updating order # {order_id} state.")
 
-
     def load_reviews_tables(self, table: PyQt5.QtWidgets.QTableWidget):
 
         table.clear()
@@ -155,17 +167,27 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         table.setColumnCount(cols)
 
         header = table.horizontalHeader()
-        for header_index, _ in enumerate(ReviewsMessages.REVIEWS_DF_COLUMNS):
+        for header_index, _ in enumerate(ReviewsMessages.REVIEWS_DF_COLUMNS[1:-1], 1):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
         table.setHorizontalHeaderLabels(self.reviews_data.columns)
 
         for i in range(rows):
-            for j in range(cols - 1):
+            for j in range(cols - 2):
                 item = QtWidgets.QTableWidgetItem(str(self.reviews_data.loc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 table.setItem(i, j, item)
+
+            show_review_button = QtWidgets.QPushButton("")
+            show_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("info")))
+            show_review_button.setIconSize(QtCore.QSize(16, 16))
+            show_review_button.clicked.connect(
+                partial(
+                    self.show_review,
+                    self.reviews_data.loc[i][cols-2]
+                )
+            )
 
             delete_review_button = QtWidgets.QPushButton("")
             delete_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("delete_review")))
@@ -177,19 +199,13 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
                 )
             )
 
+            table.setCellWidget(i, cols-2, show_review_button)
             table.setCellWidget(i, cols-1, delete_review_button)
 
-        table.resizeColumnsToContents()
-        table.resizeRowsToContents()
 
     def delete_review(self, review_id):
         msg.info_message(f"Deleting review with ID {review_id}")
 
-    def load_employees_reviews_table(self):
-        pass
-
-    def load_shops_reviews_table(self):
-        pass
-
-    def load_books_reviews_table(self):
-        pass
+    def show_review(self, review_text):
+        self.show_review_form.set_text(review_text)
+        self.show_review_form.show()
