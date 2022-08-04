@@ -8,7 +8,7 @@ from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from PyQt5.QtCore import Qt
 from functools import partial
 
-from config.constants import Const
+from config.constants import Const, ReviewsMessages
 from src.forms.add_review_form import ReviewForm
 
 book_info_form, book_info_base = uic.loadUiType(Const.BOOKS_INFO_FORM_UI_PATH)
@@ -79,16 +79,14 @@ class BookInfoForm(book_info_form, book_info_base):
                 review
             )
 
-    def delete_review(self, user_login, review_date, review_text):
+    def delete_review(self, review_id):
 
-        Requests.delete_user_book_review(
+        Requests.delete_review(
             self.user.connection,
-            user_login,
-            review_date,
-            review_text
+            int(review_id)
         )
 
-        msg.info_message(Const.REVIEW_DELETED)
+        msg.info_message(ReviewsMessages.REVIEW_DELETED)
 
     def update_reviews(self):
         reviews = Requests.get_book_reviews(
@@ -99,7 +97,7 @@ class BookInfoForm(book_info_form, book_info_base):
 
         rev = pd.DataFrame(
             reviews,
-            columns=["User", "Date", "Review"]
+            columns=["Id", "User", "Date", "Review"]
         )
         rev.insert(rev.shape[1], "Delete", "")
 
@@ -121,23 +119,20 @@ class BookInfoForm(book_info_form, book_info_base):
                 item.setTextAlignment(Qt.AlignHCenter)
                 self.reviews_table.setItem(i, j, item)
 
-            if self.reviews_table.item(i, 0).text() == self.user.login:
+            if self.reviews_table.item(i, 1).text() == self.user.login:
 
                 delete_review_button = QtWidgets.QPushButton("")
                 delete_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format('delete_review')))
                 delete_review_button.clicked.connect(
                     partial(
                         self.delete_review,
-                        rev["User"][i],
-                        rev["Date"][i],
-                        rev["Review"][i]
+                        rev["Id"][i]
                     )
                 )
                 self.reviews_table.setCellWidget(i, cols - 1, delete_review_button)
 
         header = self.reviews_table.horizontalHeader()
-#        for header_index in range(cols):
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
         header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
 
         self.reviews_table.resizeRowsToContents()

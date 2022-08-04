@@ -97,6 +97,8 @@ class Order:
         "Ordering date",
     )
 
+    ORDER_STATE_CHANGED: str = "Order # {0} state changed to {1}."
+
 
 @dataclass
 class HtmlFiles:
@@ -126,6 +128,8 @@ class Errors:
     WRONG_USR_NAME_OR_PASS: str = "Wrong username or password!"
     ERROR_DB_CONNECTION: str = "Error! Couldn't connect to database!"
 
+    #Order status changing error
+    ORDER_STATUS_ERROR: str = "Error occurred while updating order # {0} state."
 
 @dataclass
 class ReviewsMessages:

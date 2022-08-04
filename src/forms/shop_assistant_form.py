@@ -8,7 +8,7 @@ import src.database_related.psql_requests as Requests
 from PyQt5 import uic, QtWidgets, QtCore, QtGui
 from tabulate import tabulate
 
-from config.constants import Order, Const, WindowsNames, ReviewsMessages
+from config.constants import Order, Const, WindowsNames, ReviewsMessages, Errors
 from src.forms.show_review_form import ShowReview
 from functools import partial
 shop_assistant_form, shop_assistant_base = uic.loadUiType(uifile=Const.SHOP_ASSISTANT_UI_PATH)
@@ -106,7 +106,7 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         self.sa_orders_qtable.setColumnCount(cols)
 
         header = self.sa_orders_qtable.horizontalHeader()
-        for header_index in range(3, len(Order.SA_ORDER_DF_COLUMNS) - 2):
+        for header_index in range(2, len(Order.SA_ORDER_DF_COLUMNS) - 2):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
         self.sa_orders_qtable.setHorizontalHeaderLabels(self.orders_data.columns)
@@ -147,16 +147,15 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
         self.sa_orders_qtable.resizeRowsToContents()
 
-    # TODO CHANGE UPDATE STRINGS TO CONST.format
     def update_orders_state(self, order_id: int, row_index: int):
         order_state = self.sa_orders_qtable.cellWidget(row_index, 2).currentText()
         is_updated = Requests.update_user_order(self.user.connection, order_id, order_state)
         print(is_updated)
 
         if is_updated:
-            msg.info_message(f"Order #{order_id} state changed to {order_state}")
+            msg.info_message(Order.ORDER_STATE_CHANGED.format(order_id, order_state))
         else:
-            msg.error_message(f"Error occured while updating order # {order_id} state.")
+            msg.error_message(Errors.ORDER_STATUS_ERROR.format(order_id))
 
     def load_reviews_tables(self, table: PyQt5.QtWidgets.QTableWidget):
 
@@ -202,9 +201,12 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
             table.setCellWidget(i, cols-2, show_review_button)
             table.setCellWidget(i, cols-1, delete_review_button)
 
-
     def delete_review(self, review_id):
-        msg.info_message(f"Deleting review with ID {review_id}")
+        Requests.delete_review(
+            self.user.connection,
+            int(review_id)
+        )
+        msg.info_message(ReviewsMessages.REVIEW_DELETED)
 
     def show_review(self, review_text):
         self.show_review_form.set_text(review_text)

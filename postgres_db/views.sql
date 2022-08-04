@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------
 CREATE OR REPLACE VIEW book_reviews AS
     SELECT
+        client_review.review_id AS review_id,
         client.client_login AS user_login,
         book.title AS review_about_book,
         edition.publishing_date AS book_pubslishing_date,
