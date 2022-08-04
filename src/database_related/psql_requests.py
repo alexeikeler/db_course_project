@@ -148,22 +148,6 @@ def add_user_review(connection, user_login, book_title, book_publ_date, review_t
         connection.rollback()
 
 
-def delete_user_book_review(connection, user_login, review_date, review_text):
-    try:
-        with connection.cursor() as cursor:
-            cursor.callproc("delete_user_review_about_book", (
-                review_date,
-                user_login,
-                review_text,
-                )
-            )
-        connection.commit()
-
-    except(Exception, pc2.DatabaseError) as error:
-        msg.error_message(str(error))
-        connection.rollback()
-
-
 def get_client_info(connection, user_login):
     try:
         with connection.cursor(cursor_factory = psycopg2.extras.RealDictCursor) as cursor:
@@ -176,10 +160,10 @@ def get_client_info(connection, user_login):
         connection.rollback()
 
 
-def change_client_password(connection, client_login, client_old_password, client_new_password):
+def change_password(connection, login, old_pass, new_pass):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("change_client_password", (client_login, client_old_password, client_new_password))
+            cursor.callproc("change_password", (login, old_pass, new_pass))
             result = cursor.fetchone()
             connection.commit()
             return result
@@ -232,18 +216,22 @@ def add_order(
                 quantity_,
             )
         )
+            result = cursor.fetchone()
             connection.commit()
+            return result
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
 
 
-def update_user_order(connection, ordering_date, status):
+def update_user_order(connection, order_id, status):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("update_user_order", (ordering_date, status))
+            cursor.callproc("update_user_order", (order_id, status))
+            result = cursor.fetchone()
             connection.commit()
+            return result[0]
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
@@ -302,17 +290,6 @@ def add_employee_review(connection, user_login, empl_id, user_review_text):
         connection.rollback()
 
 
-def delete_employee_review(connection, empl_id, user_login, review_date, review_text):
-    try:
-        with connection.cursor() as cursor:
-            cursor.callproc("delete_employee_review", (empl_id, user_login, review_date, review_text))
-            connection.commit()
-
-    except(Exception, pc2.DatabaseError) as error:
-        msg.error_message(str(error))
-        connection.rollback()
-
-
 def get_shop_info(connection, shop_id):
     try:
         with connection.cursor(cursor_factory = pc2.extras.RealDictCursor) as cursor:
@@ -350,13 +327,35 @@ def add_shop_review(connection, user_login, shop_id, user_review_text):
         connection.rollback()
 
 
-def delete_shop_review(connection, shop_id, user_login, review_date, review_text):
+def get_shop_assistant_orders(connection, sa_login):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("delete_shop_review", (shop_id, user_login, review_date, review_text))
-            connection.commit()
+            cursor.callproc("get_shop_assistant_orders", (sa_login,))
+            results = cursor.fetchall()
+            return results
 
     except(Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
 
+
+def get_reviews_for_shop_assistant(connection, sa_login, subject):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_reviews_for_shop_assistant", (sa_login, subject))
+            results = cursor.fetchall()
+            return results
+
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def delete_review(connection, id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("delete_review", (id,))
+            connection.commit()
+    except(Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

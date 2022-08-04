@@ -46,7 +46,7 @@ class ChangePasswordForm(chg_pswd_form, chg_pswd_base):
         if not (self.old_password and self.new_password):
             msg.error_message("Cannot change password when one of lines is empty!")
         else:
-            pswrd_flag = Requests.change_client_password(self.user.connection, self.user.login, self.old_password, self.new_password)
+            pswrd_flag = Requests.change_password(self.user.connection, self.user.login, self.old_password, self.new_password)
             if pswrd_flag[0]:
                 msg.info_message("Password changed!")
                 self.close_app()

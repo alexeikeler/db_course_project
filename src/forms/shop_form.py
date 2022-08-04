@@ -52,6 +52,7 @@ class ShopForm(shop_form, shop_base):
 
         self.setup_price_slider()
         self.setup_reviews()
+        self.update_form()
 
     def get_low_price_boundary(self) -> float:
         return float(self.low_price_label.text())
@@ -264,7 +265,17 @@ class ShopForm(shop_form, shop_base):
             optional_data.get("use_cli_address", Order.ORDER_EMPTY_CELL), Order.ORDER_EMPTY_CELL
         )
 
+        order_id = self.shopping_cart_tab.add_order_in_database(order.values[0][1:-2])
+        print("Order id", order_id)
+        order.insert(1, "Order ID", order_id)
+
+        print(
+            tabulate(
+                order,
+                headers=order.columns,
+                tablefmt='pretty'
+            )
+        )
         self.shopping_cart_tab.add_order_in_qt_table(order)
-        self.shopping_cart_tab.add_order_in_database(order.values[0][1:-2])
-        
+
 

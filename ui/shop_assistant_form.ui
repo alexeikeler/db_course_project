@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1450</width>
+    <height>844</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="gridLayoutWidget_12">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1441</width>
+      <height>801</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="tab_widget_layout">
+     <item row="0" column="0">
+      <widget class="QTabWidget" name="tab_widget">
+       <property name="currentIndex">
+        <number>3</number>
+       </property>
+       <widget class="QWidget" name="orders_tab">
+        <attribute name="title">
+         <string>Tab 1</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_13">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>1411</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="orders_table_layout">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="orders_label">
+            <property name="text">
+             <string>Orders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="sa_orders_qtable"/>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="table_buttons_layout">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="reload_orders_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Reload orders  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/table.png</normaloff>../frontend/images/table.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="reviews_tab">
+        <attribute name="title">
+         <string>Tab 2</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_14">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>1411</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="reviews_layout">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="employees_reviews_table"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+           <widget class="QLabel" name="employees_reviews">
+            <property name="text">
+             <string>Reviews about employees</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="reviews_buttons_layout">
+            <item alignment="Qt::AlignHCenter">
+             <widget class="QPushButton" name="reload_reviews_employees_button">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string>Reload employees reviews  </string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/leave_review.png</normaloff>../frontend/images/leave_review.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>1411</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="books_reviews_table"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="books_reviews">
+            <property name="text">
+             <string>Reviews about books</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="reload_books_reviews_button">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Reload books reviews  </string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../frontend/images/leave_review.png</normaloff>../frontend/images/leave_review.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>1411</width>
+           <height>741</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="shops_reviews_2">
+            <property name="text">
+             <string>Reviews about shops</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="shops_reviews_table">
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustIgnored</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="reload_shops_reviews_button">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Reload shops reviews  </string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../frontend/images/leave_review.png</normaloff>../frontend/images/leave_review.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1450</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

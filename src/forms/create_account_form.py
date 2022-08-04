@@ -18,15 +18,15 @@ class AccountForm(create_acc_form, create_acc_base):
 
         self.create_account_button.clicked.connect(self.create_acc)
 
-        self.firstname_line_edit.setText("test_firstname"),
-        self.lastname_line_edit.setText("test_lastname"),
-        self.phone_number_line_edit.setText("+380999999999"),
-        self.email_line_edit.setText("asd@gmail.com"),
-        self.login_line_edit.setText("test_login"),
-        self.password_line_edit.setText("test_password"),
-        self.delivery_address_line_edit.setText("test_address")
+        self.firstname_line_edit.setText("test_users_f"),
+        self.lastname_line_edit.setText("test_users_l"),
+        self.phone_number_line_edit.setText("+380999999111"),
+        self.email_line_edit.setText("111@gmail.com"),
+        self.login_line_edit.setText("test_users_login"),
+        self.password_line_edit.setText("test_users_password"),
+        self.delivery_address_line_edit.setText("test_users_address")
 
-        self.client_conn = db_conn.make_client_connection()
+        self.client_conn = db_conn.establish_db_connection(Const.ROLES.CLIENT_ROLE)
 
     def create_acc(self) -> None:
 
