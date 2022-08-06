@@ -23,4 +23,3 @@ def error_message(msg_text: str):
     msg.setText(msg_text)
     msg.setWindowTitle("Error message")
     msg.exec_()
-

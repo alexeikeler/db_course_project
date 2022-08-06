@@ -1,15 +1,13 @@
-import src.custom_qt_widgets.message_boxes as msg
-
 # noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
+import src.custom_qt_widgets.message_boxes as msg
 from config.constants import Const
 
 review_form_review, review_base = uic.loadUiType(Const.REVIEW_FORM_UI_PATH)
 
 
 class ReviewForm(review_form_review, review_base):
-
     def __init__(self):
         super(review_base, self).__init__()
         self.setupUi(self)

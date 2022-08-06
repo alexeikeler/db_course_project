@@ -190,7 +190,7 @@
           <item row="1" column="0">
            <widget class="QTableWidget" name="shops_reviews_table">
             <property name="autoFillBackground">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustIgnored</enum>

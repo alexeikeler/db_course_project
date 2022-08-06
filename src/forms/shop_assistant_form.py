@@ -1,21 +1,23 @@
-import PyQt5.QtWidgets
+from functools import partial
+
 import pandas as pd
+import PyQt5.QtWidgets
+# noinspection PyUnresolvedReferences
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from tabulate import tabulate
 
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
-
-# noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from tabulate import tabulate
-
-from config.constants import Order, Const, WindowsNames, ReviewsMessages, Errors
+from config.constants import (Const, Errors, Order, ReviewsMessages,
+                              WindowsNames)
 from src.forms.show_review_form import ShowReview
-from functools import partial
-shop_assistant_form, shop_assistant_base = uic.loadUiType(uifile=Const.SHOP_ASSISTANT_UI_PATH)
+
+shop_assistant_form, shop_assistant_base = uic.loadUiType(
+    uifile=Const.SHOP_ASSISTANT_UI_PATH
+)
 
 
 class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
-
     def __init__(self, user):
 
         super(shop_assistant_base, self).__init__()
@@ -33,7 +35,9 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         self.reviews_data = None
 
         self.reload_orders_button.clicked.connect(self.load_orders_table)
-        self.reload_reviews_employees_button.clicked.connect(self.load_employees_reviews_table)
+        self.reload_reviews_employees_button.clicked.connect(
+            self.load_employees_reviews_table
+        )
         self.reload_books_reviews_button.clicked.connect(self.load_books_reviews_table)
         self.reload_shops_reviews_button.clicked.connect(self.load_shops_reviews_table)
 
@@ -53,7 +57,7 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
             self.sa_orders_qtable,
             self.employees_reviews_table,
             self.books_reviews_table,
-            self.shops_reviews_table
+            self.shops_reviews_table,
         )
         for table in tables:
             table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -75,11 +79,8 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
     def get_orders_data(self):
         self.orders_data = pd.DataFrame(
-            Requests.get_shop_assistant_orders(
-                self.user.connection,
-                self.user.login
-            ),
-            columns=Order.SA_ORDER_DF_COLUMNS
+            Requests.get_shop_assistant_orders(self.user.connection, self.user.login),
+            columns=Order.SA_ORDER_DF_COLUMNS,
         )
         self.orders_data.insert(0, "Book", "")
         self.orders_data.insert(self.orders_data.shape[1], "Update order", "")
@@ -88,11 +89,9 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
         self.reviews_data = pd.DataFrame(
             Requests.get_reviews_for_shop_assistant(
-                self.user.connection,
-                self.user.login,
-                subject
+                self.user.connection, self.user.login, subject
             ),
-            columns=ReviewsMessages.REVIEWS_DF_COLUMNS
+            columns=ReviewsMessages.REVIEWS_DF_COLUMNS,
         )
         self.reviews_data.insert(self.reviews_data.shape[1], "Delete review", "")
 
@@ -114,11 +113,18 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
         for i in range(rows):
 
             book_image = QtWidgets.QTableWidgetItem()
-            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(self.orders_data["Title"][i])))
+            book_image.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format(self.orders_data["Title"][i]))
+            )
 
             order_states = QtWidgets.QComboBox()
             order_states.addItems(
-                (Order.ORDER_PAYED, Order.ORDER_PROCESSED, Order.ORDER_DELIVERING, Order.ORDER_FINISHED)
+                (
+                    Order.ORDER_PAYED,
+                    Order.ORDER_PROCESSED,
+                    Order.ORDER_DELIVERING,
+                    Order.ORDER_FINISHED,
+                )
             )
             order_states.setCurrentText(self.orders_data["State"][i])
 
@@ -129,17 +135,15 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
             update_order.setIconSize(QtCore.QSize(16, 16))
             update_order.clicked.connect(
                 partial(
-                    self.update_orders_state,
-                    int(self.orders_data["Order ID"][i]),
-                    i
+                    self.update_orders_state, int(self.orders_data["Order ID"][i]), i
                 )
             )
 
             self.sa_orders_qtable.setItem(i, 0, book_image)
 
-            self.sa_orders_qtable.setCellWidget(i, cols-1, update_order)
+            self.sa_orders_qtable.setCellWidget(i, cols - 1, update_order)
 
-            for j in range(1, cols-1):
+            for j in range(1, cols - 1):
                 item = QtWidgets.QTableWidgetItem(str(self.orders_data.loc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -149,7 +153,9 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
     def update_orders_state(self, order_id: int, row_index: int):
         order_state = self.sa_orders_qtable.cellWidget(row_index, 2).currentText()
-        is_updated = Requests.update_user_order(self.user.connection, order_id, order_state)
+        is_updated = Requests.update_user_order(
+            self.user.connection, order_id, order_state
+        )
         print(is_updated)
 
         if is_updated:
@@ -182,30 +188,23 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
             show_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("info")))
             show_review_button.setIconSize(QtCore.QSize(16, 16))
             show_review_button.clicked.connect(
-                partial(
-                    self.show_review,
-                    self.reviews_data.loc[i][cols-2]
-                )
+                partial(self.show_review, self.reviews_data.loc[i][cols - 2])
             )
 
             delete_review_button = QtWidgets.QPushButton("")
-            delete_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("delete_review")))
+            delete_review_button.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("delete_review"))
+            )
             delete_review_button.setIconSize(QtCore.QSize(16, 16))
             delete_review_button.clicked.connect(
-                partial(
-                    self.delete_review,
-                    self.reviews_data.loc[i][0]
-                )
+                partial(self.delete_review, self.reviews_data.loc[i][0])
             )
 
-            table.setCellWidget(i, cols-2, show_review_button)
-            table.setCellWidget(i, cols-1, delete_review_button)
+            table.setCellWidget(i, cols - 2, show_review_button)
+            table.setCellWidget(i, cols - 1, delete_review_button)
 
     def delete_review(self, review_id):
-        Requests.delete_review(
-            self.user.connection,
-            int(review_id)
-        )
+        Requests.delete_review(self.user.connection, int(review_id))
         msg.info_message(ReviewsMessages.REVIEW_DELETED)
 
     def show_review(self, review_text):

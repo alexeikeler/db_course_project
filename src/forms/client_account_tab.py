@@ -1,22 +1,22 @@
-import pandas as pd
-
-import src.database_related.psql_requests as Requests
-import src.custom_qt_widgets.message_boxes as msg
-import src.plotter.plotter as Plotter
-
-# noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from tabulate import tabulate
 from functools import partial
 
-from src.forms.change_password_form import ChangePasswordForm
-from config.constants import Const, Order
+import pandas as pd
+# noinspection PyUnresolvedReferences
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from tabulate import tabulate
 
-user_acc_form, user_acc_base = uic.loadUiType(uifile=Const.USER_ACCOUNT_TAB_FORM_UI_PATH)
+import src.custom_qt_widgets.message_boxes as msg
+import src.database_related.psql_requests as Requests
+import src.plotter.plotter as Plotter
+from config.constants import Const, Order
+from src.forms.change_password_form import ChangePasswordForm
+
+user_acc_form, user_acc_base = uic.loadUiType(
+    uifile=Const.USER_ACCOUNT_TAB_FORM_UI_PATH
+)
 
 
 class ClientAccountTab(user_acc_form, user_acc_base):
-
     def __init__(self, user):
 
         super(user_acc_base, self).__init__()
@@ -24,12 +24,12 @@ class ClientAccountTab(user_acc_form, user_acc_base):
 
         self.user = user
         self.line_edits = {
-            'login': self.login_line_edit,
-            'first_name': self.first_name_line_edit,
-            'last_name': self.last_name_line_edit,
-            'phone_number': self.phone_num_line_edit,
-            'email': self.email_line_edit,
-            'delivery_address': self.delivery_address_line_edit
+            "login": self.login_line_edit,
+            "first_name": self.first_name_line_edit,
+            "last_name": self.last_name_line_edit,
+            "phone_number": self.phone_num_line_edit,
+            "email": self.email_line_edit,
+            "delivery_address": self.delivery_address_line_edit,
         }
 
         self.change_password_form = None
@@ -43,7 +43,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
     def get_client_orders(self):
         self.orders = pd.DataFrame(
             Requests.get_client_orders(self.user.connection, self.user.login),
-            columns=Order.CLIENT_ORDERS_COLUMNS
+            columns=Order.CLIENT_ORDERS_COLUMNS,
         ).fillna("-")
         self.orders.insert(0, "Book", "")
 
@@ -52,28 +52,28 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         pixmap = QtGui.QPixmap(Const.IMAGES_PATH.format("client_login_icon"))
         self.client_icon_label.setPixmap(pixmap)
         self.client_icon_label.setScaledContents(True)
-       # self.client_icon_label.setSizePolicy(
-       #     QtWidgets.QSizePolicy.Ignored,
-       #     QtWidgets.QSizePolicy.Ignored
-       # )
+        # self.client_icon_label.setSizePolicy(
+        #     QtWidgets.QSizePolicy.Ignored,
+        #     QtWidgets.QSizePolicy.Ignored
+        # )
 
         self.change_login_button.clicked.connect(
-            partial(self.update_client_info, 'login')
+            partial(self.update_client_info, "login")
         )
         self.change_first_name_button.clicked.connect(
-            partial(self.update_client_info, 'first_name')
+            partial(self.update_client_info, "first_name")
         )
         self.change_last_name_button.clicked.connect(
-            partial(self.update_client_info, 'last_name')
+            partial(self.update_client_info, "last_name")
         )
         self.change_phone_number_button.clicked.connect(
-            partial(self.update_client_info, 'phone_number')
+            partial(self.update_client_info, "phone_number")
         )
         self.change_email_button.clicked.connect(
-            partial(self.update_client_info, 'email')
+            partial(self.update_client_info, "email")
         )
         self.change_delivery_address_button.clicked.connect(
-            partial(self.update_client_info, 'delivery_address')
+            partial(self.update_client_info, "delivery_address")
         )
 
         self.change_password_button.clicked.connect(self.chg_password)
@@ -111,7 +111,9 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         for i in range(rows):
 
             book_image = QtWidgets.QTableWidgetItem()
-            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(self.orders["Title"][i])))
+            book_image.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format(self.orders["Title"][i]))
+            )
             self.all_orders.setItem(i, 0, book_image)
 
             for j in range(1, cols):
@@ -120,7 +122,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.all_orders.setItem(i, j, item)
 
-        #self.all_orders.resizeColumnsToContents()
+        # self.all_orders.resizeColumnsToContents()
         self.all_orders.resizeRowsToContents()
 
     def load_client_stats(self):
@@ -135,11 +137,13 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         line_edit = self.line_edits.get(update_subject)
         new_value = line_edit.text()
 
-        flag = Requests.update_client_info(self.user.connection, self.user.login, update_subject, new_value)
+        flag = Requests.update_client_info(
+            self.user.connection, self.user.login, update_subject, new_value
+        )
 
         if flag is not None and flag[0]:
             msg.info_message(f"{update_subject} changed succsessfully.")
-            if update_subject == 'login':
+            if update_subject == "login":
                 self.user.login = self.login_line_edit.text()
 
         else:

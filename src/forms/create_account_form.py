@@ -1,16 +1,15 @@
+# noinspection PyUnresolvedReferences
+from PyQt5 import QtCore, QtWidgets, uic
+
 import src.custom_qt_widgets.message_boxes as msg_box
 import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
-
-# noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore
 from config.constants import Const
 
 create_acc_form, create_acc_base = uic.loadUiType(uifile=Const.CREATE_ACCOUNT_UI_PATH)
 
 
 class AccountForm(create_acc_form, create_acc_base):
-
     def __init__(self):
 
         super(create_acc_base, self).__init__()
@@ -37,7 +36,7 @@ class AccountForm(create_acc_form, create_acc_base):
             self.email_line_edit.text(),
             self.login_line_edit.text(),
             self.password_line_edit.text(),
-            self.delivery_address_line_edit.text()
+            self.delivery_address_line_edit.text(),
         )
 
         for line in line_edits[:-1]:
@@ -50,5 +49,3 @@ class AccountForm(create_acc_form, create_acc_base):
         self.client_conn.commit()
         self.client_conn.close()
         self.close()
-
-

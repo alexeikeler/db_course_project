@@ -6,9 +6,6 @@ GRANT CONNECT ON DATABASE "BigBook_db" TO user_client;
 GRANT USAGE ON SCHEMA public TO user_client;
 
 ------------------------------------------------------------------
-GRANT EXECUTE ON FUNCTION change_client_password
-    (login varchar, old_password varchar, new_password varchar)
-    TO user_client;
 
 GRANT EXECUTE ON FUNCTION delete_user() TO user_client;
 
@@ -94,14 +91,6 @@ GRANT EXECUTE ON FUNCTION add_employee_review(
 )
     TO user_client;
 
-GRANT EXECUTE ON FUNCTION delete_employee_review(
-employee_id integer,
-user_login varchar,
-review_date timestamp(0),
-review_text text
-)
-    TO user_client;
-
 GRANT EXECUTE ON FUNCTION get_shop_info(shop_num integer) TO user_client;
 
 GRANT EXECUTE ON FUNCTION get_shop_reviews(shop_num integer) TO user_client;
@@ -121,5 +110,5 @@ user_review_text_ text
 )
     TO user_client;
 
-
-CREATE DATABASE subscr_count;
+GRANT EXECUTE ON FUNCTION
+    delete_review(id integer) TO user_client;

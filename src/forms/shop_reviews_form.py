@@ -1,12 +1,11 @@
-import pandas as pd
-
-import src.custom_qt_widgets.message_boxes as msg
-
-# noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from PyQt5.QtCore import Qt
 from functools import partial
 
+import pandas as pd
+# noinspection PyUnresolvedReferences
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5.QtCore import Qt
+
+import src.custom_qt_widgets.message_boxes as msg
 from config.constants import Const, Errors, ReviewsMessages
 from src.database_related import psql_requests as Requests
 from src.forms.add_review_form import ReviewForm
@@ -15,7 +14,6 @@ shop_review_form, shop_review_base = uic.loadUiType(Const.SHOP_REVIEWS_UI_PATH)
 
 
 class ShopReviewForm(shop_review_form, shop_review_base):
-
     def __init__(self, user, shop_info):
 
         super(shop_review_base, self).__init__()
@@ -66,14 +64,10 @@ class ShopReviewForm(shop_review_form, shop_review_base):
     def load_reviews(self):
 
         reviews = Requests.get_shop_reviews(
-            self.user.connection,
-            self.shop_info.get("shop_id_")
+            self.user.connection, self.shop_info.get("shop_id_")
         )
 
-        rev_df = pd.DataFrame(
-            reviews,
-            columns=["Id", "User", "Date", "Review"]
-        )
+        rev_df = pd.DataFrame(reviews, columns=["Id", "User", "Date", "Review"])
         rev_df.insert(rev_df.shape[1], "Delete", "")
         rows, cols = rev_df.shape
 
@@ -91,12 +85,11 @@ class ShopReviewForm(shop_review_form, shop_review_base):
 
             if self.reviews_table.item(i, 1).text() == self.user.login:
                 delete_review_button = QtWidgets.QPushButton("")
-                delete_review_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format('delete_review')))
+                delete_review_button.setIcon(
+                    QtGui.QIcon(Const.IMAGES_PATH.format("delete_review"))
+                )
                 delete_review_button.clicked.connect(
-                    partial(
-                        self.delete_review,
-                        rev_df["Id"][i]
-                    )
+                    partial(self.delete_review, rev_df["Id"][i])
                 )
                 self.reviews_table.setCellWidget(i, cols - 1, delete_review_button)
 
@@ -119,12 +112,9 @@ class ShopReviewForm(shop_review_form, shop_review_base):
                 self.user.connection,
                 self.user.login,
                 self.shop_info.get("shop_id_"),
-                review
+                review,
             )
 
     def delete_review(self, review_id):
-        Requests.delete_review(
-            self.user.connection,
-            int(review_id)
-        )
+        Requests.delete_review(self.user.connection, int(review_id))
         msg.info_message(ReviewsMessages.REVIEW_DELETED)

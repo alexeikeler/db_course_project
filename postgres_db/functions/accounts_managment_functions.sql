@@ -345,3 +345,29 @@ GRANT EXECUTE ON FUNCTION
     TO user_client;
 
 ---------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------
+
+--Function for getting employee id
+CREATE OR REPLACE FUNCTION get_employee_id(login varchar)
+RETURNS integer AS
+    $$
+        BEGIN
+            RETURN(
+                SELECT employee.employee_id FROM employee WHERE employee.employee_login = login
+            );
+        END;
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    get_employee_id(login varchar) FROM public;
+
+GRANT EXECUTE ON FUNCTION
+    get_employee_id(login varchar) TO user_manager;
+
+---------------------------------------------------------------------------------------

@@ -1,22 +1,21 @@
-import pandas as pd
-import src.database_related.psql_requests as Requests
-import src.custom_qt_widgets.message_boxes as msg
-
+from datetime import datetime
 from functools import partial
+
+import pandas as pd
 # noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import Qt
 from tabulate import tabulate
-from datetime import datetime
-from config.constants import Const, Order, ShopAndEmployee
 
+import src.custom_qt_widgets.message_boxes as msg
+import src.database_related.psql_requests as Requests
+from config.constants import Const, Order, ShopAndEmployee
 from src.custom_qt_widgets import range_slider
 from src.forms.book_info_form import BookInfoForm
 from src.forms.buy_book_form import BuyBookForm
+from src.forms.client_account_tab import ClientAccountTab
 from src.forms.employee_reviews_form import EmployeeReviewForm
 from src.forms.shop_reviews_form import ShopReviewForm
-
-from src.forms.client_account_tab import ClientAccountTab
 from src.forms.shopping_cart_tab import ShoppingCartTab
 
 shop_form, shop_base = uic.loadUiType(uifile=Const.SHOP_FORM_UI_PATH)
@@ -69,9 +68,9 @@ class ShopForm(shop_form, shop_base):
                 self.book_line_edit.text() or "%",
                 self.genre_line_edit.text() or "%",
                 self.get_low_price_boundary(),
-                self.get_high_price_boundary()
+                self.get_high_price_boundary(),
             ),
-            columns=["Author", "Book title", "Book genre", "Published", "Price, UAH"]
+            columns=["Author", "Book title", "Book genre", "Published", "Price, UAH"],
         )
         data.insert(0, "Book", "")
         data.insert(data.shape[1], "Full info", "")
@@ -150,17 +149,19 @@ class ShopForm(shop_form, shop_base):
 
         for i in range(rows):
             book_image = QtWidgets.QTableWidgetItem()
-            book_image.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format(books_data.loc[i][2])))
+            book_image.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format(books_data.loc[i][2]))
+            )
             self.books_table.setItem(i, 0, book_image)
 
             info_button = QtWidgets.QPushButton("")
             info_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("info")))
-            info_button.setIconSize(QtCore.QSize(24,24))
+            info_button.setIconSize(QtCore.QSize(24, 24))
             info_button.clicked.connect(
                 partial(
                     self.show_full_book_info,
                     books_data["Book title"][i],
-                    books_data["Published"][i]
+                    books_data["Published"][i],
                 )
             )
 
@@ -171,15 +172,15 @@ class ShopForm(shop_form, shop_base):
                 partial(
                     self.buy_book,
                     books_data["Book title"][i],
-                    books_data["Published"][i]
+                    books_data["Published"][i],
                 )
             )
 
-            self.books_table.setCellWidget(i, cols-2, info_button)
-            self.books_table.setCellWidget(i, cols-1, buy_button)
+            self.books_table.setCellWidget(i, cols - 2, info_button)
+            self.books_table.setCellWidget(i, cols - 1, buy_button)
 
         header = self.books_table.horizontalHeader()
-        for header_index in range(1, cols-2):
+        for header_index in range(1, cols - 2):
             header.setSectionResizeMode(header_index, QtWidgets.QHeaderView.Stretch)
 
         # self.books_table.resizeColumnsToContents()
@@ -187,20 +188,19 @@ class ShopForm(shop_form, shop_base):
 
     def show_full_book_info(self, book_title, publishing_date):
 
-        book_data = Requests.full_book_info(self.user.connection, book_title, publishing_date)
-
-        self.full_book_info_form = BookInfoForm(
-            self.user,
-            book_data
+        book_data = Requests.full_book_info(
+            self.user.connection, book_title, publishing_date
         )
+
+        self.full_book_info_form = BookInfoForm(self.user, book_data)
         self.full_book_info_form.show()
 
     def show_employee_info(self):
 
         employee_data = Requests.get_employee_info(
-             self.user.connection,
-             int(self.empl_shop_combo_box.currentText()),
-             self.empl_pos_combo_box.currentText()
+            self.user.connection,
+            int(self.empl_shop_combo_box.currentText()),
+            self.empl_pos_combo_box.currentText(),
         )
 
         if employee_data is None:
@@ -213,8 +213,7 @@ class ShopForm(shop_form, shop_base):
     def show_shop_info(self):
 
         shop_data = Requests.get_shop_info(
-            self.user.connection,
-            int(self.shop_combo_box.currentText())
+            self.user.connection, int(self.shop_combo_box.currentText())
         )
 
         if shop_data is None:
@@ -226,56 +225,56 @@ class ShopForm(shop_form, shop_base):
 
     def buy_book(self, book_title, publishing_date):
 
-        book_data = Requests.full_book_info(self.user.connection, book_title, publishing_date)
+        book_data = Requests.full_book_info(
+            self.user.connection, book_title, publishing_date
+        )
 
         self.buy_book_form = BuyBookForm(book_data["available_amount_"])
-        
+
         dialog_res = self.buy_book_form.exec()
         if not dialog_res:
             return
-        
+
         optional_data = self.buy_book_form.data
         print(optional_data)
         order = pd.DataFrame(
-            [[
-                "",
-                book_data.get('title_'),
-                book_data.get('publishing_date_'),
-                datetime.now().strftime("%m-%d-%Y %H:%M:%S"),
-                book_data.get('shop_'),
-                self.user.login,
-                self.user.information.get('user_delivery_address'),
-                Order.ORDER_IN_CART,
-                book_data.get('price_'),
-                Order.PAYMENT_TYPE_CASH,
-                '',
-                1,
-                "",
-                ""
-            ]],
+            [
+                [
+                    "",
+                    book_data.get("title_"),
+                    book_data.get("publishing_date_"),
+                    datetime.now().strftime("%m-%d-%Y %H:%M:%S"),
+                    book_data.get("shop_"),
+                    self.user.login,
+                    self.user.information.get("user_delivery_address"),
+                    Order.ORDER_IN_CART,
+                    book_data.get("price_"),
+                    Order.PAYMENT_TYPE_CASH,
+                    "",
+                    1,
+                    "",
+                    "",
+                ]
+            ],
             columns=Order.ORDER_DF_COLUMNS,
-
         )
 
         order["Quantity"] = optional_data.get("quantity", 1)
         order["Price, UAH"] *= order["Quantity"]
-        order["User info"]= optional_data.get("additional_info", Order.ORDER_EMPTY_CELL)
-        order["Payment type"] = optional_data.get("payment_type", Order.PAYMENT_TYPE_CASH)
+        order["User info"] = optional_data.get(
+            "additional_info", Order.ORDER_EMPTY_CELL
+        )
+        order["Payment type"] = optional_data.get(
+            "payment_type", Order.PAYMENT_TYPE_CASH
+        )
         order["Address"] = self.user.information.get(
-            optional_data.get("use_cli_address", Order.ORDER_EMPTY_CELL), Order.ORDER_EMPTY_CELL
+            optional_data.get("use_cli_address", Order.ORDER_EMPTY_CELL),
+            Order.ORDER_EMPTY_CELL,
         )
 
         order_id = self.shopping_cart_tab.add_order_in_database(order.values[0][1:-2])
         print("Order id", order_id)
         order.insert(1, "Order ID", order_id)
 
-        print(
-            tabulate(
-                order,
-                headers=order.columns,
-                tablefmt='pretty'
-            )
-        )
+        print(tabulate(order, headers=order.columns, tablefmt="pretty"))
         self.shopping_cart_tab.add_order_in_qt_table(order)
-
-

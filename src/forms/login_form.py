@@ -1,35 +1,33 @@
 import logging
+from time import sleep
+
+# noinspection PyUnresolvedReferences
+from PyQt5 import QtCore, QtWidgets, uic
 
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
-
-# noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore
-
-from src.roles.user_checker_role import UserCheckerRole
-from src.roles.shop_assistant_role import ShopAssistantRole
-from src.roles.client_role import ClientRole
-
-from src.forms.create_account_form import AccountForm
-from src.forms.shop_form import ShopForm
-from src.forms.shop_assistant_form import ShopAssistantForm
-from time import sleep
 from config.constants import Const, Errors
+from src.forms.create_account_form import AccountForm
+from src.forms.shop_assistant_form import ShopAssistantForm
+from src.forms.shop_form import ShopForm
+from src.forms.manager_form import ManagerForm
+from src.roles.client_role import ClientRole
+from src.roles.shop_assistant_role import ShopAssistantRole
+from src.roles.user_checker_role import UserCheckerRole
+from src.roles.manager_role import ManagerRole
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
 
 
 class LoginForm(login_form, login_base):
-
     def __init__(self):
 
         super(login_base, self).__init__()
         self.setupUi(self)
 
         self.account_form = None
-        self.shop_form = None
-        self.shop_assistant_form = None
+        self.role_form = None
 
         self.menubar.hide()
         self.statusbar.hide()
@@ -40,13 +38,14 @@ class LoginForm(login_form, login_base):
 
         self.roles = {
             Const.ROLES.CLIENT_ROLE: ClientRole,
-            Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantRole
+            Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantRole,
+            Const.ROLES.MANAGER_ROLE: ManagerRole
         }
 
         self.forms = {
             Const.ROLES.CLIENT_ROLE: ShopForm,
-            Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantForm
-
+            Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantForm,
+            Const.ROLES.MANAGER_ROLE: ManagerForm
         }
 
         # For client test
@@ -54,8 +53,12 @@ class LoginForm(login_form, login_base):
         # self.password_line_edit.setText('test_password')
 
         # For shop_assistant test
-        self.username_line_edit.setText('petrov_vasilii')
-        self.password_line_edit.setText('ptrvV1988')
+        # self.username_line_edit.setText("petrov_vasilii")
+        # self.password_line_edit.setText("ptrvV1988")
+
+        # For manager test
+        self.username_line_edit.setText("ekaterina_makarchuck")
+        self.password_line_edit.setText("ekaterina98765")
 
     def __role_start(self, login, role):
         conn = db_conn.establish_db_connection(role)
@@ -67,8 +70,8 @@ class LoginForm(login_form, login_base):
 
         self.close()
 
-        self.shop_form = self.forms.get(role)(self.roles.get(role)(login, conn))
-        self.shop_form.show()
+        self.role_form = self.forms.get(role)(self.roles.get(role)(login, conn))
+        self.role_form.show()
 
     def login_user(self):
 
@@ -80,7 +83,9 @@ class LoginForm(login_form, login_base):
             return
 
         user_checker = UserCheckerRole()
-        user_role = Requests.check_user_existence(user_checker.connection, user_login, user_password)
+        user_role = Requests.check_user_existence(
+            user_checker.connection, user_login, user_password
+        )
 
         # To assure that user checker exists.
         # sleep(10)
@@ -92,7 +97,6 @@ class LoginForm(login_form, login_base):
             user_checker.connection.close()
 
             logging.info(f"\n user_checker logged off successfully.\n")
-            logging.info(f"\nUser {user_login} ({user_role[0]}) logged in successfully.\n")
             self.__role_start(user_login, user_role[0])
 
     def toggle_password_visibility(self):

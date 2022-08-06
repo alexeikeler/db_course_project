@@ -1,10 +1,9 @@
-import psycopg2 as pc2
 import logging
-
-import src.custom_qt_widgets.message_boxes as msg
-
 from configparser import ConfigParser
 
+import psycopg2 as pc2
+
+import src.custom_qt_widgets.message_boxes as msg
 from config.constants import Const
 
 logging.basicConfig(level=logging.INFO)
@@ -12,7 +11,8 @@ logging.basicConfig(level=logging.INFO)
 ROLE_CONFIG_FILES: dict = {
     Const.ROLES.SHOP_ASSISTANT_ROLE: Const.SHOP_ASSISTANT_CONFIG_PATH,
     Const.ROLES.CLIENT_ROLE: Const.CLIENT_ROLE_CONFIG_PATH,
-    Const.ROLES.USER_CHECKER_ROLE: Const.USER_CHECKER_ROLE_CONFIG_PATH
+    Const.ROLES.USER_CHECKER_ROLE: Const.USER_CHECKER_ROLE_CONFIG_PATH,
+    Const.ROLES.MANAGER_ROLE: Const.MANAGER_ROLE_CONFIG_PATH
 }
 
 
@@ -41,7 +41,5 @@ def establish_db_connection(role: str):
         connection = pc2.connect(**config_data)
         return connection
 
-    except(Exception, pc2.DatabaseError) as error:
+    except (Exception, pc2.DatabaseError) as error:
         raise ValueError(error)
-
-

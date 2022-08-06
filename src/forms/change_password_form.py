@@ -1,11 +1,11 @@
-import src.database_related.psql_requests as Requests
-import src.custom_qt_widgets.message_boxes as msg
+from functools import partial
 
 # noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
-from config.constants import Const
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from functools import partial
+import src.custom_qt_widgets.message_boxes as msg
+import src.database_related.psql_requests as Requests
+from config.constants import Const
 
 chg_pswd_form, chg_pswd_base = uic.loadUiType(uifile=Const.CHANGE_PSWRD_FORM_UI_PATH)
 
@@ -46,13 +46,17 @@ class ChangePasswordForm(chg_pswd_form, chg_pswd_base):
         if not (self.old_password and self.new_password):
             msg.error_message("Cannot change password when one of lines is empty!")
         else:
-            pswrd_flag = Requests.change_password(self.user.connection, self.user.login, self.old_password, self.new_password)
+            pswrd_flag = Requests.change_password(
+                self.user.connection,
+                self.user.login,
+                self.old_password,
+                self.new_password,
+            )
             if pswrd_flag[0]:
                 msg.info_message("Password changed!")
                 self.close_app()
             else:
                 msg.error_message("Wrong old password!")
-
 
     def close_app(self):
         self.close()

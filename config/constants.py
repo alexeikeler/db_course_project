@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 from collections import namedtuple
+from dataclasses import dataclass
+
 
 @dataclass
 class Const:
@@ -14,30 +15,37 @@ class Const:
     REVIEW_FORM_UI_PATH: str = "ui/review_dialog.ui"
     CHANGE_PSWRD_FORM_UI_PATH: str = "ui/change_password.ui"
     BUY_BOOK_UI_PATH: str = "ui/buy_book.ui"
-    EMPLOYEE_REVIEWS_UI_PATH: str = 'ui/employees_reviews.ui'
+    EMPLOYEE_REVIEWS_UI_PATH: str = "ui/employees_reviews.ui"
     SHOP_REVIEWS_UI_PATH: str = "ui/shop_reviews.ui"
-
     SHOW_REVIEW_UI_PATH: str = "ui/review_show.ui"
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
-
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
+    MANAGER_UI_PATH: str = "ui/manager_form.ui"
 
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
     CLIENT_ROLE_CONFIG_PATH: str = "config/client_role_config.ini"
     USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
+    MANAGER_ROLE_CONFIG_PATH: str = "config/manager_role_config.ini"
+
 
     # IMAGE AND HTML FILES PATH
-    IMAGES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
-    HTML_FILES_PATH: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
-
+    IMAGES_PATH: str = (
+        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
+    )
+    HTML_FILES_PATH: str = (
+        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
+    )
 
     ROLES_NMD_TPL: namedtuple = namedtuple(
-        "ROLES_NMD_TPL", "DIRECTOR_ROLE ADMIN_ROLE MANAGER_ROLE SHOP_ASSISTANT_ROLE CLIENT_ROLE USER_CHECKER_ROLE"
+        "ROLES_NMD_TPL",
+        "DIRECTOR_ROLE ADMIN_ROLE MANAGER_ROLE SHOP_ASSISTANT_ROLE CLIENT_ROLE USER_CHECKER_ROLE",
     )
-    ROLES = ROLES_NMD_TPL("director", "admin", "manager", "shop_assistant", "client", "user_checker")
+    ROLES = ROLES_NMD_TPL(
+        "director", "admin", "manager", "shop_assistant", "client", "user_checker"
+    )
 
 
 @dataclass
@@ -57,7 +65,7 @@ class Order:
         "User info",
         "Quantity",
         "Pay order",
-        "Delete order"
+        "Delete order",
     )
 
     CLIENT_ORDERS_COLUMNS: tuple = (
@@ -67,7 +75,7 @@ class Order:
         "Paid price",
         "Order status",
         "Ordering date",
-        "Returning date"
+        "Returning date",
     )
 
     ORDER_EMPTY_CELL: str = "-"
@@ -75,7 +83,7 @@ class Order:
     ORDER_IN_CART: str = "В корзине"
     ORDER_PAYED: str = "Оплачен"
     ORDER_PROCESSED: str = "Обработан"
-    ORDER_DELIVERING:str = "Доставляется"
+    ORDER_DELIVERING: str = "Доставляется"
     ORDER_FINISHED: str = "Доставлен"
     ORDER_DECLINED: str = "Отменён"
 
@@ -102,7 +110,9 @@ class Order:
 
 @dataclass
 class HtmlFiles:
-    CLIENT_ORDER_STATUSES_HTML: str = Const.HTML_FILES_PATH.format("order_statuses_piechart")
+    CLIENT_ORDER_STATUSES_HTML: str = Const.HTML_FILES_PATH.format(
+        "order_statuses_piechart"
+    )
 
 
 @dataclass
@@ -117,6 +127,7 @@ class WindowsNames:
     SHOPS_REVIEWS_TAB: str = "Shops reviews"
     BOOKS_REVIEWS_TAB: str = "Books reviews"
 
+
 @dataclass
 class Errors:
     # Employee data
@@ -128,8 +139,9 @@ class Errors:
     WRONG_USR_NAME_OR_PASS: str = "Wrong username or password!"
     ERROR_DB_CONNECTION: str = "Error! Couldn't connect to database!"
 
-    #Order status changing error
+    # Order status changing error
     ORDER_STATUS_ERROR: str = "Error occurred while updating order # {0} state."
+
 
 @dataclass
 class ReviewsMessages:
@@ -139,12 +151,4 @@ class ReviewsMessages:
     BOOKS_REVIEWS: str = "Books"
     SHOPS_REVIEWS: str = "Shops"
 
-    REVIEWS_DF_COLUMNS: tuple = (
-        "ID",
-        "Date",
-        "By",
-        "About",
-        "Text"
-    )
-
-
+    REVIEWS_DF_COLUMNS: tuple = ("ID", "Date", "By", "About", "Text")

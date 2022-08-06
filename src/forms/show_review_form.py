@@ -1,7 +1,7 @@
-from config.constants import Const
 # noinspection PyUnresolvedReferences
-from PyQt5 import uic, QtWidgets, QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
+from config.constants import Const
 
 review_form, review_base = uic.loadUiType(uifile=Const.SHOW_REVIEW_UI_PATH)
 

@@ -273,7 +273,6 @@ GRANT EXECUTE ON FUNCTION delete_review(id integer) TO user_client, user_shop_as
 -----------------------------------------------------------------------------------------------------
 
 
-
 -----------------------------------------------------------------------------------------------------
 -- Function to get all reviews related to shop assistant place of work
 

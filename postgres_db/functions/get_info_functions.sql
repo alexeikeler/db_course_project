@@ -382,22 +382,3 @@ REVOKE ALL ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) FROM 
 GRANT EXECUTE ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) TO user_shop_assistant;
 
 -----------------------------------------------------------------------------------------------------
-
-
-CREATE OR REPLACE FUNCTION get_shop_assistant_reviews(sa_place_of_work varchar)
-RETURNS TABLE(
-
-) AS
-    $$
-        BEGIN
-
-        END;
-    $$
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public;
-
-
-REVOKE ALL ON FUNCTION get_shop_assistant_reviews(sa_place_of_work varchar) FROM public;
-
-GRANT EXECUTE ON FUNCTION get_shop_assistant_reviews(sa_place_of_work varchar) TO user_shop_assistant;
