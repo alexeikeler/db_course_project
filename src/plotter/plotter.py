@@ -74,3 +74,43 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
     )
     fig.update_annotations(font_size=12)
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+
+def sales_barchar(web_view, sales: pd.DataFrame, from_, to_):
+    fig = make_subplots(
+        rows=2,
+        cols=1,
+        subplot_titles=[
+            "Money earned by genres",
+            "Amount of sold books by genres",
+        ]
+    )
+
+    fig.add_trace(
+        go.Bar(
+            name="Genre",
+            x=sales["Genre"],
+            y=sales["Sum"],
+            text=sales["Sum"],
+            textposition='auto',
+        ),
+        row=1,
+        col=1
+    )
+
+    fig.add_trace(
+        go.Bar(
+            name="Copies sold",
+            x=sales["Genre"],
+            y=sales["Sold copies"],
+            text=sales["Sold copies"],
+            textposition='auto',
+        ),
+        row=2,
+        col=1
+    )
+
+    fig.update_layout(title=f"Sales from {from_} to {to_}")
+    web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+

@@ -359,3 +359,15 @@ def get_employee_id(connection, login):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_genre_sales(connection, manager_id, l_time_border, r_time_border):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_genre_sales", (manager_id, l_time_border, r_time_border))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

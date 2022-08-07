@@ -152,3 +152,7 @@ class ReviewsMessages:
     SHOPS_REVIEWS: str = "Shops"
 
     REVIEWS_DF_COLUMNS: tuple = ("ID", "Date", "By", "About", "Text")
+
+@dataclass
+class Sales:
+    SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")

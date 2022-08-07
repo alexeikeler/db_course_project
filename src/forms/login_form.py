@@ -48,17 +48,62 @@ class LoginForm(login_form, login_base):
             Const.ROLES.MANAGER_ROLE: ManagerForm
         }
 
+        # ----------------------------------------------------------
         # For client test
+        # ----------------------------------------------------------
+
         # self.username_line_edit.setText('test_login')
         # self.password_line_edit.setText('test_password')
 
+        # ----------------------------------------------------------
+
+        # ----------------------------------------------------------
         # For shop_assistant test
+        # ----------------------------------------------------------
+
+        # SHOP 1
         # self.username_line_edit.setText("petrov_vasilii")
         # self.password_line_edit.setText("ptrvV1988")
 
+        # SHOP 2
+        # self.username_line_edit.setText("PavlovSergei")
+        # self.password_line_edit.setText("IqmKAOZTbT38")
+
+        # SHOP 3
+        # self.username_line_edit.setText("anastasijaKutuzova")
+        # self.password_line_edit.setText("2Jm0mmC9OyXb")
+
+        # SHOP 4
+        # self.username_line_edit.setText("colcevaleksei")
+        # self.password_line_edit.setText("GtImkfbccufq")
+
+        # SHOP 5
+        # self.username_line_edit.setText("BrejnewDmitro")
+        # self.password_line_edit.setText("Yl4DNzNpqNpM")
+
+        # ----------------------------------------------------------
         # For manager test
+        # ----------------------------------------------------------
+
+        # SHOP 1
         self.username_line_edit.setText("ekaterina_makarchuck")
         self.password_line_edit.setText("ekaterina98765")
+
+        # SHOP 2
+        # self.username_line_edit.setText(evelinaKOJINA)
+        # self.password_line_edit.setText(bh68Lloo3cYg)
+
+        # SHOP 3
+        # self.username_line_edit.setText(arnoldEgorov)
+        # self.password_line_edit.setText(xBreZcu8VI5D)
+
+        # SHOP 4
+        # self.username_line_edit.setText(lilianaOst)
+        # self.password_line_edit.setText(tyhM0VIzxM5S)
+
+        # SHOP 5
+        # self.username_line_edit.setText(IsaevNikita)
+        # self.password_line_edit.setText(48wRADXq1b2d)
 
     def __role_start(self, login, role):
         conn = db_conn.establish_db_connection(role)
