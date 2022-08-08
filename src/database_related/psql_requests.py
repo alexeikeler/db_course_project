@@ -371,3 +371,15 @@ def get_genre_sales(connection, manager_id, l_time_border, r_time_border):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_sales_by_date(connection, manager_id, trunc_by):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_sales_by_date", (manager_id, trunc_by))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

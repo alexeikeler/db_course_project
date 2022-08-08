@@ -47,3 +47,30 @@ CREATE OR REPLACE VIEW available_books_view AS
         edition.publishing_agency_id = publishing_agency.publishing_agency_id;
 
 -----------------------------------------------------------------------
+CREATE OR REPLACE VIEW sales AS
+SELECT
+    edition.concrete_shop,
+    client_order.order_id,
+    genre_type,
+    title,
+    sum_to_pay,
+    quantity,
+    payment_type,
+    order_status,
+    date_of_order,
+    date_of_delivery,
+    (client_order.date_of_delivery - client_order.date_of_order) AS delivering_time
+
+FROM
+    client_order, chosen, authority, edition, book
+WHERE
+    order_status NOT IN ('Отменён', 'В коризне')
+AND
+    client_order.order_id = chosen.order_id
+AND
+    chosen.edition_number = edition.edition_number
+AND
+    edition.authority_id = authority.authority_id
+AND
+    authority.edition_book = book.book_id;
+-----------------------------------------------------------------------

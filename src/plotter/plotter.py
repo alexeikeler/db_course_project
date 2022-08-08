@@ -1,8 +1,9 @@
 import pandas as pd
+import plotly.figure_factory as ff
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-
+import plotly.express as px
 def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     order_statuses = orders["Order status"].value_counts()
@@ -112,5 +113,17 @@ def sales_barchar(web_view, sales: pd.DataFrame, from_, to_):
 
     fig.update_layout(title=f"Sales from {from_} to {to_}")
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+
+def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str):
+    fig = px.line(sales, x="Date", y="Sum", text="Sum", markers=True)
+    fig.update_traces(textposition="bottom right")
+    fig.update_layout(
+        title=f"All sales grouped by {grouped_by}",
+        xaxis_title=grouped_by,
+        yaxis_title="Sum, \u20B4"
+    )
+    web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
 
 

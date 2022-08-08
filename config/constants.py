@@ -155,4 +155,6 @@ class ReviewsMessages:
 
 @dataclass
 class Sales:
-    SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")
+    GENRE_SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")
+    DWMY_SALES_COLUMNS: tuple = ("Date", "Sum")
+    DWMY_COMBO_BOX_FILLING: tuple = ("Month", "Year")
