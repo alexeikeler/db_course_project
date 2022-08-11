@@ -1,9 +1,12 @@
+import datetime
 import pandas as pd
-import plotly.figure_factory as ff
 import plotly.graph_objects as go
+import plotly.io
 from plotly.subplots import make_subplots
-
+from config.constants import Const
 import plotly.express as px
+
+
 def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     order_statuses = orders["Order status"].value_counts()
@@ -77,7 +80,13 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
 
-def sales_barchar(web_view, sales: pd.DataFrame, from_, to_):
+def sales_canvas(
+        web_view,
+        general_sales: pd.DataFrame,
+        from_,
+        to_,
+        to_pdf
+):
     fig = make_subplots(
         rows=2,
         cols=1,
@@ -90,9 +99,9 @@ def sales_barchar(web_view, sales: pd.DataFrame, from_, to_):
     fig.add_trace(
         go.Bar(
             name="Genre",
-            x=sales["Genre"],
-            y=sales["Sum"],
-            text=sales["Sum"],
+            x=general_sales["Genre"],
+            y=general_sales["Sum"],
+            text=general_sales["Sum"],
             textposition='auto',
         ),
         row=1,
@@ -102,28 +111,104 @@ def sales_barchar(web_view, sales: pd.DataFrame, from_, to_):
     fig.add_trace(
         go.Bar(
             name="Copies sold",
-            x=sales["Genre"],
-            y=sales["Sold copies"],
-            text=sales["Sold copies"],
+            x=general_sales["Genre"],
+            y=general_sales["Sold copies"],
+            text=general_sales["Sold copies"],
             textposition='auto',
         ),
         row=2,
         col=1
     )
 
-    fig.update_layout(title=f"Sales from {from_} to {to_}")
+    fig.update_layout(title=f"Revenue (by genres) from {from_} to {to_}")
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
+    if to_pdf:
+        fig.update_layout(width=800, height=500)
+        file = str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_genre_sales_report"
+        plotly.io.write_image(fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf")
 
-def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str):
-    fig = px.line(sales, x="Date", y="Sum", text="Sum", markers=True)
-    fig.update_traces(textposition="bottom right")
+
+def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str, to_pdf: bool):
+
+    fig = make_subplots(
+        rows=2, cols=2,
+        vertical_spacing=0.07,
+        specs=[
+           [{"type":"table"}, {"type":"table"}],
+           [{"colspan": 2}, None]],
+        subplot_titles=[
+            "Revenue table",
+            "Revenue analysis",
+            "Revenue time series"
+        ]
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=sales["Date"],
+            y=sales["Sum"],
+            mode="lines+markers",
+        ),
+        row=2, col=1
+    )
+
+    fig.add_trace(
+        go.Table(
+            header=dict(
+                values=list(sales.columns),
+                align="center"
+            ),
+            cells=dict(
+                values=[sales.Date, sales.Sum],
+                align="center"
+            )
+        ),
+        row=1, col=1
+    )
+
+    revenue_analysis = sales["Sum"].astype("int").describe().to_frame(name="").reset_index()
+    revenue_analysis.columns = ["Stat", "Value"]
+    fig.add_trace(
+        go.Table(
+            header=dict(
+                values=list(revenue_analysis.columns),
+                align="center"
+            ),
+            cells=dict(
+                values=[revenue_analysis["Stat"], revenue_analysis["Value"]],
+                align="center"
+            )
+        ),
+        row=1, col=2
+    )
+
     fig.update_layout(
         title=f"All sales grouped by {grouped_by}",
         xaxis_title=grouped_by,
-        yaxis_title="Sum, \u20B4"
+        yaxis_title="Sum, \u20B4",
+        margin=dict(l=0, r=0, t=50, b=0)
     )
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+    if to_pdf:
+        fig.update_layout(width=800, height=500)
+        file = str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_date_groupped_sales"
+        plotly.io.write_image(fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf")
+
+
+def top_selling_books(web_view, data, l_date, r_date, to_pdf):
+    fig = px.bar(x=data["Title"], y=data["Quantity"])
+    fig.update_layout(
+        title=f"Top selling books from {l_date} to {r_date}",
+        xaxis_title="Title",
+        yaxis_title="Sold",
+    )
+    web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+    if to_pdf:
+        fig.update_layout(width=800, height=500)
+        file = str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + "_top_selling_books"
+        plotly.io.write_image(fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf")
 
 
 

@@ -383,3 +383,15 @@ def get_sales_by_date(connection, manager_id, trunc_by):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_top_selling_books(connection, manager_id, l_date, r_date, n_top):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_top_selling_books", (manager_id, l_date, r_date, n_top))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

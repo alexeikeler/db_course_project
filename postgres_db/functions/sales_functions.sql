@@ -89,4 +89,45 @@ GRANT EXECUTE ON FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar
 
 ------------------------------------------------------------------------------------------------------
 
-SELECT * FROM get_sales_by_date(9, 'Month');
+
+------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0));
+CREATE OR REPLACE FUNCTION get_top_selling_books(
+manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer
+)
+RETURNS TABLE (
+    title_ varchar,
+    sold_copies integer
+              )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+                SELECT
+                    title,
+                    sum(sum(quantity)) OVER(PARTITION BY title)::integer as sold_cop_num
+                FROM
+                    sales, employee
+                WHERE
+                    employee.employee_id = manager_id
+                AND
+                    employee.place_of_work = sales.concrete_shop
+                AND
+                    date_of_order BETWEEN l_time AND r_time
+                GROUP BY title
+                ORDER BY sold_cop_num DESC
+                LIMIT n_top;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer) FROM public;
+GRANT EXECUTE ON FUNCTION
+    get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer) TO user_manager;
+
+------------------------------------------------------------------------------------------------------
+
+select * from get_top_selling_books(9, '2022-03-08 21:02:24', '2022-08-08 21:02:24');

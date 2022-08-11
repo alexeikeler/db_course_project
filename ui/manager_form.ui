@@ -36,16 +36,16 @@
         <widget class="QWidget" name="gridLayoutWidget_3">
          <property name="geometry">
           <rect>
-           <x>1140</x>
-           <y>10</y>
-           <width>257</width>
-           <height>122</height>
+           <x>10</x>
+           <y>585</y>
+           <width>261</width>
+           <height>116</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="genre_sales_menu_layout">
           <item row="3" column="0" colspan="3">
            <layout class="QGridLayout" name="gridLayout_4">
-            <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+            <item row="0" column="1" alignment="Qt::AlignLeft|Qt::AlignVCenter">
              <widget class="QPushButton" name="sales_by_genre_button">
               <property name="text">
                <string>Select</string>
@@ -55,7 +55,7 @@
             <item row="0" column="2" alignment="Qt::AlignHCenter">
              <widget class="QCheckBox" name="sales_by_genre_check_box">
               <property name="text">
-               <string>Generate PDF report</string>
+               <string>PDF report</string>
               </property>
              </widget>
             </item>
@@ -163,26 +163,13 @@
           </item>
          </layout>
         </widget>
-        <widget class="Line" name="line">
-         <property name="geometry">
-          <rect>
-           <x>1120</x>
-           <y>-10</y>
-           <width>20</width>
-           <height>761</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
         <widget class="QWidget" name="gridLayoutWidget_2">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>1111</width>
-           <height>731</height>
+           <width>1381</width>
+           <height>541</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="web_view_grid_layout">
@@ -197,25 +184,12 @@
           </item>
          </layout>
         </widget>
-        <widget class="Line" name="line_2">
-         <property name="geometry">
-          <rect>
-           <x>1130</x>
-           <y>140</y>
-           <width>291</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
         <widget class="QWidget" name="gridLayoutWidget_4">
          <property name="geometry">
           <rect>
-           <x>1140</x>
-           <y>170</y>
-           <width>255</width>
+           <x>580</x>
+           <y>587</y>
+           <width>188</width>
            <height>81</height>
           </rect>
          </property>
@@ -223,12 +197,9 @@
           <item row="0" column="0" colspan="2" alignment="Qt::AlignHCenter">
            <widget class="QLabel" name="my_sales_label">
             <property name="text">
-             <string>All sales grouped by DWMY</string>
+             <string>All sales grouped by M/Y</string>
             </property>
            </widget>
-          </item>
-          <item row="1" column="0" colspan="2" alignment="Qt::AlignHCenter">
-           <widget class="QComboBox" name="my_grouped_sales_combo_box"/>
           </item>
           <item row="2" column="0" alignment="Qt::AlignHCenter">
            <widget class="QPushButton" name="my_grouped_select_button">
@@ -237,21 +208,24 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0" colspan="2" alignment="Qt::AlignHCenter">
+           <widget class="QComboBox" name="my_grouped_sales_combo_box"/>
+          </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="sales_grouped_by_my_check_box">
             <property name="text">
-             <string>Generate PDF report</string>
+             <string>PDF report</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
-        <widget class="Line" name="line_3">
+        <widget class="Line" name="line">
          <property name="geometry">
           <rect>
-           <x>1130</x>
-           <y>260</y>
-           <width>291</width>
+           <x>-3</x>
+           <y>560</y>
+           <width>1411</width>
            <height>20</height>
           </rect>
          </property>
@@ -259,11 +233,203 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Tab 2</string>
-        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>304</x>
+           <y>586</y>
+           <width>241</width>
+           <height>115</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="4" column="0">
+           <widget class="QPushButton" name="top_selling_books_button">
+            <property name="text">
+             <string>Select</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>To</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" colspan="2">
+           <widget class="QCheckBox" name="top_selling_books_check_box">
+            <property name="text">
+             <string>PDF report</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>From</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="top_selling_books_spin_box">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="4" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="top_selling_books_label">
+            <property name="text">
+             <string>Top selling books</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="3">
+           <widget class="QDateTimeEdit" name="top_books_l_date_edit">
+            <property name="date">
+             <date>
+              <year>2022</year>
+              <month>1</month>
+              <day>1</day>
+             </date>
+            </property>
+            <property name="maximumDateTime">
+             <datetime>
+              <hour>23</hour>
+              <minute>59</minute>
+              <second>59</second>
+              <year>2022</year>
+              <month>12</month>
+              <day>31</day>
+             </datetime>
+            </property>
+            <property name="minimumDateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2022</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="displayFormat">
+             <string>yyyy-MM-dd hh:mm:ss</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="3">
+           <widget class="QDateTimeEdit" name="top_books_r_date_edit">
+            <property name="date">
+             <date>
+              <year>2022</year>
+              <month>12</month>
+              <day>31</day>
+             </date>
+            </property>
+            <property name="maximumDateTime">
+             <datetime>
+              <hour>23</hour>
+              <minute>59</minute>
+              <second>59</second>
+              <year>2022</year>
+              <month>12</month>
+              <day>31</day>
+             </datetime>
+            </property>
+            <property name="minimumDateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2022</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="displayFormat">
+             <string>yyyy-MM-dd hh:mm:ss</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>550</x>
+           <y>570</y>
+           <width>20</width>
+           <height>181</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>790</x>
+           <y>570</y>
+           <width>20</width>
+           <height>181</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_4">
+         <property name="geometry">
+          <rect>
+           <x>280</x>
+           <y>570</y>
+           <width>20</width>
+           <height>181</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QWidget" name="gridLayoutWidget_6">
+         <property name="geometry">
+          <rect>
+           <x>810</x>
+           <y>580</y>
+           <width>591</width>
+           <height>161</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="reports_table"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="reports_label">
+            <property name="text">
+             <string>Reports</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="update_reports_table">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../frontend/images/update_icon.png</normaloff>../frontend/images/update_icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </widget>
      </item>

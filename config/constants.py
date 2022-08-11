@@ -39,6 +39,9 @@ class Const:
         "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
     )
 
+    PDF_REPORTS_FOLDER: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/pdf_reports/"
+    PDF_REPORTS_FILES_BASE: str = PDF_REPORTS_FOLDER + "{0}.pdf"
+
     ROLES_NMD_TPL: namedtuple = namedtuple(
         "ROLES_NMD_TPL",
         "DIRECTOR_ROLE ADMIN_ROLE MANAGER_ROLE SHOP_ASSISTANT_ROLE CLIENT_ROLE USER_CHECKER_ROLE",
@@ -155,6 +158,10 @@ class ReviewsMessages:
 
 @dataclass
 class Sales:
-    GENRE_SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")
-    DWMY_SALES_COLUMNS: tuple = ("Date", "Sum")
-    DWMY_COMBO_BOX_FILLING: tuple = ("Month", "Year")
+    GENERAL_GENRE_SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")
+    IN_DEPTH_SALES: tuple = ("Genre", "Price", "Quantity", "Ordering date")
+    MY_SALES_COLUMNS: tuple = ("Date", "Sum")
+    MY_COMBO_BOX_FILLING: tuple = ("Month", "Year")
+    REPORTS_DF_COLUMNS:tuple = ("Report",)
+    TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
+
