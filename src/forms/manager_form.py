@@ -249,4 +249,4 @@ class ManagerForm(manager_form, manager_base ):
             msg.error_message(f"Error occured while adding new author ({fname} {lname}).")
 
     def delete_author(self):
-        pass
+        print(222)
