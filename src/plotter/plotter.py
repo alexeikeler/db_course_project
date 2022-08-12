@@ -166,7 +166,7 @@ def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str, to_pdf: 
         row=1, col=1
     )
 
-    revenue_analysis = sales["Sum"].astype("int").describe().to_frame(name="").reset_index()
+    revenue_analysis = sales["Sum"].astype("int").describe().to_frame(name="").reset_index().round(2)
     revenue_analysis.columns = ["Stat", "Value"]
     fig.add_trace(
         go.Table(

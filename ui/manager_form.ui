@@ -27,7 +27,7 @@
      <item row="0" column="0">
       <widget class="QTabWidget" name="tab_widget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tab_1">
         <attribute name="title">
@@ -38,7 +38,7 @@
           <rect>
            <x>10</x>
            <y>585</y>
-           <width>261</width>
+           <width>276</width>
            <height>116</height>
           </rect>
          </property>
@@ -61,14 +61,14 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="0" alignment="Qt::AlignHCenter">
+          <item row="1" column="0" alignment="Qt::AlignLeft">
            <widget class="QLabel" name="from_label">
             <property name="text">
              <string>From</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" alignment="Qt::AlignHCenter">
+          <item row="2" column="0" alignment="Qt::AlignLeft">
            <widget class="QLabel" name="to_label">
             <property name="text">
              <string>To</string>
@@ -236,9 +236,9 @@
         <widget class="QWidget" name="gridLayoutWidget_5">
          <property name="geometry">
           <rect>
-           <x>304</x>
+           <x>298</x>
            <y>586</y>
-           <width>241</width>
+           <width>254</width>
            <height>115</height>
           </rect>
          </property>
@@ -250,7 +250,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0" alignment="Qt::AlignHCenter">
+          <item row="3" column="0" alignment="Qt::AlignLeft">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>To</string>
@@ -264,7 +264,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" alignment="Qt::AlignHCenter">
+          <item row="2" column="0" alignment="Qt::AlignLeft">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>From</string>
@@ -429,6 +429,264 @@
            </widget>
           </item>
          </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Page</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_7">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>881</width>
+           <height>541</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="available_books_label">
+            <property name="text">
+             <string>Available books</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="available_books_table"/>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="gridLayoutWidget_8">
+         <property name="geometry">
+          <rect>
+           <x>1000</x>
+           <y>570</y>
+           <width>301</width>
+           <height>161</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="4" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QDateEdit" name="dob_date_edit">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="dateTime">
+             <datetime>
+              <hour>0</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2000</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="displayFormat">
+             <string>dd-MM-yyyy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Date of death</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="add_author_label">
+            <property name="text">
+             <string>Add author</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Date of birth</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLineEdit" name="author_firstname_line_edit"/>
+          </item>
+          <item row="1" column="1" colspan="2" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Author lastname</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Author firstname</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2" alignment="Qt::AlignHCenter">
+           <widget class="QLineEdit" name="author_lastname_line_edit"/>
+          </item>
+          <item row="4" column="1" colspan="2" alignment="Qt::AlignHCenter">
+           <widget class="QDateEdit" name="dod_date_edit">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="displayFormat">
+             <string>dd-MM-yyyy</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="3" alignment="Qt::AlignHCenter">
+           <widget class="QPushButton" name="add_author_button">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="gridLayoutWidget_9">
+         <property name="geometry">
+          <rect>
+           <x>908</x>
+           <y>10</y>
+           <width>490</width>
+           <height>541</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="authors_label">
+            <property name="text">
+             <string>Authors</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="authors_table"/>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLineEdit" name="author_name_line_edit"/>
+            </item>
+            <item>
+             <widget class="Line" name="line_7">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="update_authors_table">
+              <property name="layoutDirection">
+               <enum>Qt::RightToLeft</enum>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../frontend/images/update_icon.png</normaloff>../frontend/images/update_icon.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="Line" name="line_5">
+         <property name="geometry">
+          <rect>
+           <x>890</x>
+           <y>-10</y>
+           <width>20</width>
+           <height>771</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="Line" name="line_6">
+         <property name="geometry">
+          <rect>
+           <x>-10</x>
+           <y>550</y>
+           <width>1451</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton">
+         <property name="geometry">
+          <rect>
+           <x>430</x>
+           <y>650</y>
+           <width>89</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>PushButton</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>650</x>
+           <y>600</y>
+           <width>221</width>
+           <height>80</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="update_available_books">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Update table  </string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../frontend/images/update_icon.png</normaloff>../frontend/images/update_icon.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QCheckBox" name="use_dob_check_box">
+         <property name="geometry">
+          <rect>
+           <x>1152</x>
+           <y>679</y>
+           <width>14</width>
+           <height>15</height>
+          </rect>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
         </widget>
        </widget>
       </widget>

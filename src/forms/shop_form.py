@@ -262,14 +262,14 @@ class ShopForm(shop_form, shop_base):
         order["Quantity"] = optional_data.get("quantity", 1)
         order["Price, UAH"] *= order["Quantity"]
         order["User info"] = optional_data.get(
-            "additional_info", Order.ORDER_EMPTY_CELL
+            "additional_info", Const.EMPTY_CELL
         )
         order["Payment type"] = optional_data.get(
             "payment_type", Order.PAYMENT_TYPE_CASH
         )
         order["Address"] = self.user.information.get(
-            optional_data.get("use_cli_address", Order.ORDER_EMPTY_CELL),
-            Order.ORDER_EMPTY_CELL,
+            optional_data.get("use_cli_address", Const.EMPTY_CELL),
+            Const.EMPTY_CELL,
         )
 
         order_id = self.shopping_cart_tab.add_order_in_database(order.values[0][1:-2])

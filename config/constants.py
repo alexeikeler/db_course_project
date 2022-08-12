@@ -5,6 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class Const:
 
+    EMPTY_CELL: str = "-"
     CONFIG_SECTION: str = "postgresql"
 
     # UI PATH CONST #
@@ -81,8 +82,6 @@ class Order:
         "Returning date",
     )
 
-    ORDER_EMPTY_CELL: str = "-"
-
     ORDER_IN_CART: str = "В корзине"
     ORDER_PAYED: str = "Оплачен"
     ORDER_PROCESSED: str = "Обработан"
@@ -125,10 +124,15 @@ class ShopAndEmployee:
 
 @dataclass
 class WindowsNames:
+
     ORDERS_TAB: str = "Orders"
     EMPLOYEES_REVIEWS_TAB: str = "Employees reviews"
+
     SHOPS_REVIEWS_TAB: str = "Shops reviews"
     BOOKS_REVIEWS_TAB: str = "Books reviews"
+
+    MANAGER_REPORTS_TAB: str = "Reprorts"
+    MANAGER_ADD_BOOKS: str = "Books and Authors"
 
 
 @dataclass
@@ -156,6 +160,7 @@ class ReviewsMessages:
 
     REVIEWS_DF_COLUMNS: tuple = ("ID", "Date", "By", "About", "Text")
 
+
 @dataclass
 class Sales:
     GENERAL_GENRE_SALES_DF_COLUMNS: tuple = ("Genre", "Sum", "Sold copies")
@@ -164,4 +169,5 @@ class Sales:
     MY_COMBO_BOX_FILLING: tuple = ("Month", "Year")
     REPORTS_DF_COLUMNS:tuple = ("Report",)
     TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
+    AUTHORS_DF_COLUMNS: tuple = ("Id", "Author", "Date of birth", "Date of death")
 

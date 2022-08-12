@@ -382,3 +382,68 @@ REVOKE ALL ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) FROM 
 GRANT EXECUTE ON FUNCTION get_shop_assistant_orders(sa_place_of_work varchar) TO user_shop_assistant;
 
 -----------------------------------------------------------------------------------------------------
+
+DROP FUNCTION add_author(lastname_ varchar, firstname_ varchar, dob_ date, dod_ date);
+CREATE OR REPLACE FUNCTION
+    add_author(lastname_ varchar, firstname_ varchar, dob_ date, dod_ date DEFAULT NULL)
+RETURNS INTEGER AS
+    $$
+        DECLARE ret_author_id integer;
+
+        BEGIN
+            INSERT INTO
+                author(lastname, firstname, date_of_birth, date_of_death)
+            VALUES
+                (lastname_, firstname_, dob_, dod_)
+            RETURNING author.author_id INTO ret_author_id;
+            RETURN ret_author_id;
+        END;
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    add_author(lastname_ varchar, firstname_ varchar, dob_ date, dod_ date) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION
+    add_author(lastname_ varchar, firstname_ varchar, dob_ date, dod_ date) TO user_manager;
+
+
+------------------------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_authors(author_name varchar);
+CREATE OR REPLACE FUNCTION get_authors(author_name varchar)
+RETURNS TABLE
+(
+    author_id_ integer,
+    author_name_ varchar,
+    date_of_birth_ date,
+    date_of_death_ date
+)
+AS
+    $$
+    BEGIN
+        RETURN QUERY
+        SELECT
+            author_id,
+            CAST(firstname || ' ' || lastname AS varchar) as auth_name,
+            date_of_birth,
+            date_of_death
+        FROM
+            author
+        WHERE
+            author.firstname || ' ' || author.lastname LIKE author_name
+        ORDER BY
+            author_id;
+    END
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    get_authors(author_name varchar) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION
+    get_authors(author_name varchar) TO user_manager;
+
+------------------------------------------------------------------------------------------------------------------------

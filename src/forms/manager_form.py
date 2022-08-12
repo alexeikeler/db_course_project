@@ -24,6 +24,9 @@ class ManagerForm(manager_form, manager_base ):
 
         self.user = user
 
+        self.tab_widget.setTabText(0, WindowsNames.MANAGER_REPORTS_TAB)
+        self.tab_widget.setTabText(1, WindowsNames.MANAGER_ADD_BOOKS)
+
         self.sales_by_genre_button.clicked.connect(self.genre_sales)
 
         self.my_grouped_select_button.clicked.connect(self.all_sales_by_my)
@@ -33,7 +36,33 @@ class ManagerForm(manager_form, manager_base ):
         self.update_reports_table.clicked.connect(self.load_reports)
         self.top_selling_books_button.clicked.connect(self.top_selling_books)
 
+        self.add_author_button.clicked.connect(self.add_author)
+        self.update_authors_table.clicked.connect(self.load_authors_table)
+
+        self.use_dob_check_box.stateChanged.connect(lambda status: self.dod_date_edit.setEnabled(status))
+
+        self.dob_date_edit.clearMinimumDateTime()
+
         self.load_reports()
+        self.load_authors_table()
+
+    @staticmethod
+    def _config_table(table:QtWidgets.QTableWidget, rows, cols, columns, areas_to_stretch):
+
+        table.setRowCount(rows)
+        table.setColumnCount(cols)
+        table.setHorizontalHeaderLabels(columns)
+        table.setSizeAdjustPolicy(
+            QtWidgets.QAbstractScrollArea.AdjustToContents
+        )
+
+        table.resizeRowsToContents()
+
+        header = table.horizontalHeader()
+        for area, mode in areas_to_stretch:
+            header.setSectionResizeMode(area, mode)
+
+        table.resizeRowsToContents()
 
     def genre_sales(self):
         to_pdf = self.sales_by_genre_check_box.isChecked()
@@ -113,17 +142,15 @@ class ManagerForm(manager_form, manager_base ):
         reports_df.insert(0, "Open", "")
 
         rows, cols = reports_df.shape
-        self.reports_table.setColumnCount(len(Sales.REPORTS_DF_COLUMNS) + 2)
-        self.reports_table.setRowCount(rows)
-
-        self.reports_table.setHorizontalHeaderLabels(reports_df.columns)
-        self.reports_table.setSizeAdjustPolicy(
-            QtWidgets.QAbstractScrollArea.AdjustToContents
+        self._config_table(
+            self.reports_table,
+            rows,
+            cols,
+            reports_df.columns,
+            [
+                (2, QtWidgets.QHeaderView.Stretch)
+            ]
         )
-
-        self.reports_table.resizeColumnsToContents()
-        header = self.reports_table.horizontalHeader()
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
 
         self.reports_table.resizeRowsToContents()
 
@@ -167,3 +194,59 @@ class ManagerForm(manager_form, manager_base ):
         except Exception as e:
             msg.error_message(f"File {filename} deletion error.\n{str(e)}")
 
+    def load_authors_table(self):
+        data = pd.DataFrame(
+            Requests.get_authors(
+                self.user.connection,
+                self.author_name_line_edit.text() or "%"
+            ),
+            columns=Sales.AUTHORS_DF_COLUMNS
+        ).fillna(value=Const.EMPTY_CELL)
+
+        author_completer = QtWidgets.QCompleter(data["Author"].unique())
+        self.author_name_line_edit.setCompleter(author_completer)
+
+        rows, cols = data.shape
+        self._config_table(
+            self.authors_table,
+            rows,
+            cols,
+            data.columns,
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.Stretch)
+            ]
+        )
+
+        for i in range(rows):
+            for j in range(cols):
+                item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.authors_table.setItem(i, j, item)
+
+    def add_author(self):
+
+        fname = self.author_firstname_line_edit.text()
+        lname = self.author_lastname_line_edit.text()
+
+        dob = self.dob_date_edit.dateTime().toPyDateTime().strftime("%Y-%m-%d")
+        dod = None
+
+        if not (fname and lname):
+            msg.error_message("Author first or last name is empty!")
+            return
+
+        if self.use_dob_check_box.isChecked():
+            dod = self.dod_date_edit.dateTime().toPyDateTime().strftime("%Y-%m-%d")
+
+        print(fname, lname, dob, dod)
+        new_auth_id = Requests.add_author(self.user.connection, fname, lname, dob, dod)
+
+        if new_auth_id is not None:
+            msg.info_message(f"New author {fname} {lname} with ID {new_auth_id} added succsesfully.")
+        else:
+            msg.error_message(f"Error occured while adding new author ({fname} {lname}).")
+
+    def delete_author(self):
+        pass

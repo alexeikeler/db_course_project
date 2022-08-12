@@ -395,3 +395,30 @@ def get_top_selling_books(connection, manager_id, l_date, r_date, n_top):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_authors(connection, author_name):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_authors", (author_name,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def add_author(connection, lname, fname, dob, dod):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("add_author", (lname, fname, dob, dod))
+            result = cursor.fetchone()
+            connection.commit()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
