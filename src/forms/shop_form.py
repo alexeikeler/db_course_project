@@ -261,9 +261,7 @@ class ShopForm(shop_form, shop_base):
 
         order["Quantity"] = optional_data.get("quantity", 1)
         order["Price, UAH"] *= order["Quantity"]
-        order["User info"] = optional_data.get(
-            "additional_info", Const.EMPTY_CELL
-        )
+        order["User info"] = optional_data.get("additional_info", Const.EMPTY_CELL)
         order["Payment type"] = optional_data.get(
             "payment_type", Order.PAYMENT_TYPE_CASH
         )

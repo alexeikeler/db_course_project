@@ -9,13 +9,13 @@ import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
 from config.constants import Const, Errors
 from src.forms.create_account_form import AccountForm
+from src.forms.manager_form import ManagerForm
 from src.forms.shop_assistant_form import ShopAssistantForm
 from src.forms.shop_form import ShopForm
-from src.forms.manager_form import ManagerForm
 from src.roles.client_role import ClientRole
+from src.roles.manager_role import ManagerRole
 from src.roles.shop_assistant_role import ShopAssistantRole
 from src.roles.user_checker_role import UserCheckerRole
-from src.roles.manager_role import ManagerRole
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
 
@@ -39,13 +39,13 @@ class LoginForm(login_form, login_base):
         self.roles = {
             Const.ROLES.CLIENT_ROLE: ClientRole,
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantRole,
-            Const.ROLES.MANAGER_ROLE: ManagerRole
+            Const.ROLES.MANAGER_ROLE: ManagerRole,
         }
 
         self.forms = {
             Const.ROLES.CLIENT_ROLE: ShopForm,
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantForm,
-            Const.ROLES.MANAGER_ROLE: ManagerForm
+            Const.ROLES.MANAGER_ROLE: ManagerForm,
         }
 
         # ----------------------------------------------------------

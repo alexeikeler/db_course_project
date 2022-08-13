@@ -31,7 +31,6 @@ class Const:
     USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
     MANAGER_ROLE_CONFIG_PATH: str = "config/manager_role_config.ini"
 
-
     # IMAGE AND HTML FILES PATH
     IMAGES_PATH: str = (
         "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
@@ -40,7 +39,9 @@ class Const:
         "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
     )
 
-    PDF_REPORTS_FOLDER: str = "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/pdf_reports/"
+    PDF_REPORTS_FOLDER: str = (
+        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/pdf_reports/"
+    )
     PDF_REPORTS_FILES_BASE: str = PDF_REPORTS_FOLDER + "{0}.pdf"
 
     ROLES_NMD_TPL: namedtuple = namedtuple(
@@ -149,6 +150,12 @@ class Errors:
     # Order status changing error
     ORDER_STATUS_ERROR: str = "Error occurred while updating order # {0} state."
 
+    # Author deletion error
+    AUTHOR_DELETION_ERROR: str = (
+        "Cannot delete author | {0} | with ID {1}."
+        "\nOnly authors without books in shop can be removed!"
+    )
+
 
 @dataclass
 class ReviewsMessages:
@@ -167,7 +174,6 @@ class Sales:
     IN_DEPTH_SALES: tuple = ("Genre", "Price", "Quantity", "Ordering date")
     MY_SALES_COLUMNS: tuple = ("Date", "Sum")
     MY_COMBO_BOX_FILLING: tuple = ("Month", "Year")
-    REPORTS_DF_COLUMNS:tuple = ("Report",)
+    REPORTS_DF_COLUMNS: tuple = ("Report",)
     TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
     AUTHORS_DF_COLUMNS: tuple = ("Id", "Author", "Date of birth", "Date of death")
-

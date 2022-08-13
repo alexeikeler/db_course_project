@@ -364,7 +364,9 @@ def get_employee_id(connection, login):
 def get_genre_sales(connection, manager_id, l_time_border, r_time_border):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_genre_sales", (manager_id, l_time_border, r_time_border))
+            cursor.callproc(
+                "get_genre_sales", (manager_id, l_time_border, r_time_border)
+            )
             result = cursor.fetchall()
             return result
 
@@ -388,7 +390,9 @@ def get_sales_by_date(connection, manager_id, trunc_by):
 def get_top_selling_books(connection, manager_id, l_date, r_date, n_top):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_top_selling_books", (manager_id, l_date, r_date, n_top))
+            cursor.callproc(
+                "get_top_selling_books", (manager_id, l_date, r_date, n_top)
+            )
             result = cursor.fetchall()
             return result
 
@@ -422,3 +426,14 @@ def add_author(connection, lname, fname, dob, dod):
         connection.rollback()
 
 
+def delete_author(connection, author_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("delete_author", (author_id,))
+            result = cursor.fetchall()
+            connection.commit()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

@@ -440,7 +440,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>881</width>
+           <width>791</width>
            <height>541</height>
           </rect>
          </property>
@@ -553,9 +553,9 @@
         <widget class="QWidget" name="gridLayoutWidget_9">
          <property name="geometry">
           <rect>
-           <x>908</x>
+           <x>847</x>
            <y>10</y>
-           <width>490</width>
+           <width>551</width>
            <height>541</height>
           </rect>
          </property>
@@ -603,7 +603,7 @@
         <widget class="Line" name="line_5">
          <property name="geometry">
           <rect>
-           <x>890</x>
+           <x>830</x>
            <y>-10</y>
            <width>20</width>
            <height>771</height>
@@ -642,7 +642,7 @@
         <widget class="QWidget" name="horizontalLayoutWidget_2">
          <property name="geometry">
           <rect>
-           <x>650</x>
+           <x>580</x>
            <y>600</y>
            <width>221</width>
            <height>80</height>
