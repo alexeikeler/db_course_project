@@ -440,7 +440,7 @@
           <rect>
            <x>10</x>
            <y>10</y>
-           <width>791</width>
+           <width>821</width>
            <height>541</height>
           </rect>
          </property>
@@ -687,6 +687,17 @@
          <property name="text">
           <string/>
          </property>
+        </widget>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>620</y>
+           <width>160</width>
+           <height>80</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout"/>
         </widget>
        </widget>
       </widget>
