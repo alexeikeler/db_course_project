@@ -47,6 +47,7 @@ CREATE OR REPLACE VIEW available_books_view AS
         edition.publishing_agency_id = publishing_agency.publishing_agency_id;
 
 -----------------------------------------------------------------------
+DROP VIEW sales;
 CREATE OR REPLACE VIEW sales AS
 SELECT
     edition.concrete_shop,
@@ -58,8 +59,7 @@ SELECT
     payment_type,
     order_status,
     date_of_order,
-    date_of_delivery,
-    (client_order.date_of_delivery - client_order.date_of_order) AS delivering_time
+    date_of_delivery
 
 FROM
     client_order, chosen, authority, edition, book

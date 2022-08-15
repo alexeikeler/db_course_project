@@ -9,7 +9,7 @@ from tabulate import tabulate
 
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
-from config.constants import (Const, Errors, Order, ReviewsMessages, Sales,
+from config.constants import (Const, Errors, ShopAndEmployee, Sales,
                               WindowsNames)
 from src.plotter import plotter
 
@@ -27,26 +27,44 @@ class ManagerForm(manager_form, manager_base):
         self.tab_widget.setTabText(0, WindowsNames.MANAGER_REPORTS_TAB)
         self.tab_widget.setTabText(1, WindowsNames.MANAGER_ADD_BOOKS)
 
+        self._config_input_widgets()
+        self.load_reports()
+        self.load_authors_table()
+
+    def _config_input_widgets(self):
+        # Buttons tab 1
         self.sales_by_genre_button.clicked.connect(self.genre_sales)
 
         self.my_grouped_select_button.clicked.connect(self.all_sales_by_my)
-        self.my_grouped_sales_combo_box.addItems(Sales.MY_COMBO_BOX_FILLING)
-        self.my_grouped_sales_combo_box.setCurrentText(Sales.MY_COMBO_BOX_FILLING[0])
-
-        self.update_reports_table.clicked.connect(self.load_reports)
+        self.update_reports_table_button.clicked.connect(self.load_reports)
         self.top_selling_books_button.clicked.connect(self.top_selling_books)
 
-        self.add_author_button.clicked.connect(self.add_author)
-        self.update_authors_table.clicked.connect(self.load_authors_table)
+        # Buttons tab 2
+        self.add_book_button.clicked.connect(self.add_book)
+        self.update_available_books_button.clicked.connect(self.load_books_table)
 
+        self.add_author_button.clicked.connect(self.add_author)
+        self.update_authors_table_button.clicked.connect(self.load_authors_table)
+
+        # Check box tab 1
         self.use_dob_check_box.stateChanged.connect(
             lambda status: self.dod_date_edit.setEnabled(status)
         )
 
-        self.dob_date_edit.clearMinimumDateTime()
+        # Combo boxes tab 1
+        self.my_grouped_sales_combo_box.addItems(Sales.MY_COMBO_BOX_FILLING)
+        self.my_grouped_sales_combo_box.setCurrentText(Sales.MY_COMBO_BOX_FILLING[0])
 
-        self.load_reports()
-        self.load_authors_table()
+        # Combo boxes tab 2
+        self.genre_combo_box.addItems(ShopAndEmployee.BOOK_GENRE_TYPES)
+        self.paper_qualitly_combo_box.addItems(ShopAndEmployee.PAPER_QUALITY_TYPES)
+        self.binding_type_combo_box.addItems(ShopAndEmployee.BINDING_TYPES)
+
+        agencies = Requests.get_publishing_agencies(self.user.connection)
+        self.publisging_agencies_combo_box.addItems(agencies)
+
+
+
 
     @staticmethod
     def _config_table(
@@ -255,3 +273,9 @@ class ManagerForm(manager_form, manager_base):
             return
 
         msg.info_message(f"Author with OD {author_id} was succsesfully deleted.")
+
+    def add_book(self):
+        pass
+
+    def load_books_table(self):
+        pass

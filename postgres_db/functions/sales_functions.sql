@@ -129,5 +129,3 @@ GRANT EXECUTE ON FUNCTION
     get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer) TO user_manager;
 
 ------------------------------------------------------------------------------------------------------
-
-select * from get_top_selling_books(9, '2022-03-08 21:02:24', '2022-08-08 21:02:24');

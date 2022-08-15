@@ -430,8 +430,21 @@ def delete_author(connection, author_id):
     try:
         with connection.cursor() as cursor:
             cursor.callproc("delete_author", (author_id,))
-            result = cursor.fetchall()
+            result = cursor.fetchone()
             connection.commit()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_publishing_agencies(connection):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_publishing_agencies")
+            result = cursor.fetchall()
+            result = [r[0] for r in result]
             return result
 
     except (Exception, pc2.DatabaseError) as error:

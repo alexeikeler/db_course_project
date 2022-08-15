@@ -121,7 +121,22 @@ class HtmlFiles:
 @dataclass
 class ShopAndEmployee:
     SHOPS: tuple = ("1", "2", "3", "4", "5")
-
+    BOOK_GENRE_TYPES: tuple = (
+        "Детектив",
+        "Роман",
+        "Фантастика",
+        "Фэнтези",
+        "Психология",
+        "Философия",
+        "Программирование",
+        "Триллер",
+        "Научная литература",
+        "Мемуары",
+        "Проза",
+        "Поэзия"
+    )
+    PAPER_QUALITY_TYPES: tuple = ("Для глубокой печати", "Типографическая", "Офсетная")
+    BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
 @dataclass
 class WindowsNames:
@@ -177,3 +192,5 @@ class Sales:
     REPORTS_DF_COLUMNS: tuple = ("Report",)
     TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
     AUTHORS_DF_COLUMNS: tuple = ("Id", "Author", "Date of birth", "Date of death")
+
+
