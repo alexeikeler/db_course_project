@@ -6,7 +6,7 @@ import PyQt5.QtWidgets
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from tabulate import tabulate
-
+from datetime import datetime
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
 from config.constants import (Const, Errors, ShopAndEmployee, Sales,
@@ -30,6 +30,38 @@ class ManagerForm(manager_form, manager_base):
         self._config_input_widgets()
         self.load_reports()
         self.load_authors_table()
+        self.load_unsold_books_table()
+        self.load_available_books_table()
+
+        # Test data
+        self.title_line_edit.setText("Лекции по философии постмодерна")
+        self.genre_combo_box.setCurrentText("Философия")
+        self.author_id_spin_box.setValue(30)
+        self.price_double_spin_box.setValue(450.00)
+        self.available_copies_spin_box.setValue(250)
+
+        self.paper_qualitly_combo_box.setCurrentText("Для глубокой печати")
+        self.binding_type_combo_box.setCurrentText("Твёрдый")
+        self.publisging_agencies_combo_box.setCurrentText("BookChef")
+        self.pages_number_spin_box.setValue(300)
+
+    @staticmethod
+    def _config_table(
+        table: QtWidgets.QTableWidget, rows, cols, columns, areas_to_stretch
+    ):
+
+        table.setRowCount(rows)
+        table.setColumnCount(cols)
+        table.setHorizontalHeaderLabels(columns)
+        table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+
+        table.resizeRowsToContents()
+
+        header = table.horizontalHeader()
+        for area, mode in areas_to_stretch:
+            header.setSectionResizeMode(area, mode)
+
+        table.resizeRowsToContents()
 
     def _config_input_widgets(self):
         # Buttons tab 1
@@ -41,7 +73,8 @@ class ManagerForm(manager_form, manager_base):
 
         # Buttons tab 2
         self.add_book_button.clicked.connect(self.add_book)
-        self.update_available_books_button.clicked.connect(self.load_books_table)
+        self.update_available_books_button.clicked.connect(self.load_available_books_table)
+        self.update_unsold_books.clicked.connect(self.load_unsold_books_table)
 
         self.add_author_button.clicked.connect(self.add_author)
         self.update_authors_table_button.clicked.connect(self.load_authors_table)
@@ -62,27 +95,6 @@ class ManagerForm(manager_form, manager_base):
 
         agencies = Requests.get_publishing_agencies(self.user.connection)
         self.publisging_agencies_combo_box.addItems(agencies)
-
-
-
-
-    @staticmethod
-    def _config_table(
-        table: QtWidgets.QTableWidget, rows, cols, columns, areas_to_stretch
-    ):
-
-        table.setRowCount(rows)
-        table.setColumnCount(cols)
-        table.setHorizontalHeaderLabels(columns)
-        table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-
-        table.resizeRowsToContents()
-
-        header = table.horizontalHeader()
-        for area, mode in areas_to_stretch:
-            header.setSectionResizeMode(area, mode)
-
-        table.resizeRowsToContents()
 
     def genre_sales(self):
         to_pdf = self.sales_by_genre_check_box.isChecked()
@@ -262,8 +274,6 @@ class ManagerForm(manager_form, manager_base):
         author_id = int(self.authors_table.item(current_row, 0).text())
         returning = Requests.delete_author(self.user.connection, author_id)
 
-        print(returning, type(returning))
-
         if not returning:
             msg.error_message(
                 Errors.AUTHOR_DELETION_ERROR.format(
@@ -275,7 +285,91 @@ class ManagerForm(manager_form, manager_base):
         msg.info_message(f"Author with OD {author_id} was succsesfully deleted.")
 
     def add_book(self):
+
+        title = self.title_line_edit.text()
+
+        if not title:
+            msg.error_message(Errors.EMPTY_TITLE)
+            return
+
+        genre = self.genre_combo_box.currentText()
+        author_id = self.author_id_spin_box.value()
+        price = self.price_double_spin_box.value()
+        available_copies = self.available_copies_spin_box.value()
+        publ_date = self.publ_date_edit.dateTime().toPyDateTime().strftime("%Y-%m-%d")
+        paper_qual = self.paper_qualitly_combo_box.currentText()
+        binding_type = self.binding_type_combo_box.currentText()
+        publ_agency = self.publisging_agencies_combo_box.currentText()
+        pages_number = self.pages_number_spin_box.value()
+
+        new_edition_id = Requests.add_edition(
+            self.user.connection,
+            self.user.id[0],
+            title,
+            genre,
+            author_id,
+            publ_agency,
+            price,
+            publ_date,
+            available_copies,
+            pages_number,
+            binding_type,
+            paper_qual
+        )
+
+        if new_edition_id is None:
+            Errors.NEW_EDITION_ERROR.format(title)
+            return
+
+        msg.info_message(f"New edition with id {new_edition_id} created succsesfully.")
+
+    def delete_book(self):
+        current_row = self.unsold_books_table.currentRow()
+        edition_id = int(self.unsold_books_table.item(current_row, 0).text())
+        Requests.delete_edition(self.user.connection, edition_id)
+        msg.info_message(f"Edition # {edition_id} deleted!")
+
+    def load_unsold_books_table(self):
+
+        data = pd.DataFrame(
+            Requests.get_not_sold_books(self.user.connection, self.user.id),
+            columns = Sales.NOT_SOLD_BOOKS_DF_COLUMNS
+        )
+        data.insert(data.shape[1], "Delete", "")
+        rows, cols = data.shape
+
+        self._config_table(
+            self.unsold_books_table,
+            rows,
+            cols,
+            data.columns,
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.ResizeToContents),
+                (2, QtWidgets.QHeaderView.Stretch),
+                (3, QtWidgets.QHeaderView.ResizeToContents)
+            ]
+        )
+
+        for i in range(rows):
+
+            delete_button = QtWidgets.QPushButton("")
+            delete_button.setMinimumSize(30, 20)
+            delete_button.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("delete_review"))
+            )
+            delete_button.clicked.connect(self.delete_book)
+
+            for j in range(cols-1):
+                item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.unsold_books_table.setItem(i, j, item)
+
+            self.unsold_books_table.setCellWidget(i, cols - 1, delete_button)
+
+    def load_available_books_table(self):
         pass
 
-    def load_books_table(self):
+    def add_copies(self):
         pass

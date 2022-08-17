@@ -171,6 +171,15 @@ class Errors:
         "\nOnly authors without books in shop can be removed!"
     )
 
+    # Empty book title
+    EMPTY_TITLE: str = "Book title is empty!"
+
+    # New edition creation error
+    NEW_EDITION_ERROR: str = "Error occurred while adding new edition of {0} book."
+
+    # Book deletion error
+
+
 
 @dataclass
 class ReviewsMessages:
@@ -192,5 +201,6 @@ class Sales:
     REPORTS_DF_COLUMNS: tuple = ("Report",)
     TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
     AUTHORS_DF_COLUMNS: tuple = ("Id", "Author", "Date of birth", "Date of death")
+    NOT_SOLD_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title")
 
 

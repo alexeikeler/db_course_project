@@ -439,6 +439,38 @@ def delete_author(connection, author_id):
         connection.rollback()
 
 
+def add_edition(
+        connection,
+        manager_id,
+        title,
+        genre,
+        author_id,
+        publ_agency,
+        price,
+        publ_date,
+        available_copies,
+        pages,
+        binding_type,
+        paper_quality
+):
+    try:
+        params = tuple(locals().values())[1:]
+
+        with connection.cursor() as cursor:
+            for param in params:
+                print(f"VALUE: {param}, DTYPE: {type(param)}")
+
+            cursor.callproc("add_edition", params)
+            result = cursor.fetchall()
+            connection.commit()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        print(str(error))
+        connection.rollback()
+
+
 def get_publishing_agencies(connection):
     try:
         with connection.cursor() as cursor:
@@ -450,3 +482,33 @@ def get_publishing_agencies(connection):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_not_sold_books(connection, manager_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("not_sold_books", (manager_id,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def delete_edition(connection, edition_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("delete_edition", (edition_id,))
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_number_of_books(connection, manager_id):
+    pass
+
+
+def update_editions_number(connection, edition_id, update_by):
+    pass

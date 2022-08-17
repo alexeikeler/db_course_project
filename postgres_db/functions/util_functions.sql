@@ -81,3 +81,148 @@ REVOKE ALL ON FUNCTION
     get_publishing_agencies() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION
     get_publishing_agencies() TO user_manager;
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--Function to add new edition
+
+CREATE OR REPLACE FUNCTION add_edition(
+    manager_id integer,
+    book_title_ varchar,
+    book_genre_type varchar,
+
+    book_author_id integer,
+
+    publishing_agency_ varchar,
+    price_ numeric(7, 2),
+    publishing_date_ date,
+    available_copies_ integer,
+    pages_ integer,
+    binding_type_ varchar,
+    paper_quality_ varchar
+)
+RETURNS INTEGER AS
+    $$
+        DECLARE
+            new_book_id integer;
+            new_authority_id integer;
+            new_edition_id integer;
+            shop_id integer;
+            publ_agency_id integer;
+
+            BEGIN
+
+                SELECT place_of_work INTO shop_id
+                                     FROM employee WHERE employee_id = manager_id;
+
+                SELECT publishing_agency_id INTO publ_agency_id
+                                            FROM publishing_agency WHERE publishing_agency_name = publishing_agency_;
+
+                INSERT INTO book(title, genre_type)
+                VALUES (book_title_, book_genre_type)
+                RETURNING book_id INTO new_book_id;
+
+                INSERT INTO authority(edition_author, edition_book)
+                VALUES (book_author_id, new_book_id)
+                RETURNING authority_id INTO new_authority_id;
+
+                INSERT INTO
+                    edition(
+                            authority_id, publishing_agency_id, concrete_shop, price, publishing_date,
+                            number_of_copies_in_shop, number_of_pages, binding_type, paper_quality
+                           )
+                VALUES
+                    (
+                     new_authority_id, publ_agency_id, shop_id, price_, publishing_date_,
+                     available_copies_, pages_, binding_type_, paper_quality_
+                    )
+                RETURNING edition_number INTO new_edition_id;
+
+                RETURN new_edition_id;
+
+            END;
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    add_edition(
+    manager_id integer,
+    book_title_ varchar,
+    book_genre_type varchar,
+
+    book_author_id integer,
+
+    publishing_agency_ varchar,
+    price numeric(7, 2),
+    publishing_date_ date,
+    available_copies_ integer,
+    pages_ integer,
+    binding_type_ varchar,
+    paper_quality_ varchar
+) FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION
+    add_edition(
+    manager_id integer,
+    book_title_ varchar,
+    book_genre_type varchar,
+
+    book_author_id integer,
+
+    publishing_agency_ varchar,
+    price numeric(7, 2),
+    publishing_date_ date,
+    available_copies_ integer,
+    pages_ integer,
+    binding_type_ varchar,
+    paper_quality_ varchar
+)  TO user_manager;
+
+
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+DROP FUNCTION not_sold_books(manager_id integer);
+CREATE OR REPLACE FUNCTION not_sold_books(manager_id integer)
+RETURNS TABLE (
+    id integer,
+    author_name varchar,
+    book_title varchar
+              )
+AS
+    $$
+        DECLARE
+            shop_id integer;
+        BEGIN
+
+            SELECT employee.place_of_work INTO shop_id FROM employee WHERE employee_id = manager_id;
+
+            RETURN QUERY
+
+            SELECT
+                edition.edition_number AS id,
+                CAST(a.firstname ||' '|| a.lastname AS varchar) author_name,
+                b.title AS book_title
+            FROM
+                edition
+                INNER JOIN authority ON edition.authority_id = authority.authority_id
+                INNER JOIN book b ON b.book_id = authority.edition_book
+                INNER JOIN author a ON a.author_id = authority.edition_author
+                LEFT JOIN chosen c ON edition.edition_number = c.edition_number WHERE c.edition_number IS NULL
+                AND edition.concrete_shop = shop_id;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    not_sold_books(manager_id integer) FROM public;
+GRANT EXECUTE ON FUNCTION
+    not_sold_books(manager_id integer) TO user_manager;
+-----------------------------------------------------------------------

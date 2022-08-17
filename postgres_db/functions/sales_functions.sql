@@ -91,7 +91,7 @@ GRANT EXECUTE ON FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar
 
 
 ------------------------------------------------------------------------------------------------------
-DROP FUNCTION get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0));
+DROP FUNCTION get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer);
 CREATE OR REPLACE FUNCTION get_top_selling_books(
 manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer
 )
