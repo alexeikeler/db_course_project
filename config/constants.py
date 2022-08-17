@@ -19,11 +19,15 @@ class Const:
     EMPLOYEE_REVIEWS_UI_PATH: str = "ui/employees_reviews.ui"
     SHOP_REVIEWS_UI_PATH: str = "ui/shop_reviews.ui"
     SHOW_REVIEW_UI_PATH: str = "ui/review_show.ui"
+    ADD_COPIES_UI_PATH: str = "ui/add_copies.ui"
+
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
     MANAGER_UI_PATH: str = "ui/manager_form.ui"
+
+
 
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
@@ -171,13 +175,14 @@ class Errors:
         "\nOnly authors without books in shop can be removed!"
     )
 
+    NO_AUTHOR_ID: str = "There is no author with ID {0}."
+
     # Empty book title
     EMPTY_TITLE: str = "Book title is empty!"
 
     # New edition creation error
     NEW_EDITION_ERROR: str = "Error occurred while adding new edition of {0} book."
 
-    # Book deletion error
 
 
 
@@ -202,5 +207,6 @@ class Sales:
     TOP_SOLD_BOOKS: tuple = ("Title", "Quantity")
     AUTHORS_DF_COLUMNS: tuple = ("Id", "Author", "Date of birth", "Date of death")
     NOT_SOLD_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title")
+    AVAILABLE_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title", "Available")
 
 

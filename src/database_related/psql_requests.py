@@ -507,8 +507,23 @@ def delete_edition(connection, edition_id):
 
 
 def get_number_of_books(connection, manager_id):
-    pass
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_number_of_books", (manager_id,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
 
 
 def update_editions_number(connection, edition_id, update_by):
-    pass
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("update_editions_number", (edition_id, update_by))
+            connection.commit()
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

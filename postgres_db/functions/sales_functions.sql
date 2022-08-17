@@ -43,7 +43,7 @@ SECURITY DEFINER
 SET search_path = public;
 
 REVOKE ALL ON FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0)) FROM public;
-GRANT EXECUTE ON FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0)) TO user_manager;
+GRANT EXECUTE ON FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0)) TO 7;
 ------------------------------------------------------------------------------------------------------
 DROP FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar);
 CREATE OR REPLACE FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar)

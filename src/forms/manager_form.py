@@ -2,17 +2,16 @@ import os
 import subprocess
 
 import pandas as pd
-import PyQt5.QtWidgets
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from tabulate import tabulate
-from datetime import datetime
+
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
 from config.constants import (Const, Errors, ShopAndEmployee, Sales,
                               WindowsNames)
 from src.plotter import plotter
-
+from src.forms.add_copies import AddCopiesForm
 manager_form, manager_base = uic.loadUiType(uifile=Const.MANAGER_UI_PATH)
 
 
@@ -23,6 +22,7 @@ class ManagerForm(manager_form, manager_base):
         self.setupUi(self)
 
         self.user = user
+        self.add_copies_form = None
 
         self.tab_widget.setTabText(0, WindowsNames.MANAGER_REPORTS_TAB)
         self.tab_widget.setTabText(1, WindowsNames.MANAGER_ADD_BOOKS)
@@ -282,7 +282,7 @@ class ManagerForm(manager_form, manager_base):
             )
             return
 
-        msg.info_message(f"Author with OD {author_id} was succsesfully deleted.")
+        msg.info_message(f"Author with ID {author_id} was succsesfully deleted.")
 
     def add_book(self):
 
@@ -292,8 +292,21 @@ class ManagerForm(manager_form, manager_base):
             msg.error_message(Errors.EMPTY_TITLE)
             return
 
-        genre = self.genre_combo_box.currentText()
         author_id = self.author_id_spin_box.value()
+
+        flag = False
+        for i in range(self.authors_table.rowCount()):
+            if self.authors_table.item(i, 0).text() == str(author_id):
+                flag = True
+                break
+
+        if not flag:
+            msg.error_message(Errors.NO_AUTHOR_ID.format(author_id))
+            return
+
+        del flag
+
+        genre = self.genre_combo_box.currentText()
         price = self.price_double_spin_box.value()
         available_copies = self.available_copies_spin_box.value()
         publ_date = self.publ_date_edit.dateTime().toPyDateTime().strftime("%Y-%m-%d")
@@ -333,7 +346,7 @@ class ManagerForm(manager_form, manager_base):
 
         data = pd.DataFrame(
             Requests.get_not_sold_books(self.user.connection, self.user.id),
-            columns = Sales.NOT_SOLD_BOOKS_DF_COLUMNS
+            columns=Sales.NOT_SOLD_BOOKS_DF_COLUMNS
         )
         data.insert(data.shape[1], "Delete", "")
         rows, cols = data.shape
@@ -369,7 +382,85 @@ class ManagerForm(manager_form, manager_base):
             self.unsold_books_table.setCellWidget(i, cols - 1, delete_button)
 
     def load_available_books_table(self):
-        pass
+        data = pd.DataFrame(
+            Requests.get_number_of_books(self.user.connection, self.user.id),
+            columns=Sales.AVAILABLE_BOOKS_DF_COLUMNS
+        )
+        data.insert(data.shape[1], "Add", "")
+
+        rows, cols = data.shape
+
+        self._config_table(
+            self.available_books_table,
+            rows,
+            cols,
+            data.columns,
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.ResizeToContents),
+                (2, QtWidgets.QHeaderView.Stretch),
+                (3, QtWidgets.QHeaderView.ResizeToContents),
+                (4, QtWidgets.QHeaderView.ResizeToContents)
+
+            ]
+        )
+
+        for i in range(rows):
+
+            add_copies = QtWidgets.QPushButton("")
+            add_copies.setMinimumSize(30, 20)
+            add_copies.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("add_icon"))
+            )
+            add_copies.clicked.connect(self.add_book_copies)
+
+            for j in range(cols - 1):
+                item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.available_books_table.setItem(i, j, item)
+
+            self.available_books_table.setCellWidget(i, cols - 1, add_copies)
+
+    def add_book_copies(self):
+
+        current_row = self.available_books_table.currentRow()
+        edition_id = int(self.available_books_table.item(current_row, 0).text())
+        self.add_copies_form = AddCopiesForm()
+        self.add_copies_form.exec()
+
+        update_by =  self.add_copies_form.update_val
+
+        if update_by is None:
+            return
+
+        #print(f"Updating edition # {edition_id} by {update_by}")
+        Requests.update_editions_number(self.user.connection, edition_id, update_by)
+        msg.info_message(f"Edition # {edition_id} copies number updated")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def add_copies(self):
         pass
