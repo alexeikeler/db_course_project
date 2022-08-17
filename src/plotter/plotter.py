@@ -1,4 +1,6 @@
 import datetime
+import os.path
+from datetime import datetime
 
 import pandas as pd
 import plotly.express as px
@@ -6,7 +8,8 @@ import plotly.graph_objects as go
 import plotly.io
 from plotly.subplots import make_subplots
 
-from config.constants import Const
+import src.custom_qt_widgets.message_boxes as msg
+from config.constants import Const, Errors
 
 
 def order_statuses_piechart(web_view, orders: pd.DataFrame):
@@ -82,7 +85,7 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
 
-def sales_canvas(web_view, general_sales: pd.DataFrame, from_, to_, to_pdf):
+def sales_canvas(web_view, general_sales: pd.DataFrame, from_, to_) -> go.Figure:
     fig = make_subplots(
         rows=2,
         cols=1,
@@ -119,18 +122,10 @@ def sales_canvas(web_view, general_sales: pd.DataFrame, from_, to_, to_pdf):
     fig.update_layout(title=f"Revenue (by genres) from {from_} to {to_}")
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
-    if to_pdf:
-        fig.update_layout(width=800, height=500)
-        file = (
-            str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-            + "_genre_sales_report"
-        )
-        plotly.io.write_image(
-            fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf"
-        )
+    return fig
 
 
-def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str, to_pdf: bool):
+def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str) -> go.Figure:
 
     fig = make_subplots(
         rows=2,
@@ -182,18 +177,10 @@ def date_groupped_sales(web_view, sales: pd.DataFrame, grouped_by: str, to_pdf: 
     )
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
-    if to_pdf:
-        fig.update_layout(width=800, height=500)
-        file = (
-            str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-            + "_date_groupped_sales"
-        )
-        plotly.io.write_image(
-            fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf"
-        )
+    return fig
 
 
-def top_selling_books(web_view, data, l_date, r_date, to_pdf):
+def top_selling_books(web_view, data, l_date, r_date) -> go.Figure:
     fig = px.bar(x=data["Title"], y=data["Quantity"])
     fig.update_layout(
         title=f"Top selling books from {l_date} to {r_date}",
@@ -201,13 +188,21 @@ def top_selling_books(web_view, data, l_date, r_date, to_pdf):
         yaxis_title="Sold",
     )
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+    return fig
 
-    if to_pdf:
-        fig.update_layout(width=800, height=500)
-        file = (
-            str(datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
-            + "_top_selling_books"
-        )
-        plotly.io.write_image(
-            fig, Const.PDF_REPORTS_FILES_BASE.format(file), format="pdf"
-        )
+
+def save_pdf(fig: go.Figure, folder: str, rep_name: str):
+
+    if not os.path.exists(folder):
+        msg.error_message(Errors.NO_SUCH_FOLDER.format(folder))
+
+    full_path = (
+        folder + "/" + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + rep_name
+    )
+    print(full_path)
+
+    try:
+        plotly.io.write_image(fig, full_path, format="pdf")
+
+    except Exception as e:
+        msg.error_message(str(e))

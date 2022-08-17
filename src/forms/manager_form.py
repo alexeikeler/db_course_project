@@ -8,10 +8,11 @@ from tabulate import tabulate
 
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
-from config.constants import (Const, Errors, ShopAndEmployee, Sales,
+from config.constants import (Const, Errors, Sales, ShopAndEmployee,
                               WindowsNames)
-from src.plotter import plotter
 from src.forms.add_copies import AddCopiesForm
+from src.plotter import plotter
+
 manager_form, manager_base = uic.loadUiType(uifile=Const.MANAGER_UI_PATH)
 
 
@@ -23,6 +24,9 @@ class ManagerForm(manager_form, manager_base):
 
         self.user = user
         self.add_copies_form = None
+        self.reports_folder = Const.PDF_REPORTS_FOLDER.format(
+            f"m{self.user.place_of_work}_reports"
+        )
 
         self.tab_widget.setTabText(0, WindowsNames.MANAGER_REPORTS_TAB)
         self.tab_widget.setTabText(1, WindowsNames.MANAGER_ADD_BOOKS)
@@ -73,7 +77,9 @@ class ManagerForm(manager_form, manager_base):
 
         # Buttons tab 2
         self.add_book_button.clicked.connect(self.add_book)
-        self.update_available_books_button.clicked.connect(self.load_available_books_table)
+        self.update_available_books_button.clicked.connect(
+            self.load_available_books_table
+        )
         self.update_unsold_books.clicked.connect(self.load_unsold_books_table)
 
         self.add_author_button.clicked.connect(self.add_author)
@@ -107,24 +113,37 @@ class ManagerForm(manager_form, manager_base):
 
         general_sales_data = pd.DataFrame(
             Requests.get_genre_sales(
-                self.user.connection, self.user.place_of_work, l_date_border, r_date_border
+                self.user.connection,
+                self.user.place_of_work,
+                l_date_border,
+                r_date_border,
             ),
             columns=Sales.GENERAL_GENRE_SALES_DF_COLUMNS,
         )
 
-        plotter.sales_canvas(
-            self.web_view, general_sales_data, l_date_border, r_date_border, to_pdf
+        fig = plotter.sales_canvas(
+            self.web_view, general_sales_data, l_date_border, r_date_border
         )
+
+        if to_pdf:
+            plotter.save_pdf(fig, self.reports_folder, Sales.GENRE_SALES)
 
     def all_sales_by_my(self):
         to_pdf = self.sales_grouped_by_my_check_box.isChecked()
         grouped_by = self.my_grouped_sales_combo_box.currentText()
         data = pd.DataFrame(
-            Requests.get_sales_by_date(self.user.connection, self.user.place_of_work, grouped_by),
+            Requests.get_sales_by_date(
+                self.user.connection, self.user.place_of_work, grouped_by
+            ),
             columns=Sales.MY_SALES_COLUMNS,
         )
 
-        plotter.date_groupped_sales(self.web_view, data, grouped_by, to_pdf)
+        fig = plotter.date_groupped_sales(self.web_view, data, grouped_by)
+
+        if to_pdf:
+            plotter.save_pdf(
+                fig, self.reports_folder, Sales.MY_SALES.format(grouped_by)
+            )
 
     def top_selling_books(self):
         to_pdf = self.top_selling_books_check_box.isChecked()
@@ -139,11 +158,15 @@ class ManagerForm(manager_form, manager_base):
             columns=Sales.TOP_SOLD_BOOKS,
         )
 
-        plotter.top_selling_books(self.web_view, data, l_date, r_date, to_pdf)
+        fig = plotter.top_selling_books(self.web_view, data, l_date, r_date)
+
+        if to_pdf:
+            plotter.save_pdf(fig, self.reports_folder, Sales.TOP_BOOKS_SALES)
 
     def load_reports(self):
+
         reports_df = pd.DataFrame(
-            os.listdir(Const.PDF_REPORTS_FOLDER), columns=Sales.REPORTS_DF_COLUMNS
+            os.listdir(self.reports_folder), columns=Sales.REPORTS_DF_COLUMNS
         )
         reports_df.sort_values(by=["Report"], inplace=True)
         reports_df.insert(0, "Delete", "")
@@ -155,7 +178,11 @@ class ManagerForm(manager_form, manager_base):
             rows,
             cols,
             reports_df.columns,
-            [(2, QtWidgets.QHeaderView.Stretch)],
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.ResizeToContents),
+                (2, QtWidgets.QHeaderView.Stretch),
+            ],
         )
 
         self.reports_table.resizeRowsToContents()
@@ -182,15 +209,14 @@ class ManagerForm(manager_form, manager_base):
         curr_row = self.reports_table.currentRow()
         filename = self.reports_table.item(curr_row, 2).text()
         print(f"Opening {filename}...")
-        #        subprocess.Popen([Const.PDF_REPORTS_FOLDER+filename], shell=True)
-        subprocess.call(["xdg-open", Const.PDF_REPORTS_FOLDER + filename])
+        subprocess.call(["xdg-open", self.reports_folder + "/" + filename])
 
     def delete_report(self):
         curr_row = self.reports_table.currentRow()
         filename = self.reports_table.item(curr_row, 2).text()
 
         try:
-            os.remove(Const.PDF_REPORTS_FOLDER + filename)
+            os.remove(self.reports_folder + "/" + filename)
             msg.info_message(f"File {filename} deleted succsesfully.")
             self.load_reports()
         except Exception as e:
@@ -325,7 +351,7 @@ class ManagerForm(manager_form, manager_base):
             available_copies,
             pages_number,
             binding_type,
-            paper_qual
+            paper_qual,
         )
 
         if new_edition_id is None:
@@ -344,7 +370,7 @@ class ManagerForm(manager_form, manager_base):
 
         data = pd.DataFrame(
             Requests.get_not_sold_books(self.user.connection, self.user.place_of_work),
-            columns=Sales.NOT_SOLD_BOOKS_DF_COLUMNS
+            columns=Sales.NOT_SOLD_BOOKS_DF_COLUMNS,
         )
         data.insert(data.shape[1], "Delete", "")
         rows, cols = data.shape
@@ -358,8 +384,8 @@ class ManagerForm(manager_form, manager_base):
                 (0, QtWidgets.QHeaderView.ResizeToContents),
                 (1, QtWidgets.QHeaderView.ResizeToContents),
                 (2, QtWidgets.QHeaderView.Stretch),
-                (3, QtWidgets.QHeaderView.ResizeToContents)
-            ]
+                (3, QtWidgets.QHeaderView.ResizeToContents),
+            ],
         )
 
         for i in range(rows):
@@ -371,7 +397,7 @@ class ManagerForm(manager_form, manager_base):
             )
             delete_button.clicked.connect(self.delete_book)
 
-            for j in range(cols-1):
+            for j in range(cols - 1):
                 item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -382,7 +408,7 @@ class ManagerForm(manager_form, manager_base):
     def load_available_books_table(self):
         data = pd.DataFrame(
             Requests.get_number_of_books(self.user.connection, self.user.place_of_work),
-            columns=Sales.AVAILABLE_BOOKS_DF_COLUMNS
+            columns=Sales.AVAILABLE_BOOKS_DF_COLUMNS,
         )
         data.insert(data.shape[1], "Add", "")
 
@@ -398,18 +424,15 @@ class ManagerForm(manager_form, manager_base):
                 (1, QtWidgets.QHeaderView.ResizeToContents),
                 (2, QtWidgets.QHeaderView.Stretch),
                 (3, QtWidgets.QHeaderView.ResizeToContents),
-                (4, QtWidgets.QHeaderView.ResizeToContents)
-
-            ]
+                (4, QtWidgets.QHeaderView.ResizeToContents),
+            ],
         )
 
         for i in range(rows):
 
             add_copies = QtWidgets.QPushButton("")
             add_copies.setMinimumSize(30, 20)
-            add_copies.setIcon(
-                QtGui.QIcon(Const.IMAGES_PATH.format("add_icon"))
-            )
+            add_copies.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("add_icon")))
             add_copies.clicked.connect(self.add_book_copies)
 
             for j in range(cols - 1):

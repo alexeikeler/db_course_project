@@ -440,18 +440,18 @@ def delete_author(connection, author_id):
 
 
 def add_edition(
-        connection,
-        manager_pow,
-        title,
-        genre,
-        author_id,
-        publ_agency,
-        price,
-        publ_date,
-        available_copies,
-        pages,
-        binding_type,
-        paper_quality
+    connection,
+    manager_pow,
+    title,
+    genre,
+    author_id,
+    publ_agency,
+    price,
+    publ_date,
+    available_copies,
+    pages,
+    binding_type,
+    paper_quality,
 ):
     try:
         params = tuple(locals().values())[1:]

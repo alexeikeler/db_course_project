@@ -21,13 +21,10 @@ class Const:
     SHOW_REVIEW_UI_PATH: str = "ui/review_show.ui"
     ADD_COPIES_UI_PATH: str = "ui/add_copies.ui"
 
-
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
     MANAGER_UI_PATH: str = "ui/manager_form.ui"
-
-
 
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
@@ -36,17 +33,11 @@ class Const:
     MANAGER_ROLE_CONFIG_PATH: str = "config/manager_role_config.ini"
 
     # IMAGE AND HTML FILES PATH
-    IMAGES_PATH: str = (
-        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/images/{0}.png"
-    )
-    HTML_FILES_PATH: str = (
-        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/frontend/html_files/{0}.html"
-    )
+    IMAGES_PATH: str = "frontend/images/{0}.png"
+    HTML_FILES_PATH: str = "frontend/html_files/{0}.html"
 
-    PDF_REPORTS_FOLDER: str = (
-        "/home/alexei/Uni/3_2/OrgDB_kp/db_course_project/pdf_reports/"
-    )
-    PDF_REPORTS_FILES_BASE: str = PDF_REPORTS_FOLDER + "{0}.pdf"
+    PDF_REPORTS_FOLDER: str = "pdf_reports/{0}/"
+    PDF_REPORTS_FILE: str = "{0}.pdf"
 
     ROLES_NMD_TPL: namedtuple = namedtuple(
         "ROLES_NMD_TPL",
@@ -137,10 +128,11 @@ class ShopAndEmployee:
         "Научная литература",
         "Мемуары",
         "Проза",
-        "Поэзия"
+        "Поэзия",
     )
     PAPER_QUALITY_TYPES: tuple = ("Для глубокой печати", "Типографическая", "Офсетная")
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
+
 
 @dataclass
 class WindowsNames:
@@ -183,7 +175,8 @@ class Errors:
     # New edition creation error
     NEW_EDITION_ERROR: str = "Error occurred while adding new edition of {0} book."
 
-
+    # Error no such folder
+    NO_SUCH_FOLDER: str = "Error adding report. No such folder {0}."
 
 
 @dataclass
@@ -209,4 +202,6 @@ class Sales:
     NOT_SOLD_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title")
     AVAILABLE_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title", "Available")
 
-
+    GENRE_SALES: str = "_genre_sales"
+    MY_SALES: str = "_all_sales_by_{0}"
+    TOP_BOOKS_SALES: str = "_top_selling_books"

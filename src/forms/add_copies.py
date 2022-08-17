@@ -1,5 +1,6 @@
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+
 from config.constants import Const
 
 form, base = uic.loadUiType(uifile=Const.ADD_COPIES_UI_PATH)
@@ -18,4 +19,3 @@ class AddCopiesForm(form, base):
     def update_value(self):
         self.update_val = self.amount_spin_box.value()
         self.close()
-

@@ -90,8 +90,8 @@ class LoginForm(login_form, login_base):
         self.password_line_edit.setText("ekaterina98765")
 
         # SHOP 2
-        # self.username_line_edit.setText(evelinaKOJINA)
-        # self.password_line_edit.setText(bh68Lloo3cYg)
+        # self.username_line_edit.setText("evelinaKOJINA")
+        # self.password_line_edit.setText("bh68Lloo3cYg")
 
         # SHOP 3
         # self.username_line_edit.setText(arnoldEgorov)
