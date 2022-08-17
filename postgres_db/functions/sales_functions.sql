@@ -2,15 +2,15 @@
 ------------------------------------------------------------------------------------------------------
 --Sales by genre between two dates
 
-DROP FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0));
+DROP FUNCTION get_genre_sales(manager_pow integer, l_time timestamp(0), r_time timestamp(0));
 CREATE OR REPLACE FUNCTION get_genre_sales(
-manager_id integer,
+manager_pow integer,
 l_time timestamp(0),
 r_time timestamp(0)
 )
 RETURNS TABLE (
                 genre_type_ varchar,
-                sum_per_genre_ numeric(7, 2),
+                sum_per_genre_ numeric(10, 2),
                 sold_copies_ integer
               )
 AS
@@ -22,16 +22,14 @@ AS
 
                 SELECT
                     genre_type,
-                    sum(sum_to_pay) OVER(PARTITION BY genre_type)::numeric(7, 2) AS sum_per_genre,
+                    sum(sum_to_pay) OVER(PARTITION BY genre_type)::numeric(10, 2) AS sum_per_genre,
                     sum(quantity) OVER(PARTITION BY genre_type):: integer AS sold_copies
                 FROM
-                    sales, employee
+                    sales
                 WHERE
-                    employee.employee_id = manager_id
+                    sales.concrete_shop = manager_pow
                 AND
-                    employee.place_of_work = sales.concrete_shop
-                AND
-                    date_of_order BETWEEN l_time AND r_time) AS inner_select
+                    sales.date_of_order BETWEEN l_time AND r_time) AS inner_select
 
             GROUP BY inner_select.genre_type, inner_select.sum_per_genre, inner_select.sold_copies
             ORDER BY  inner_select.sum_per_genre DESC;
@@ -42,11 +40,18 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
-REVOKE ALL ON FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0)) FROM public;
-GRANT EXECUTE ON FUNCTION get_genre_sales(manager_id integer, l_time timestamp(0), r_time timestamp(0)) TO 7;
+REVOKE ALL ON FUNCTION
+    get_genre_sales(manager_pow integer, l_time timestamp(0), r_time timestamp(0)) FROM public;
+GRANT EXECUTE ON FUNCTION
+    get_genre_sales(manager_pow integer, l_time timestamp(0), r_time timestamp(0)) TO user_manager;
+
 ------------------------------------------------------------------------------------------------------
-DROP FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar);
-CREATE OR REPLACE FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar)
+
+
+------------------------------------------------------------------------------------------------------
+--Function for getting ALL sales for each month / year
+DROP FUNCTION get_sales_by_date(manager_pow integer, trunc_by varchar);
+CREATE OR REPLACE FUNCTION get_sales_by_date(manager_pow integer, trunc_by varchar)
 RETURNS TABLE (
     date_ date,
     sum_per_partition_ numeric(7, 2)
@@ -65,11 +70,9 @@ AS
                     SUM(sum_to_pay) OVER(PARTITION BY date_trunc(trunc_by, date_of_order))::numeric(7, 2)
                         AS sum_per_month
                 FROM
-                    sales, employee
+                    sales
                 WHERE
-                    employee.employee_id = manager_id
-                AND
-                    sales.concrete_shop = employee.place_of_work
+                    sales.concrete_shop = manager_pow
                 )
                 AS inner_select
 
@@ -84,16 +87,16 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
-REVOKE ALL ON FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar) FROM public;
-GRANT EXECUTE ON FUNCTION get_sales_by_date(manager_id integer, trunc_by varchar) TO user_manager;
+REVOKE ALL ON FUNCTION get_sales_by_date(manager_pow integer, trunc_by varchar) FROM public;
+GRANT EXECUTE ON FUNCTION get_sales_by_date(manager_pow integer, trunc_by varchar) TO user_manager;
 
 ------------------------------------------------------------------------------------------------------
 
 
 ------------------------------------------------------------------------------------------------------
-DROP FUNCTION get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer);
+DROP FUNCTION get_top_selling_books(manager_pow integer, l_time timestamp(0), r_time timestamp(0), n_top integer);
 CREATE OR REPLACE FUNCTION get_top_selling_books(
-manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer
+manager_pow integer, l_time timestamp(0), r_time timestamp(0), n_top integer
 )
 RETURNS TABLE (
     title_ varchar,
@@ -107,11 +110,9 @@ AS
                     title,
                     sum(sum(quantity)) OVER(PARTITION BY title)::integer as sold_cop_num
                 FROM
-                    sales, employee
+                    sales
                 WHERE
-                    employee.employee_id = manager_id
-                AND
-                    employee.place_of_work = sales.concrete_shop
+                    sales.concrete_shop = manager_pow
                 AND
                     date_of_order BETWEEN l_time AND r_time
                 GROUP BY title

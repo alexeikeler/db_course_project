@@ -88,7 +88,7 @@ GRANT EXECUTE ON FUNCTION
 --Function to add new edition
 
 CREATE OR REPLACE FUNCTION add_edition(
-    manager_id integer,
+    manager_pow integer,
     book_title_ varchar,
     book_genre_type varchar,
 
@@ -108,24 +108,36 @@ RETURNS INTEGER AS
             new_book_id integer;
             new_authority_id integer;
             new_edition_id integer;
-            shop_id integer;
             publ_agency_id integer;
 
             BEGIN
 
-                SELECT place_of_work INTO shop_id
-                                     FROM employee WHERE employee_id = manager_id;
+                SELECT
+                    publishing_agency_id
+                INTO
+                    publ_agency_id
+                FROM
+                    publishing_agency
+                WHERE
+                    publishing_agency_name = publishing_agency_;
 
-                SELECT publishing_agency_id INTO publ_agency_id
-                                            FROM publishing_agency WHERE publishing_agency_name = publishing_agency_;
+                INSERT INTO
+                    book(title, genre_type)
+                VALUES
+                    (book_title_, book_genre_type)
+                RETURNING
+                    book_id
+                INTO
+                    new_book_id;
 
-                INSERT INTO book(title, genre_type)
-                VALUES (book_title_, book_genre_type)
-                RETURNING book_id INTO new_book_id;
-
-                INSERT INTO authority(edition_author, edition_book)
-                VALUES (book_author_id, new_book_id)
-                RETURNING authority_id INTO new_authority_id;
+                INSERT INTO
+                    authority(edition_author, edition_book)
+                VALUES
+                    (book_author_id, new_book_id)
+                RETURNING
+                    authority_id
+                INTO
+                    new_authority_id;
 
                 INSERT INTO
                     edition(
@@ -134,7 +146,7 @@ RETURNS INTEGER AS
                            )
                 VALUES
                     (
-                     new_authority_id, publ_agency_id, shop_id, price_, publishing_date_,
+                     new_authority_id, publ_agency_id, manager_pow, price_, publishing_date_,
                      available_copies_, pages_, binding_type_, paper_quality_
                     )
                 RETURNING edition_number INTO new_edition_id;
@@ -150,7 +162,7 @@ SET search_path = public;
 
 REVOKE ALL ON FUNCTION
     add_edition(
-    manager_id integer,
+    manager_pow integer,
     book_title_ varchar,
     book_genre_type varchar,
 
@@ -167,7 +179,7 @@ REVOKE ALL ON FUNCTION
 
 GRANT EXECUTE ON FUNCTION
     add_edition(
-    manager_id integer,
+    manager_pow integer,
     book_title_ varchar,
     book_genre_type varchar,
 
@@ -187,8 +199,8 @@ GRANT EXECUTE ON FUNCTION
 
 
 -----------------------------------------------------------------------
-DROP FUNCTION not_sold_books(manager_id integer);
-CREATE OR REPLACE FUNCTION not_sold_books(manager_id integer)
+DROP FUNCTION not_sold_books(manager_pow integer);
+CREATE OR REPLACE FUNCTION not_sold_books(manager_pow integer)
 RETURNS TABLE (
     id integer,
     author_name varchar,
@@ -196,25 +208,22 @@ RETURNS TABLE (
               )
 AS
     $$
-        DECLARE
-            shop_id integer;
         BEGIN
-
-            SELECT employee.place_of_work INTO shop_id FROM employee WHERE employee_id = manager_id;
 
             RETURN QUERY
 
-            SELECT
-                edition.edition_number AS id,
-                CAST(a.firstname ||' '|| a.lastname AS varchar) author_name,
-                b.title AS book_title
-            FROM
-                edition
-                INNER JOIN authority ON edition.authority_id = authority.authority_id
-                INNER JOIN book b ON b.book_id = authority.edition_book
-                INNER JOIN author a ON a.author_id = authority.edition_author
-                LEFT JOIN chosen c ON edition.edition_number = c.edition_number WHERE c.edition_number IS NULL
-                AND edition.concrete_shop = shop_id;
+                SELECT
+                    edition.edition_number AS id,
+                    CAST(a.firstname ||' '|| a.lastname AS varchar) author_name,
+                    b.title AS book_title
+                FROM
+                    edition
+                    INNER JOIN authority ON edition.authority_id = authority.authority_id
+                    INNER JOIN book b ON b.book_id = authority.edition_book
+                    INNER JOIN author a ON a.author_id = authority.edition_author
+                    LEFT JOIN chosen c ON edition.edition_number = c.edition_number WHERE c.edition_number IS NULL
+                    AND edition.concrete_shop = manager_pow;
+
         END;
     $$
 LANGUAGE plpgsql
@@ -222,7 +231,7 @@ SECURITY DEFINER
 SET search_path = public;
 
 REVOKE ALL ON FUNCTION
-    not_sold_books(manager_id integer) FROM public;
+    not_sold_books(manager_pow integer) FROM public;
 GRANT EXECUTE ON FUNCTION
-    not_sold_books(manager_id integer) TO user_manager;
+    not_sold_books(manager_pow integer) TO user_manager;
 -----------------------------------------------------------------------

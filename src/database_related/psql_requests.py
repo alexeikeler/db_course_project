@@ -349,10 +349,10 @@ def delete_review(connection, id):
         connection.rollback()
 
 
-def get_employee_id(connection, login):
+def get_employee_main_data(connection, login):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_employee_id", (login,))
+            cursor.callproc("get_employee_main_data", (login,))
             result = cursor.fetchone()
             return result
 
@@ -361,11 +361,11 @@ def get_employee_id(connection, login):
         connection.rollback()
 
 
-def get_genre_sales(connection, manager_id, l_time_border, r_time_border):
+def get_genre_sales(connection, manager_pow, l_time_border, r_time_border):
     try:
         with connection.cursor() as cursor:
             cursor.callproc(
-                "get_genre_sales", (manager_id, l_time_border, r_time_border)
+                "get_genre_sales", (manager_pow, l_time_border, r_time_border)
             )
             result = cursor.fetchall()
             return result
@@ -375,10 +375,10 @@ def get_genre_sales(connection, manager_id, l_time_border, r_time_border):
         connection.rollback()
 
 
-def get_sales_by_date(connection, manager_id, trunc_by):
+def get_sales_by_date(connection, manager_pow, trunc_by):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_sales_by_date", (manager_id, trunc_by))
+            cursor.callproc("get_sales_by_date", (manager_pow, trunc_by))
             result = cursor.fetchall()
             return result
 
@@ -387,11 +387,11 @@ def get_sales_by_date(connection, manager_id, trunc_by):
         connection.rollback()
 
 
-def get_top_selling_books(connection, manager_id, l_date, r_date, n_top):
+def get_top_selling_books(connection, manager_pow, l_date, r_date, n_top):
     try:
         with connection.cursor() as cursor:
             cursor.callproc(
-                "get_top_selling_books", (manager_id, l_date, r_date, n_top)
+                "get_top_selling_books", (manager_pow, l_date, r_date, n_top)
             )
             result = cursor.fetchall()
             return result
@@ -441,7 +441,7 @@ def delete_author(connection, author_id):
 
 def add_edition(
         connection,
-        manager_id,
+        manager_pow,
         title,
         genre,
         author_id,
@@ -457,8 +457,6 @@ def add_edition(
         params = tuple(locals().values())[1:]
 
         with connection.cursor() as cursor:
-            for param in params:
-                print(f"VALUE: {param}, DTYPE: {type(param)}")
 
             cursor.callproc("add_edition", params)
             result = cursor.fetchall()
@@ -484,10 +482,10 @@ def get_publishing_agencies(connection):
         connection.rollback()
 
 
-def get_not_sold_books(connection, manager_id):
+def get_not_sold_books(connection, manager_pow):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("not_sold_books", (manager_id,))
+            cursor.callproc("not_sold_books", (manager_pow,))
             result = cursor.fetchall()
             return result
 
@@ -506,10 +504,10 @@ def delete_edition(connection, edition_id):
         connection.rollback()
 
 
-def get_number_of_books(connection, manager_id):
+def get_number_of_books(connection, manager_pow):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_number_of_books", (manager_id,))
+            cursor.callproc("get_number_of_books", (manager_pow,))
             result = cursor.fetchall()
             return result
 

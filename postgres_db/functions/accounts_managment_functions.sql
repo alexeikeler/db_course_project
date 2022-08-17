@@ -348,15 +348,20 @@ GRANT EXECUTE ON FUNCTION
 
 
 ---------------------------------------------------------------------------------------
-
---Function for getting employee id
-CREATE OR REPLACE FUNCTION get_employee_id(login varchar)
-RETURNS integer AS
+DROP FUNCTION get_employee_main_data(login varchar);
+--Function for getting employee id and place of work
+CREATE OR REPLACE FUNCTION get_employee_main_data(login varchar)
+RETURNS TABLE(empl_id integer, empl_place_of_work integer) AS
     $$
         BEGIN
-            RETURN(
-                SELECT employee.employee_id FROM employee WHERE employee.employee_login = login
-            );
+            RETURN QUERY
+                SELECT
+                    employee.employee_id, employee.place_of_work
+                FROM
+                    employee
+                WHERE
+                    employee.employee_login = login;
+
         END;
     $$
 
@@ -365,9 +370,9 @@ SECURITY DEFINER
 SET search_path = public;
 
 REVOKE ALL ON FUNCTION
-    get_employee_id(login varchar) FROM public;
+    get_employee_main_data(login varchar) FROM public;
 
 GRANT EXECUTE ON FUNCTION
-    get_employee_id(login varchar) TO user_manager;
+    get_employee_main_data(login varchar) TO user_manager;
 
 ---------------------------------------------------------------------------------------

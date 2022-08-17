@@ -107,7 +107,7 @@ class ManagerForm(manager_form, manager_base):
 
         general_sales_data = pd.DataFrame(
             Requests.get_genre_sales(
-                self.user.connection, self.user.id, l_date_border, r_date_border
+                self.user.connection, self.user.place_of_work, l_date_border, r_date_border
             ),
             columns=Sales.GENERAL_GENRE_SALES_DF_COLUMNS,
         )
@@ -120,7 +120,7 @@ class ManagerForm(manager_form, manager_base):
         to_pdf = self.sales_grouped_by_my_check_box.isChecked()
         grouped_by = self.my_grouped_sales_combo_box.currentText()
         data = pd.DataFrame(
-            Requests.get_sales_by_date(self.user.connection, self.user.id, grouped_by),
+            Requests.get_sales_by_date(self.user.connection, self.user.place_of_work, grouped_by),
             columns=Sales.MY_SALES_COLUMNS,
         )
 
@@ -134,12 +134,10 @@ class ManagerForm(manager_form, manager_base):
 
         data = pd.DataFrame(
             Requests.get_top_selling_books(
-                self.user.connection, self.user.id, l_date, r_date, n_top
+                self.user.connection, self.user.place_of_work, l_date, r_date, n_top
             ),
             columns=Sales.TOP_SOLD_BOOKS,
         )
-
-        print(tabulate(data, headers=data.columns, tablefmt="pretty"))
 
         plotter.top_selling_books(self.web_view, data, l_date, r_date, to_pdf)
 
@@ -317,7 +315,7 @@ class ManagerForm(manager_form, manager_base):
 
         new_edition_id = Requests.add_edition(
             self.user.connection,
-            self.user.id[0],
+            self.user.place_of_work,
             title,
             genre,
             author_id,
@@ -345,7 +343,7 @@ class ManagerForm(manager_form, manager_base):
     def load_unsold_books_table(self):
 
         data = pd.DataFrame(
-            Requests.get_not_sold_books(self.user.connection, self.user.id),
+            Requests.get_not_sold_books(self.user.connection, self.user.place_of_work),
             columns=Sales.NOT_SOLD_BOOKS_DF_COLUMNS
         )
         data.insert(data.shape[1], "Delete", "")
@@ -383,7 +381,7 @@ class ManagerForm(manager_form, manager_base):
 
     def load_available_books_table(self):
         data = pd.DataFrame(
-            Requests.get_number_of_books(self.user.connection, self.user.id),
+            Requests.get_number_of_books(self.user.connection, self.user.place_of_work),
             columns=Sales.AVAILABLE_BOOKS_DF_COLUMNS
         )
         data.insert(data.shape[1], "Add", "")
@@ -429,38 +427,10 @@ class ManagerForm(manager_form, manager_base):
         self.add_copies_form = AddCopiesForm()
         self.add_copies_form.exec()
 
-        update_by =  self.add_copies_form.update_val
+        update_by = self.add_copies_form.update_val
 
         if update_by is None:
             return
 
-        #print(f"Updating edition # {edition_id} by {update_by}")
         Requests.update_editions_number(self.user.connection, edition_id, update_by)
         msg.info_message(f"Edition # {edition_id} copies number updated")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    def add_copies(self):
-        pass
