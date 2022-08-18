@@ -202,6 +202,10 @@ class Sales:
     NOT_SOLD_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title")
     AVAILABLE_BOOKS_DF_COLUMNS: tuple = ("Id", "Author", "Title", "Available")
 
+    ORDERS_STATUSES_COUNT_DF_COLUMNS: tuple = ("State", "Counted")
+    PAYMENT_TYPES_COUNT_DF_COLUMNS: tuple = ("Payment type", "Counted")
+
     GENRE_SALES: str = "_genre_sales"
     MY_SALES: str = "_all_sales_by_{0}"
     TOP_BOOKS_SALES: str = "_top_selling_books"
+    ORDERS_AND_PAY_PIECHART: str = "_orders_statuses_and_payment_piechart"

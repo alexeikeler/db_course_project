@@ -69,11 +69,12 @@ class ManagerForm(manager_form, manager_base):
 
     def _config_input_widgets(self):
         # Buttons tab 1
-        self.sales_by_genre_button.clicked.connect(self.genre_sales)
+        self.sales_by_genre_button.clicked.connect(self.genre_sales_stats)
 
-        self.my_grouped_select_button.clicked.connect(self.all_sales_by_my)
+        self.my_grouped_select_button.clicked.connect(self.all_sales_by_my_stats)
         self.update_reports_table_button.clicked.connect(self.load_reports)
-        self.top_selling_books_button.clicked.connect(self.top_selling_books)
+        self.top_selling_books_button.clicked.connect(self.top_selling_books_stats)
+        self.order_and_payment_button.clicked.connect(self.order_and_payment_type_stats)
 
         # Buttons tab 2
         self.add_book_button.clicked.connect(self.add_book)
@@ -102,7 +103,7 @@ class ManagerForm(manager_form, manager_base):
         agencies = Requests.get_publishing_agencies(self.user.connection)
         self.publisging_agencies_combo_box.addItems(agencies)
 
-    def genre_sales(self):
+    def genre_sales_stats(self):
         to_pdf = self.sales_by_genre_check_box.isChecked()
         l_date_border = self.sales_genre_l_datetime.dateTime().toPyDateTime()
         r_date_border = self.sales_genre_r_datetime.dateTime().toPyDateTime()
@@ -128,7 +129,7 @@ class ManagerForm(manager_form, manager_base):
         if to_pdf:
             plotter.save_pdf(fig, self.reports_folder, Sales.GENRE_SALES)
 
-    def all_sales_by_my(self):
+    def all_sales_by_my_stats(self):
         to_pdf = self.sales_grouped_by_my_check_box.isChecked()
         grouped_by = self.my_grouped_sales_combo_box.currentText()
         data = pd.DataFrame(
@@ -145,7 +146,7 @@ class ManagerForm(manager_form, manager_base):
                 fig, self.reports_folder, Sales.MY_SALES.format(grouped_by)
             )
 
-    def top_selling_books(self):
+    def top_selling_books_stats(self):
         to_pdf = self.top_selling_books_check_box.isChecked()
         n_top = self.top_selling_books_spin_box.value()
         l_date = self.top_books_l_date_edit.dateTime().toPyDateTime()
@@ -162,6 +163,32 @@ class ManagerForm(manager_form, manager_base):
 
         if to_pdf:
             plotter.save_pdf(fig, self.reports_folder, Sales.TOP_BOOKS_SALES)
+
+    def order_and_payment_type_stats(self):
+        to_pdf = self.order_and_payment_check_box.isChecked()
+        l_date = self.order_and_payment_l_datetime.dateTime().toPyDateTime()
+        r_date = self.order_and_payment_r_datetime.dateTime().toPyDateTime()
+
+        print(to_pdf, l_date, r_date)
+        orders_data = pd.DataFrame(
+            Requests.orders_statuses_count(
+                self.user.connection, self.user.place_of_work, l_date, r_date
+            ),
+            columns=Sales.ORDERS_STATUSES_COUNT_DF_COLUMNS
+        )
+        payment_data = pd.DataFrame(
+            Requests.payment_type_count(
+                self.user.connection, self.user.place_of_work, l_date, r_date
+            ),
+            columns=Sales.PAYMENT_TYPES_COUNT_DF_COLUMNS
+        )
+
+        fig = plotter.order_and_payment_pie(
+            self.web_view, orders_data, payment_data, l_date, r_date
+        )
+
+        if to_pdf:
+            plotter.save_pdf(fig, self.reports_folder, Sales.ORDERS_AND_PAY_PIECHART)
 
     def load_reports(self):
 
@@ -453,5 +480,4 @@ class ManagerForm(manager_form, manager_base):
 
         Requests.update_editions_number(self.user.connection, edition_id, update_by)
         msg.info_message(f"Edition # {edition_id} copies number updated")
-####123123123
-#!@#!@#!@#
+

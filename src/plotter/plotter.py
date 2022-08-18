@@ -191,13 +191,67 @@ def top_selling_books(web_view, data, l_date, r_date) -> go.Figure:
     return fig
 
 
+def order_and_payment_pie(
+        web_view, orders_data: pd.DataFrame, payment_data: pd.DataFrame, l_date, r_date
+) -> go.Figure:
+
+    fig = make_subplots(
+        rows=1,
+        cols=2,
+        specs=[[{"type": "pie"}, {"type": "pie"}]],
+        subplot_titles=[
+            "Client orders statuses",
+            "Payment types"
+        ],
+        horizontal_spacing=0.15,
+    )
+
+    fig.add_trace(
+        go.Pie(
+            labels=orders_data["State"],
+            values=orders_data["Counted"],
+            legendgroup="group1",
+            legendgrouptitle=dict(text="Statuses"),
+            name="",
+        ),
+        row=1,
+        col=1,
+    )
+
+    fig.add_trace(
+        go.Pie(
+            labels=payment_data["Payment type"],
+            values=payment_data["Counted"],
+            legendgroup="group2",
+            legendgrouptitle=dict(text="Payment types"),
+            name="",
+        ),
+        row=1,
+        col=2,
+    )
+
+    fig.update_layout(
+        legend_title="Orders statuses and payment types statistic",
+        legend_tracegroupgap=10,
+        margin=dict(l=0, r=0, t=20, b=0),
+        font=dict(size=10),
+    )
+    fig.update_annotations(
+        font_size=12
+    )
+
+    web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
+
+    return fig
+
+
 def save_pdf(fig: go.Figure, folder: str, rep_name: str):
 
     if not os.path.exists(folder):
         msg.error_message(Errors.NO_SUCH_FOLDER.format(folder))
 
     full_path = (
-        folder + "/" + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + rep_name
+        folder + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + rep_name
     )
     print(full_path)
 

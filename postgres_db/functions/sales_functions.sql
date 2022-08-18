@@ -130,3 +130,80 @@ GRANT EXECUTE ON FUNCTION
     get_top_selling_books(manager_id integer, l_time timestamp(0), r_time timestamp(0), n_top integer) TO user_manager;
 
 ------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_order_statuses_count(manager_pow integer, l_date timestamp, r_date timestamp);
+CREATE OR REPLACE FUNCTION get_order_statuses_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0))
+RETURNS TABLE (
+    order_status_ varchar,
+    counted_ integer
+              )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+                SELECT
+                    order_status,
+                    count(order_status)::integer as counted
+                FROM
+                    sales
+                WHERE
+                    concrete_shop = manager_pow
+                AND
+                    sales.date_of_order BETWEEN l_date AND r_date
+                GROUP BY order_status;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    get_order_statuses_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0)) FROM public;
+GRANT EXECUTE ON FUNCTION
+    get_order_statuses_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0)) TO user_manager;
+------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_payment_types_count(manager_pow integer, l_date timestamp, r_date timestamp);
+CREATE OR REPLACE FUNCTION get_payment_types_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0))
+RETURNS TABLE (
+    payment_type_ varchar,
+    counted_ integer
+              )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+                SELECT
+                    payment_type,
+                    count(payment_type)::integer as counted
+                FROM
+                    sales
+                WHERE
+                    concrete_shop = manager_pow
+                AND
+                    sales.date_of_order BETWEEN l_date AND r_date
+                GROUP BY payment_type;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    get_payment_types_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0)) FROM public;
+GRANT EXECUTE ON FUNCTION
+    get_payment_types_count(manager_pow integer, l_date timestamp(0), r_date timestamp(0)) TO user_manager;
+
+
+------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+

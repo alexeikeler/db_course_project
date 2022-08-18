@@ -525,3 +525,27 @@ def update_editions_number(connection, edition_id, update_by):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def orders_statuses_count(connection, manager_pow, l_date, r_date):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_order_statuses_count", (manager_pow, l_date, r_date))
+            results = cursor.fetchall()
+            return results
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def payment_type_count(connection,  manager_pow, l_date, r_date):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_payment_types_count", (manager_pow, l_date, r_date))
+            results = cursor.fetchall()
+            return results
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
