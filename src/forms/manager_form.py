@@ -318,17 +318,13 @@ class ManagerForm(manager_form, manager_base):
 
         author_id = self.author_id_spin_box.value()
 
-        flag = False
-        for i in range(self.authors_table.rowCount()):
-            if self.authors_table.item(i, 0).text() == str(author_id):
-                flag = True
-                break
+        ids = [self.authors_table.item(i, 0).text for i in range(self.authors_table.rowCount())]
 
-        if not flag:
+        if str(author_id) not in ids:
             msg.error_message(Errors.NO_AUTHOR_ID.format(author_id))
             return
 
-        del flag
+        del ids
 
         genre = self.genre_combo_box.currentText()
         price = self.price_double_spin_box.value()
