@@ -25,12 +25,14 @@ class Const:
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
     MANAGER_UI_PATH: str = "ui/manager_form.ui"
+    ADMIN_UI_PATH: str = "ui/admin_form.ui"
 
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
     CLIENT_ROLE_CONFIG_PATH: str = "config/client_role_config.ini"
     USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
     MANAGER_ROLE_CONFIG_PATH: str = "config/manager_role_config.ini"
+    ADMIN_ROLE_CONFIG_PATH: str = "config/admin_role_config.ini"
 
     # IMAGE AND HTML FILES PATH
     IMAGES_PATH: str = "frontend/images/{0}.png"

@@ -207,6 +207,7 @@ GRANT EXECUTE ON FUNCTION
 --------------------------------------------------------------------------------------
 --Function to create employee account
 --------------------------------------------------------------------------------------
+DROP FUNCTION create_employee(employee_lastname_ varchar, employee_firstname_ varchar, employee_position_ varchar, employee_salary_ numeric(7,2), employee_phone_num_ varchar, employee_email_ varchar, employee_login_ varchar, employee_password_ varchar, employee_place_of_work integer);
 CREATE OR REPLACE FUNCTION create_employee(
     employee_lastname_ varchar,
     employee_firstname_ varchar,
@@ -218,13 +219,36 @@ CREATE OR REPLACE FUNCTION create_employee(
     employee_password_ varchar,
     employee_place_of_work integer
 )
-    RETURNS BOOL AS
+    RETURNS VOID AS
     $$
         BEGIN
-            INSERT INTO employee
-                (lastname, firstname, employee_position, salary, phone_number, email, employee_login, place_of_work)
-            VALUES
-                (
+
+           IF EXISTS(
+               SELECT
+                   employee_id
+               FROM
+                   employee
+               WHERE
+                   employee_position = employee_position_ AND place_of_work = employee_place_of_work
+               ) THEN
+                   RAISE WARNING
+                       'Employee with position % already exists in shop # %. '
+                         'If you need new employee with this position in this shop, '
+                         'please delete old one first.', employee_position_, employee_place_of_work;
+                   RETURN;
+           END IF;
+
+           IF EXISTS(SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
+                RAISE WARNING
+                    'Employee with login % already exists!', employee_login_;
+                RETURN;
+           END IF;
+
+
+           INSERT INTO employee
+               (lastname, firstname, employee_position, salary, phone_number, email, employee_login, place_of_work)
+           VALUES
+               (
                  employee_lastname_,
                  employee_firstname_,
                  employee_position_,
@@ -233,25 +257,54 @@ CREATE OR REPLACE FUNCTION create_employee(
                  employee_email_,
                  employee_login_,
                  employee_place_of_work
-                 );
+               );
 
-            INSERT INTO
-                users(user_login, user_role, user_password)
-            VALUES
-                (employee_login_, employee_position_, employee_password_);
+           INSERT INTO
+               users(user_login, user_role, user_password)
+           VALUES
+               (employee_login_, employee_position_, employee_password_);
 
 
         IF EXISTS( SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
-            RETURN TRUE;
+            RAISE INFO 'New account: ROLE - % | LOGIN - % created.', employee_position_, employee_login_;
+            RETURN;
         ELSE
-            RETURN FALSE;
+            RAISE WARNING
+                'Error occured while creating account: ROLE - % | LOGIN - %', employee_position_, employee_login_;
+            RETURN;
         END IF;
 
-        END;
+        END
     $$
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
+
+REVOKE ALL ON FUNCTION create_employee(
+    employee_lastname_ varchar,
+    employee_firstname_ varchar,
+    employee_position_ varchar,
+    employee_salary_ numeric(7, 2),
+    employee_phone_num_ varchar,
+    employee_email_ varchar,
+    employee_login_ varchar,
+    employee_password_ varchar,
+    employee_place_of_work integer
+)
+    FROM PUBLIC;
+
+GRANT EXECUTE ON FUNCTION create_employee(
+    employee_lastname_ varchar,
+    employee_firstname_ varchar,
+    employee_position_ varchar,
+    employee_salary_ numeric(7, 2),
+    employee_phone_num_ varchar,
+    employee_email_ varchar,
+    employee_login_ varchar,
+    employee_password_ varchar,
+    employee_place_of_work integer
+)
+    TO user_admin;
 ---------------------------------------------------------------------------------------
 
 

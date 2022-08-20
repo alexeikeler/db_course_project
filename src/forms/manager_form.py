@@ -4,13 +4,12 @@ import subprocess
 import pandas as pd
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from tabulate import tabulate
 
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
 from config.constants import (Const, Errors, Sales, ShopAndEmployee,
                               WindowsNames)
-from src.forms.add_copies import AddCopiesForm
+from src.forms.add_copies_form import AddCopiesForm
 from src.plotter import plotter
 
 manager_form, manager_base = uic.loadUiType(uifile=Const.MANAGER_UI_PATH)
@@ -480,4 +479,3 @@ class ManagerForm(manager_form, manager_base):
 
         Requests.update_editions_number(self.user.connection, edition_id, update_by)
         msg.info_message(f"Edition # {edition_id} copies number updated")
-

@@ -539,12 +539,49 @@ def orders_statuses_count(connection, manager_pow, l_date, r_date):
         connection.rollback()
 
 
-def payment_type_count(connection,  manager_pow, l_date, r_date):
+def payment_type_count(connection, manager_pow, l_date, r_date):
     try:
         with connection.cursor() as cursor:
             cursor.callproc("get_payment_types_count", (manager_pow, l_date, r_date))
             results = cursor.fetchall()
             return results
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def create_employee(
+        connection,
+        empl_lastname,
+        empl_firstname,
+        empl_position,
+        empl_salary,
+        empl_phone,
+        empl_email,
+        empl_login,
+        empl_password,
+        empl_pow
+):
+    try:
+
+        params = tuple(locals().values())[1:]
+
+        with connection.cursor() as cursor:
+            cursor.callproc("create_employee", params)
+
+            message: str = connection.notices[-1]
+
+            if message.startswith("WARNING"):
+                msg.warning_message(message)
+            elif message.startswith("INFO"):
+                msg.info_message(message)
+            else:
+                msg.error_message(message)
+
+            connection.commit()
+            result = cursor.fetchone()
+            return result
 
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))

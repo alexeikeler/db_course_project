@@ -8,14 +8,18 @@ import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
 from config.constants import Const, Errors
+
 from src.forms.create_account_form import AccountForm
 from src.forms.manager_form import ManagerForm
 from src.forms.shop_assistant_form import ShopAssistantForm
 from src.forms.shop_form import ShopForm
+from src.forms.admin_form import AdminForm
+
 from src.roles.client_role import ClientRole
 from src.roles.manager_role import ManagerRole
 from src.roles.shop_assistant_role import ShopAssistantRole
 from src.roles.user_checker_role import UserCheckerRole
+from src.roles.admin_role import AdminRole
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
 
@@ -40,12 +44,14 @@ class LoginForm(login_form, login_base):
             Const.ROLES.CLIENT_ROLE: ClientRole,
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantRole,
             Const.ROLES.MANAGER_ROLE: ManagerRole,
+            Const.ROLES.ADMIN_ROLE: AdminRole
         }
 
         self.forms = {
             Const.ROLES.CLIENT_ROLE: ShopForm,
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantForm,
             Const.ROLES.MANAGER_ROLE: ManagerForm,
+            Const.ROLES.ADMIN_ROLE: AdminForm
         }
 
         # ----------------------------------------------------------
@@ -86,8 +92,8 @@ class LoginForm(login_form, login_base):
         # ----------------------------------------------------------
 
         # SHOP 1
-        self.username_line_edit.setText("ekaterina_makarchuck")
-        self.password_line_edit.setText("ekaterina98765")
+        # self.username_line_edit.setText("ekaterina_makarchuck")
+        # self.password_line_edit.setText("ekaterina98765")
 
         # SHOP 2
         # self.username_line_edit.setText("evelinaKOJINA")
@@ -104,6 +110,29 @@ class LoginForm(login_form, login_base):
         # SHOP 5
         # self.username_line_edit.setText(IsaevNikita)
         # self.password_line_edit.setText(48wRADXq1b2d)
+
+        # ----------------------------------------------------------
+        # For admin test
+        # ----------------------------------------------------------
+        # SHOP 1
+        # self.username_line_edit.setText("makarov_daniiL")
+        # self.password_line_edit.setText("mkrvdnl83492")
+
+        # SHOP 2
+        self.username_line_edit.setText("eleonora_kruj")
+        self.password_line_edit.setText("JUKSeKdDG6v6")
+
+        # SHOP 3
+        # self.username_line_edit.setText("ribakova_marija")
+        # self.password_line_edit.setText("YkZzMo1cCst8")
+
+        # SHOP 4
+        # self.username_line_edit.setText("ribakova_marija")
+        # self.password_line_edit.setText("jc7fRWsAmGUS")
+
+        # SHOP 5
+        # self.username_line_edit.setText("kropotovAndrei")
+        # self.password_line_edit.setText("MdRKPBpzkuWM")
 
     def __role_start(self, login, role):
         conn = db_conn.establish_db_connection(role)
