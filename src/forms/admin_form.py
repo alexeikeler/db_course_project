@@ -3,7 +3,8 @@ import src.database_related.psql_requests as Requests
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from config.constants import Const
-
+from functools import partial
+import src.custom_qt_widgets.functionality as widget_funcs
 
 admin_form, admin_base = uic.loadUiType(uifile=Const.ADMIN_UI_PATH)
 
@@ -17,7 +18,12 @@ class AdminForm(admin_form, admin_base):
         self.user = user
 
         self.create_acc_button.clicked.connect(self.create_employee_account)
-        self.hide_password_button.clicked.connect(self.toggle_password_visibility)
+        self.hide_password_button.clicked.connect(
+            partial(
+                widget_funcs.hide_password,
+                self.empl_password_line_edit
+            )
+        )
 
         # TEST
         self.position_combo_box.addItems(
@@ -41,7 +47,7 @@ class AdminForm(admin_form, admin_base):
 
     def create_employee_account(self):
 
-        result = Requests.create_employee(
+        Requests.create_employee(
             self.user.connection,
             self.empl_lastname_line_edit.text(),
             self.empl_firstname_line_edit.text(),
@@ -54,8 +60,8 @@ class AdminForm(admin_form, admin_base):
             self.pow_spin_box.value()
         )
 
-    def toggle_password_visibility(self):
-        if self.empl_password_line_edit.echoMode() == QtWidgets.QLineEdit.Normal:
-            self.empl_password_line_edit.setEchoMode(QtWidgets.QLineEdit.Password)
-        else:
-            self.empl_password_line_edit.setEchoMode(QtWidgets.QLineEdit.Normal)
+    def load_clients_table(self):
+        pass
+
+    def load_employees_table(self):
+        pass

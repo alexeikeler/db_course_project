@@ -3,8 +3,9 @@ from time import sleep
 
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtWidgets, uic
-
+from functools import partial
 import src.custom_qt_widgets.message_boxes as msg
+import src.custom_qt_widgets.functionality as widget_funcs
 import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
 from config.constants import Const, Errors
@@ -38,7 +39,12 @@ class LoginForm(login_form, login_base):
 
         self.login_button.clicked.connect(self.login_user)
         self.create_new_account_button.clicked.connect(self.create_account)
-        self.eyepassword_button.clicked.connect(self.toggle_password_visibility)
+        self.eyepassword_button.clicked.connect(
+            partial(
+                widget_funcs.hide_password,
+                self.password_line_edit
+            )
+        )
 
         self.roles = {
             Const.ROLES.CLIENT_ROLE: ClientRole,
@@ -58,8 +64,12 @@ class LoginForm(login_form, login_base):
         # For client test
         # ----------------------------------------------------------
 
-        # self.username_line_edit.setText('test_login')
-        # self.password_line_edit.setText('test_password')
+        self.username_line_edit.setText('test_login')
+        self.password_line_edit.setText('test_password')
+
+        # self.username_line_edit.setText("TamaraKanaeva605")
+        # self.password_line_edit.setText("dnFfoXzs06WX")
+
 
         # ----------------------------------------------------------
 
@@ -72,8 +82,8 @@ class LoginForm(login_form, login_base):
         # self.password_line_edit.setText("ptrvV1988")
 
         # SHOP 2
-        # self.username_line_edit.setText("PavlovSergei")
-        # self.password_line_edit.setText("IqmKAOZTbT38")
+        #self.username_line_edit.setText("PavlovSergei")
+        #self.password_line_edit.setText("IqmKAOZTbT38")
 
         # SHOP 3
         # self.username_line_edit.setText("anastasijaKutuzova")
@@ -115,12 +125,13 @@ class LoginForm(login_form, login_base):
         # For admin test
         # ----------------------------------------------------------
         # SHOP 1
+        
         # self.username_line_edit.setText("makarov_daniiL")
         # self.password_line_edit.setText("mkrvdnl83492")
 
         # SHOP 2
-        self.username_line_edit.setText("eleonora_kruj")
-        self.password_line_edit.setText("JUKSeKdDG6v6")
+        #self.username_line_edit.setText("eleonora_kruj")
+        #self.password_line_edit.setText("JUKSeKdDG6v6")
 
         # SHOP 3
         # self.username_line_edit.setText("ribakova_marija")
@@ -172,12 +183,6 @@ class LoginForm(login_form, login_base):
 
             logging.info(f"\n user_checker logged off successfully.\n")
             self.__role_start(user_login, user_role[0])
-
-    def toggle_password_visibility(self):
-        if self.password_line_edit.echoMode() == QtWidgets.QLineEdit.Normal:
-            self.password_line_edit.setEchoMode(QtWidgets.QLineEdit.Password)
-        else:
-            self.password_line_edit.setEchoMode(QtWidgets.QLineEdit.Normal)
 
     def create_account(self):
         self.account_form = AccountForm()

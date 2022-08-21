@@ -6,7 +6,9 @@ import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 import src.custom_qt_widgets.message_boxes as msg
+import src.custom_qt_widgets.functionality as widget_funcs
 import src.database_related.psql_requests as Requests
+
 from config.constants import (Const, Errors, Sales, ShopAndEmployee,
                               WindowsNames)
 from src.forms.add_copies_form import AddCopiesForm
@@ -48,23 +50,23 @@ class ManagerForm(manager_form, manager_base):
         self.publisging_agencies_combo_box.setCurrentText("BookChef")
         self.pages_number_spin_box.setValue(300)
 
-    @staticmethod
-    def _config_table(
-        table: QtWidgets.QTableWidget, rows, cols, columns, areas_to_stretch
-    ):
-
-        table.setRowCount(rows)
-        table.setColumnCount(cols)
-        table.setHorizontalHeaderLabels(columns)
-        table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
-
-        table.resizeRowsToContents()
-
-        header = table.horizontalHeader()
-        for area, mode in areas_to_stretch:
-            header.setSectionResizeMode(area, mode)
-
-        table.resizeRowsToContents()
+    # @staticmethod
+    # def _config_table(
+    #     table: QtWidgets.QTableWidget, rows, cols, columns, areas_to_stretch
+    # ):
+    #
+    #     table.setRowCount(rows)
+    #     table.setColumnCount(cols)
+    #     table.setHorizontalHeaderLabels(columns)
+    #     table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+    #
+    #     table.resizeRowsToContents()
+    #
+    #     header = table.horizontalHeader()
+    #     for area, mode in areas_to_stretch:
+    #         header.setSectionResizeMode(area, mode)
+    #
+    #     table.resizeRowsToContents()
 
     def _config_input_widgets(self):
         # Buttons tab 1
@@ -199,7 +201,7 @@ class ManagerForm(manager_form, manager_base):
         reports_df.insert(0, "Open", "")
 
         rows, cols = reports_df.shape
-        self._config_table(
+        widget_funcs.config_table(
             self.reports_table,
             rows,
             cols,
@@ -262,7 +264,7 @@ class ManagerForm(manager_form, manager_base):
         self.author_name_line_edit.setCompleter(author_completer)
 
         rows, cols = data.shape
-        self._config_table(
+        widget_funcs.config_table(
             self.authors_table,
             rows,
             cols,
@@ -397,7 +399,7 @@ class ManagerForm(manager_form, manager_base):
         data.insert(data.shape[1], "Delete", "")
         rows, cols = data.shape
 
-        self._config_table(
+        widget_funcs.config_table(
             self.unsold_books_table,
             rows,
             cols,
@@ -436,7 +438,7 @@ class ManagerForm(manager_form, manager_base):
 
         rows, cols = data.shape
 
-        self._config_table(
+        widget_funcs.config_table(
             self.available_books_table,
             rows,
             cols,

@@ -4,7 +4,9 @@ from functools import partial
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 import src.custom_qt_widgets.message_boxes as msg
+import src.custom_qt_widgets.functionality as widget_funcs
 import src.database_related.psql_requests as Requests
+
 from config.constants import Const
 
 chg_pswd_form, chg_pswd_base = uic.loadUiType(uifile=Const.CHANGE_PSWRD_FORM_UI_PATH)
@@ -24,19 +26,11 @@ class ChangePasswordForm(chg_pswd_form, chg_pswd_base):
         self.exit_button.clicked.connect(self.close_app)
 
         self.show_old_password_button.clicked.connect(
-            partial(self.toggle_password_visibility, self.old_password_line_edit)
+            partial(widget_funcs.hide_password, self.old_password_line_edit)
         )
         self.show_new_password_button.clicked.connect(
-            partial(self.toggle_password_visibility, self.new_password_line_edit)
+            partial(widget_funcs.hide_password, self.new_password_line_edit)
         )
-
-    @staticmethod
-    def toggle_password_visibility(password_line):
-
-        if password_line.echoMode() == QtWidgets.QLineEdit.Normal:
-            password_line.setEchoMode(QtWidgets.QLineEdit.Password)
-        else:
-            password_line.setEchoMode(QtWidgets.QLineEdit.Normal)
 
     def change(self):
 

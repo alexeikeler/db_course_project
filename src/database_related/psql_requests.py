@@ -586,3 +586,15 @@ def create_employee(
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def delete_client(connection, client_id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("", (client_id,))
+            connection.commit()
+            result = cursor.fetchone()
+            return result
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
