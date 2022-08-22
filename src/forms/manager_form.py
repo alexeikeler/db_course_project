@@ -5,10 +5,9 @@ import pandas as pd
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-import src.custom_qt_widgets.message_boxes as msg
 import src.custom_qt_widgets.functionality as widget_funcs
+import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
-
 from config.constants import (Const, Errors, Sales, ShopAndEmployee,
                               WindowsNames)
 from src.forms.add_copies_form import AddCopiesForm
@@ -175,13 +174,13 @@ class ManagerForm(manager_form, manager_base):
             Requests.orders_statuses_count(
                 self.user.connection, self.user.place_of_work, l_date, r_date
             ),
-            columns=Sales.ORDERS_STATUSES_COUNT_DF_COLUMNS
+            columns=Sales.ORDERS_STATUSES_COUNT_DF_COLUMNS,
         )
         payment_data = pd.DataFrame(
             Requests.payment_type_count(
                 self.user.connection, self.user.place_of_work, l_date, r_date
             ),
-            columns=Sales.PAYMENT_TYPES_COUNT_DF_COLUMNS
+            columns=Sales.PAYMENT_TYPES_COUNT_DF_COLUMNS,
         )
 
         fig = plotter.order_and_payment_pie(
@@ -346,7 +345,10 @@ class ManagerForm(manager_form, manager_base):
 
         author_id = self.author_id_spin_box.value()
 
-        ids = [self.authors_table.item(i, 0).text for i in range(self.authors_table.rowCount())]
+        ids = [
+            self.authors_table.item(i, 0).text
+            for i in range(self.authors_table.rowCount())
+        ]
 
         if str(author_id) not in ids:
             msg.error_message(Errors.NO_AUTHOR_ID.format(author_id))

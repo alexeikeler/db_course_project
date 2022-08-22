@@ -180,6 +180,10 @@ class Errors:
     # Error no such folder
     NO_SUCH_FOLDER: str = "Error adding report. No such folder {0}."
 
+    # No order
+    NO_ORDER: str = "NO_ORDERS"
+    CLIENT_NO_ORDERS: str = "Client |{0}| doesn't have any orders to reivew!"
+
 
 @dataclass
 class ReviewsMessages:
@@ -206,6 +210,8 @@ class Sales:
 
     ORDERS_STATUSES_COUNT_DF_COLUMNS: tuple = ("State", "Counted")
     PAYMENT_TYPES_COUNT_DF_COLUMNS: tuple = ("Payment type", "Counted")
+
+    CLIENT_ACTIVITY_DF_COLUMNS: tuple = ("Client ID", "Login", "Oldest order", "Newest order")
 
     GENRE_SALES: str = "_genre_sales"
     MY_SALES: str = "_all_sales_by_{0}"

@@ -552,16 +552,16 @@ def payment_type_count(connection, manager_pow, l_date, r_date):
 
 
 def create_employee(
-        connection,
-        empl_lastname,
-        empl_firstname,
-        empl_position,
-        empl_salary,
-        empl_phone,
-        empl_email,
-        empl_login,
-        empl_password,
-        empl_pow
+    connection,
+    empl_lastname,
+    empl_firstname,
+    empl_position,
+    empl_salary,
+    empl_phone,
+    empl_email,
+    empl_login,
+    empl_password,
+    empl_pow,
 ):
     try:
 
@@ -595,6 +595,20 @@ def delete_client(connection, client_id):
             connection.commit()
             result = cursor.fetchone()
             return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def client_activity(connection):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("client_activity")
+            result = cursor.fetchall()
+            print(result)
+            return result
+
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()

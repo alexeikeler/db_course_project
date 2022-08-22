@@ -3,10 +3,9 @@ from functools import partial
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-import src.custom_qt_widgets.message_boxes as msg
 import src.custom_qt_widgets.functionality as widget_funcs
+import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
-
 from config.constants import Const
 
 chg_pswd_form, chg_pswd_base = uic.loadUiType(uifile=Const.CHANGE_PSWRD_FORM_UI_PATH)

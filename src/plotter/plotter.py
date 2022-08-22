@@ -192,17 +192,14 @@ def top_selling_books(web_view, data, l_date, r_date) -> go.Figure:
 
 
 def order_and_payment_pie(
-        web_view, orders_data: pd.DataFrame, payment_data: pd.DataFrame, l_date, r_date
+    web_view, orders_data: pd.DataFrame, payment_data: pd.DataFrame, l_date, r_date
 ) -> go.Figure:
 
     fig = make_subplots(
         rows=1,
         cols=2,
         specs=[[{"type": "pie"}, {"type": "pie"}]],
-        subplot_titles=[
-            "Client orders statuses",
-            "Payment types"
-        ],
+        subplot_titles=["Client orders statuses", "Payment types"],
         horizontal_spacing=0.15,
     )
 
@@ -236,9 +233,7 @@ def order_and_payment_pie(
         margin=dict(l=0, r=0, t=20, b=0),
         font=dict(size=10),
     )
-    fig.update_annotations(
-        font_size=12
-    )
+    fig.update_annotations(font_size=12)
 
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
@@ -250,9 +245,7 @@ def save_pdf(fig: go.Figure, folder: str, rep_name: str):
     if not os.path.exists(folder):
         msg.error_message(Errors.NO_SUCH_FOLDER.format(folder))
 
-    full_path = (
-        folder + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + rep_name
-    )
+    full_path = folder + str(datetime.now().strftime("%Y-%m-%d_%H:%M:%S")) + rep_name
     print(full_path)
 
     try:

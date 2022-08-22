@@ -130,3 +130,93 @@ REVOKE ALL ON FUNCTION
 
 GRANT EXECUTE ON FUNCTION
     get_number_of_books(manager_pow integer) TO user_manager;
+
+
+------------------------------------------------
+SELECT * FROM client;
+
+select * from create_client(
+    'dummy',
+    'client',
+    '+380000000000',
+    'dummy_client@gmail.com',
+    'dummy_client',
+    'dummy_password',
+    '-'
+    );
+
+CREATE OR REPLACE FUNCTION delete_client(id integer)
+RETURNS BOOL AS
+    $$
+        DECLARE
+            dummy_client_id integer;
+
+        BEGIN
+
+            SELECT client_id INTO dummy_client_id FROM client WHERE client_login = 'dummy_client';
+
+            UPDATE client_order
+                SET reciever = dummy_client_id
+                WHERE reciever = id;
+
+            DELETE FROM client WHERE client_id = id;
+
+            IF EXISTS(SELECT client_id FROM client WHERE client_id = id)
+                THEN
+                RETURN FALSE;
+            ELSE
+                RETURN TRUE;
+            END IF;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    delete_client(id integer) FROM public;
+
+GRANT EXECUTE ON FUNCTION
+    delete_client(id integer) TO user_admin;
+
+DROP FUNCTION client_activity();
+CREATE OR REPLACE FUNCTION client_activity()
+RETURNS TABLE
+(
+    id integer,
+    login varchar,
+    oldest_order timestamp(0),
+    newest_order timestamp(0)
+) AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                client_id,
+                client.client_login,
+                min(date_of_order) AS oldest,
+                max(date_of_order) AS newest
+            FROM
+                client
+            LEFT JOIN
+                client_order co ON client.client_id = co.reciever
+            GROUP BY
+                client.client_id, client.client_login
+            ORDER BY
+                oldest;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    client_activity() FROM public;
+
+GRANT EXECUTE ON FUNCTION
+    client_activity() TO user_admin;
+
+select * from client_order;
+select * from sales;
+------------------------------------------------

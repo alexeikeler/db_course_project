@@ -1,10 +1,15 @@
-import src.custom_qt_widgets.message_boxes as msg
-import src.database_related.psql_requests as Requests
+import pandas as pd
+
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from config.constants import Const
 from functools import partial
+
 import src.custom_qt_widgets.functionality as widget_funcs
+import src.custom_qt_widgets.message_boxes as msg
+import src.database_related.psql_requests as Requests
+
+from config.constants import Const, Sales, Errors
+
 
 admin_form, admin_base = uic.loadUiType(uifile=Const.ADMIN_UI_PATH)
 
@@ -19,21 +24,20 @@ class AdminForm(admin_form, admin_base):
 
         self.create_acc_button.clicked.connect(self.create_employee_account)
         self.hide_password_button.clicked.connect(
-            partial(
-                widget_funcs.hide_password,
-                self.empl_password_line_edit
-            )
+            partial(widget_funcs.hide_password, self.empl_password_line_edit)
         )
 
-        # TEST
         self.position_combo_box.addItems(
             (
                 Const.ROLES.DIRECTOR_ROLE,
                 Const.ROLES.ADMIN_ROLE,
                 Const.ROLES.MANAGER_ROLE,
-                Const.ROLES.SHOP_ASSISTANT_ROLE
+                Const.ROLES.SHOP_ASSISTANT_ROLE,
             )
         )
+
+        self.load_clients_table()
+
         # TETS DATA
         self.empl_login_line_edit.setText("test_admin_role")
         self.empl_password_line_edit.setText("123123")
@@ -57,11 +61,82 @@ class AdminForm(admin_form, admin_base):
             self.empl_email_line_edit.text(),
             self.empl_login_line_edit.text(),
             self.empl_password_line_edit.text(),
-            self.pow_spin_box.value()
+            self.pow_spin_box.value(),
         )
 
     def load_clients_table(self):
+        data = pd.DataFrame(
+            Requests.client_activity(self.user.connection),
+            columns=Sales.CLIENT_ACTIVITY_DF_COLUMNS
+        ).fillna(value=Errors.NO_ORDER)
+
+        print(
+            data
+        )
+
+        data.insert(data.shape[1], "Orders history", "")
+        data.insert(data.shape[1], "Delete account", "")
+
+        rows, cols = data.shape
+        oldest_order_col = 2
+        newest_order_col = 3
+
+        widget_funcs.config_table(
+            self.clients_table,
+            rows,
+            cols,
+            data.columns,
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.Stretch),
+                (2, QtWidgets.QHeaderView.Stretch),
+                (3, QtWidgets.QHeaderView.Stretch),
+                (4, QtWidgets.QHeaderView.ResizeToContents),
+                (5, QtWidgets.QHeaderView.ResizeToContents)
+            ]
+        )
+
+        for i in range(rows):
+
+            review_orders_button = QtWidgets.QPushButton("")
+            review_orders_button.setMinimumSize(20, 20)
+            review_orders_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("order_icon")))
+            review_orders_button.clicked.connect(self.view_client_orders)
+
+            delete_acc_button = QtWidgets.QPushButton("")
+            delete_acc_button.setMinimumSize(20, 20)
+            delete_acc_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
+            delete_acc_button.clicked.connect(self.delete_client_account)
+
+            for j in range(cols - 2):
+                item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+
+                if j == oldest_order_col or j == newest_order_col:
+                    if data.loc[i][j] == Errors.NO_ORDER:
+                        item.setBackground(QtGui.QColor("red"))
+                    else:
+                        item.setBackground(QtGui.QColor("green"))
+
+                self.clients_table.setItem(i, j, item)
+
+            self.clients_table.setCellWidget(i, cols - 2, review_orders_button)
+            self.clients_table.setCellWidget(i, cols - 1, delete_acc_button)
+
+    def delete_client_account(self):
         pass
+
+    def view_client_orders(self):
+
+        current_row = self.clients_table.currentRow()
+        client_login = self.clients_table.item(current_row, 1).text()
+        having_orders = self.clients_table.item(current_row, 2).text()
+
+        if having_orders == Errors.NO_ORDER:
+            msg.error_message(Errors.CLIENT_NO_ORDERS.format(client_login))
+            return
+
 
     def load_employees_table(self):
         pass
