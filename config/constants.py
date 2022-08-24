@@ -137,6 +137,8 @@ class ShopAndEmployee:
     PAPER_QUALITY_TYPES: tuple = ("Для глубокой печати", "Типографическая", "Офсетная")
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
+    DUMMY_ACC_ID: int = 106
+
 
 @dataclass
 class WindowsNames:
@@ -191,6 +193,12 @@ class Errors:
 
     # No sorting criteria were selected
     NO_SORT_CRITERIA: str = "No sorting criterias were selected!"
+
+    # Client deletion error
+    CLIENT_DEL_ERROR: str = f"Error deleting account with ID={0}. Client have unfinished orders."
+
+    # Attemt to delete dummy account
+    DUMMY_ACC_DEL_ERROR: str = "You cannot delete special account!"
 
 @dataclass
 class ReviewsMessages:

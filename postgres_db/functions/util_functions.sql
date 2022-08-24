@@ -130,4 +130,45 @@ REVOKE ALL ON FUNCTION
 
 GRANT EXECUTE ON FUNCTION
     get_number_of_books(manager_pow integer) TO user_manager;
+-----------------------------------------------------------------------
 
+
+-----------------------------------------------------------------------
+DROP FUNCTION client_activity();
+CREATE OR REPLACE FUNCTION client_activity()
+RETURNS TABLE
+(
+    id integer,
+    login varchar,
+    oldest_order timestamp(0),
+    newest_order timestamp(0)
+) AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                client_id,
+                client.client_login,
+                min(date_of_order) AS oldest,
+                max(date_of_order) AS newest
+            FROM
+                client
+            LEFT JOIN
+                client_order co ON client.client_id = co.reciever
+            GROUP BY
+                client.client_id, client.client_login
+            ORDER BY
+                oldest;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    client_activity() FROM public;
+
+GRANT EXECUTE ON FUNCTION
+    client_activity() TO user_admin;
+
+-----------------------------------------------------------------------

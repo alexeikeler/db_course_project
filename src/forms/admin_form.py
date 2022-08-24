@@ -5,11 +5,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from functools import partial
 
 import src.custom_qt_widgets.functionality as widget_funcs
-import src.custom_qt_widgets.message_boxes as msg
+from src.custom_qt_widgets import message_boxes as msg
 import src.database_related.psql_requests as Requests
 
 from src.forms.orders_history_form import OrdersHistoryForm
-from config.constants import Const, Sales, Errors, Order
+from config.constants import Const, Sales, Errors, Order, ShopAndEmployee
 
 
 admin_form, admin_base = uic.loadUiType(uifile=Const.ADMIN_UI_PATH)
@@ -123,7 +123,21 @@ class AdminForm(admin_form, admin_base):
             self.clients_table.setCellWidget(i, cols - 1, delete_acc_button)
 
     def delete_client_account(self):
-        pass
+
+        current_row = self.clients_table.currentRow()
+        id = int(self.clients_table.item(current_row, 0).text())
+
+        if id == ShopAndEmployee.DUMMY_ACC_ID:
+            msg.error_message(Errors.DUMMY_ACC_DEL_ERROR)
+            return
+
+        result = Requests.delete_client(self.user.connection, id)
+
+        if not result:
+            msg.error_message(Errors.CLIENT_DEL_ERROR.format(id))
+            return
+
+        msg.info_message(f"Account with ID={id} deleted.")
 
     def view_client_orders(self):
 
