@@ -305,21 +305,24 @@ GRANT EXECUTE ON FUNCTION update_user_order(current_order_id integer, status var
 -----------------------------------------------------------------------------------------------------
 -- Function for getting orders for specific client
 -----------------------------------------------------------------------------------------------------
-
+DROP FUNCTION get_client_orders(login varchar);
 CREATE OR REPLACE FUNCTION get_client_orders(login varchar)
 RETURNS TABLE (
     book_title_ varchar,
+    genre_ varchar,
     quantity_ int,
     sum_to_pay_ numeric(7, 2),
     order_status_ varchar,
     date_of_order_ timestamp(0),
-    date_of_return_ timestamp(0)
+    date_of_return_ timestamp(0),
+    date_of_delivery_ timestamp(0)
 ) AS
     $$
         BEGIN
             RETURN QUERY
                 SELECT
-                    title,quantity, sum_to_pay, order_status, date_of_order, date_of_return
+                    title, genre_type, quantity, sum_to_pay,
+                    order_status, date_of_order, date_of_return, date_of_delivery
                 FROM
                     client_order, chosen, client, book, edition, authority
                 WHERE
@@ -345,6 +348,6 @@ SET search_path = public;
 
 REVOKE ALL ON FUNCTION get_client_orders(client_login varchar) FROM public;
 
-GRANT EXECUTE ON FUNCTION get_client_orders(client_login varchar) TO user_client;
+GRANT EXECUTE ON FUNCTION get_client_orders(client_login varchar) TO user_client, user_admin;
 
 -----------------------------------------------------------------------------------------------------

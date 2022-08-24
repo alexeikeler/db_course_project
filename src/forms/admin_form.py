@@ -8,7 +8,8 @@ import src.custom_qt_widgets.functionality as widget_funcs
 import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.psql_requests as Requests
 
-from config.constants import Const, Sales, Errors
+from src.forms.orders_history_form import OrdersHistoryForm
+from config.constants import Const, Sales, Errors, Order
 
 
 admin_form, admin_base = uic.loadUiType(uifile=Const.ADMIN_UI_PATH)
@@ -21,6 +22,8 @@ class AdminForm(admin_form, admin_base):
         self.setupUi(self)
 
         self.user = user
+
+        self.orders_history_form = None
 
         self.create_acc_button.clicked.connect(self.create_employee_account)
         self.hide_password_button.clicked.connect(
@@ -70,10 +73,6 @@ class AdminForm(admin_form, admin_base):
             columns=Sales.CLIENT_ACTIVITY_DF_COLUMNS
         ).fillna(value=Errors.NO_ORDER)
 
-        print(
-            data
-        )
-
         data.insert(data.shape[1], "Orders history", "")
         data.insert(data.shape[1], "Delete account", "")
 
@@ -93,18 +92,17 @@ class AdminForm(admin_form, admin_base):
                 (3, QtWidgets.QHeaderView.Stretch),
                 (4, QtWidgets.QHeaderView.ResizeToContents),
                 (5, QtWidgets.QHeaderView.ResizeToContents)
-            ]
+            ],
+            enable_column_sort=True
         )
 
         for i in range(rows):
 
             review_orders_button = QtWidgets.QPushButton("")
-            review_orders_button.setMinimumSize(20, 20)
             review_orders_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("order_icon")))
             review_orders_button.clicked.connect(self.view_client_orders)
 
             delete_acc_button = QtWidgets.QPushButton("")
-            delete_acc_button.setMinimumSize(20, 20)
             delete_acc_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
             delete_acc_button.clicked.connect(self.delete_client_account)
 
@@ -137,6 +135,16 @@ class AdminForm(admin_form, admin_base):
             msg.error_message(Errors.CLIENT_NO_ORDERS.format(client_login))
             return
 
+        data = pd.DataFrame(
+            Requests.get_client_orders(
+                self.user.connection,
+                client_login
+            ),
+            columns=Order.CLIENT_ORDERS_COLUMNS
+        ).fillna(Const.EMPTY_CELL)
+
+        self.orders_history_form = OrdersHistoryForm(data)
+        self.orders_history_form.exec()
 
     def load_employees_table(self):
         pass

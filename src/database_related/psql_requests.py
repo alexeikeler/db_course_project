@@ -606,7 +606,6 @@ def client_activity(connection):
         with connection.cursor() as cursor:
             cursor.callproc("client_activity")
             result = cursor.fetchall()
-            print(result)
             return result
 
     except (Exception, pc2.DatabaseError) as error:

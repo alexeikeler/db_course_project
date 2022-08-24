@@ -20,6 +20,7 @@ class Const:
     SHOP_REVIEWS_UI_PATH: str = "ui/shop_reviews.ui"
     SHOW_REVIEW_UI_PATH: str = "ui/review_show.ui"
     ADD_COPIES_UI_PATH: str = "ui/add_copies.ui"
+    VIEW_CLIENT_ORDERS_UI_PATH: str = "ui/view_client_orders.ui"
 
     USER_ACCOUNT_TAB_FORM_UI_PATH: str = "ui/client_account_tab.ui"
     SHOP_CART_TAB_UI_PATH: str = "ui/shop_cart_tab.ui"
@@ -78,6 +79,7 @@ class Order:
         "Order status",
         "Ordering date",
         "Returning date",
+        "Delivering date"
     )
 
     ORDER_IN_CART: str = "В корзине"
@@ -184,6 +186,11 @@ class Errors:
     NO_ORDER: str = "NO_ORDERS"
     CLIENT_NO_ORDERS: str = "Client |{0}| doesn't have any orders to reivew!"
 
+    # Same criteria selected again
+    ERROR_SAME_CRITERIA: str = "This criteria ({0}) is alredy selected!"
+
+    # No sorting criteria were selected
+    NO_SORT_CRITERIA: str = "No sorting criterias were selected!"
 
 @dataclass
 class ReviewsMessages:

@@ -97,8 +97,8 @@ class LoginForm(login_form, login_base):
         # ----------------------------------------------------------
 
         # SHOP 1
-        # self.username_line_edit.setText("ekaterina_makarchuck")
-        # self.password_line_edit.setText("ekaterina98765")
+        #self.username_line_edit.setText("ekaterina_makarchuck")
+        #self.password_line_edit.setText("ekaterina98765")
 
         # SHOP 2
         # self.username_line_edit.setText("evelinaKOJINA")
@@ -121,12 +121,12 @@ class LoginForm(login_form, login_base):
         # ----------------------------------------------------------
         # SHOP 1
 
-        # self.username_line_edit.setText("makarov_daniiL")
-        # self.password_line_edit.setText("mkrvdnl83492")
+        self.username_line_edit.setText("makarov_daniiL")
+        self.password_line_edit.setText("mkrvdnl83492")
 
         # SHOP 2
-        self.username_line_edit.setText("eleonora_kruj")
-        self.password_line_edit.setText("JUKSeKdDG6v6")
+        #self.username_line_edit.setText("eleonora_kruj")
+        #self.password_line_edit.setText("JUKSeKdDG6v6")
 
         # SHOP 3
         # self.username_line_edit.setText("ribakova_marija")

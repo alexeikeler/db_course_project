@@ -8,12 +8,14 @@ def config_table(
     cols: int,
     columns: Iterable,
     areas_to_stretch: List[Tuple[int, QtWidgets.QHeaderView.ResizeMode]],
+    enable_column_sort: bool
 ) -> None:
 
     table.setRowCount(rows)
     table.setColumnCount(cols)
     table.setHorizontalHeaderLabels(columns)
     table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
+    table.setSortingEnabled(enable_column_sort)
 
     table.resizeRowsToContents()
 

@@ -82,6 +82,7 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
         font=dict(size=10),
     )
     fig.update_annotations(font_size=12)
+
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
 
 
@@ -121,7 +122,7 @@ def sales_canvas(web_view, general_sales: pd.DataFrame, from_, to_) -> go.Figure
 
     fig.update_layout(title=f"Revenue (by genres) from {from_} to {to_}")
     web_view.setHtml(fig.to_html(include_plotlyjs="cdn"))
-
+    fig.show()
     return fig
 
 
