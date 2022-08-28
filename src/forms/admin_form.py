@@ -3,7 +3,7 @@ import pandas as pd
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from functools import partial
-
+from tabulate import tabulate
 import src.custom_qt_widgets.functionality as widget_funcs
 from src.custom_qt_widgets import message_boxes as msg
 import src.database_related.psql_requests as Requests
@@ -25,6 +25,7 @@ class AdminForm(admin_form, admin_base):
 
         self.orders_history_form = None
 
+        self.update_employees_table.clicked.connect(self.load_employees_table)
         self.create_acc_button.clicked.connect(self.create_employee_account)
         self.hide_password_button.clicked.connect(
             partial(widget_funcs.hide_password, self.empl_password_line_edit)
@@ -39,7 +40,21 @@ class AdminForm(admin_form, admin_base):
             )
         )
 
+        self.criterias_combo_box.addItems(ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS)
+        self.criterias_combo_box.currentTextChanged.connect(
+            lambda criteria: self.search_line_edit.setCompleter(
+                QtWidgets.QCompleter(self._get_empl_data()[criteria].unique().astype(str))
+            )
+        )
+        self.criterias_combo_box.setCurrentText("Login")
+        self.search_employee_button.clicked.connect(self.search_employees)
+
         self.load_clients_table()
+        self.load_employees_table()
+ #       self.prep_autocompler()
+
+
+
 
         # TETS DATA
         self.empl_login_line_edit.setText("test_admin_role")
@@ -51,6 +66,18 @@ class AdminForm(admin_form, admin_base):
         self.position_combo_box.setCurrentText("admin")
         self.pow_spin_box.setValue(4)
         self.salary_double_spin_box.setValue(15000.00)
+
+    def _get_empl_data(self):
+        return pd.DataFrame(
+            Requests.employee_activity(self.user.connection),
+            columns=ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS
+        ).fillna(0)
+
+    def _get_cli_data(self):
+        return pd.DataFrame(
+            Requests.client_activity(self.user.connection),
+            columns=ShopAndEmployee.CLIENT_ACTIVITY_DF_COLUMNS
+        ).fillna(Errors.NO_ORDER)
 
     def create_employee_account(self):
 
@@ -68,15 +95,15 @@ class AdminForm(admin_form, admin_base):
         )
 
     def load_clients_table(self):
-        data = pd.DataFrame(
-            Requests.client_activity(self.user.connection),
-            columns=Sales.CLIENT_ACTIVITY_DF_COLUMNS
-        ).fillna(value=Errors.NO_ORDER)
+        data = self._get_cli_data()
+        self.fill_clients_table(data)
 
-        data.insert(data.shape[1], "Orders history", "")
-        data.insert(data.shape[1], "Delete account", "")
+    def fill_clients_table(self, cli_data: pd.DataFrame):
 
-        rows, cols = data.shape
+        cli_data.insert(cli_data.shape[1], "Orders history", "")
+        cli_data.insert(cli_data.shape[1], "Delete account", "")
+
+        rows, cols = cli_data.shape
         oldest_order_col = 2
         newest_order_col = 3
 
@@ -84,7 +111,7 @@ class AdminForm(admin_form, admin_base):
             self.clients_table,
             rows,
             cols,
-            data.columns,
+            cli_data.columns,
             [
                 (0, QtWidgets.QHeaderView.ResizeToContents),
                 (1, QtWidgets.QHeaderView.Stretch),
@@ -107,12 +134,12 @@ class AdminForm(admin_form, admin_base):
             delete_acc_button.clicked.connect(self.delete_client_account)
 
             for j in range(cols - 2):
-                item = QtWidgets.QTableWidgetItem(str(data.loc[i][j]))
+                item = QtWidgets.QTableWidgetItem(str(cli_data.loc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
 
                 if j == oldest_order_col or j == newest_order_col:
-                    if data.loc[i][j] == Errors.NO_ORDER:
+                    if cli_data.loc[i][j] == Errors.NO_ORDER:
                         item.setBackground(QtGui.QColor("red"))
                     else:
                         item.setBackground(QtGui.QColor("green"))
@@ -137,7 +164,7 @@ class AdminForm(admin_form, admin_base):
             msg.error_message(Errors.CLIENT_DEL_ERROR.format(id))
             return
 
-        msg.info_message(f"Account with ID={id} deleted.")
+        msg.info_message(f"Account with {id=} deleted.")
 
     def view_client_orders(self):
 
@@ -161,4 +188,88 @@ class AdminForm(admin_form, admin_base):
         self.orders_history_form.exec()
 
     def load_employees_table(self):
-        pass
+        data = self._get_empl_data()
+        self.fill_employees_table(data)
+
+    def fill_employees_table(self, empl_data: pd.DataFrame):
+
+        self.employees_table.disconnect()
+
+        empl_data["Reviews"] = empl_data["Reviews"].astype(int)
+        empl_data.insert(empl_data.shape[1], "Delete", "")
+
+        rows, cols = empl_data.shape
+        widget_funcs.config_table(
+            self.employees_table,
+            rows,
+            cols,
+            empl_data.columns,
+            [
+                *[(i, QtWidgets.QHeaderView.ResizeToContents) for i in range(cols-1)],
+                (cols-1, QtWidgets.QHeaderView.Stretch)
+             ],
+            enable_column_sort=False
+        )
+
+        for i in range(rows):
+
+            delete_button = QtWidgets.QPushButton("")
+            delete_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
+            delete_button.clicked.connect(self.delete_employee_account)
+
+            for j in range(cols - 1):
+                item = QtWidgets.QTableWidgetItem(str(empl_data.iloc[i][j]))
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+                if j == ShopAndEmployee.EMPL_REVIEW_COL: item.setFlags(QtCore.Qt.ItemIsEnabled)
+
+                self.employees_table.setItem(i, j, item)
+
+            self.employees_table.setCellWidget(i, cols - 1, delete_button)
+
+        self.employees_table.itemChanged.connect(self.change_employee_data)
+
+    def change_employee_data(self, item):
+
+        row, col = item.row(), item.column()
+
+        hor_name = self.employees_table.horizontalHeaderItem(col).text()
+        update_subject = ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS.get(hor_name, None)
+
+        data = self.employees_table.item(row, col).text()
+        id = int(self.employees_table.item(row, 0).text())
+
+        if update_subject is None:
+            msg.error_message(Errors.ERROR_UPD_SUBJ)
+            return
+
+        result = Requests.update_employee_data(self.user.connection, update_subject, data, id)
+
+        if not result:
+            msg.error_message(Errors.ERROR_EMPL_UPDATE.format(id, row, col, data, update_subject))
+
+    def search_employees(self):
+        criteria = self.criterias_combo_box.currentText()
+        search_text = self.search_line_edit.text()
+
+        match criteria:
+            case "ID":
+                search_text = int(search_text)
+            case "Salary":
+                search_text = float(search_text)
+
+        data = self._get_empl_data()
+        data = data[data[criteria] == search_text]
+
+        self.fill_employees_table(data)
+
+    def delete_employee_account(self):
+        curr_row = self.employees_table.currentRow()
+        id = int(self.employees_table.item(curr_row, 0).text())
+
+        if self.user.id == id:
+            msg.error_message(Errors.SELF_ACC_DEL_ERROR)
+            return
+
+        print(f"Deleting employee with {id=}.")
+

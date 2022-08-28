@@ -1,3 +1,5 @@
+import pandas as pd
+from tabulate import tabulate
 from PyQt5 import QtWidgets
 from typing import List, Tuple, Iterable
 
@@ -31,3 +33,13 @@ def hide_password(password_line_edit: QtWidgets.QLineEdit) -> None:
         password_line_edit.setEchoMode(QtWidgets.QLineEdit.Password)
     else:
         password_line_edit.setEchoMode(QtWidgets.QLineEdit.Normal)
+
+
+def print_dataframe(df: pd.DataFrame) -> None:
+    print(
+        tabulate(
+            df,
+            headers=df.columns,
+            tablefmt="pretty"
+        )
+    )

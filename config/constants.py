@@ -138,6 +138,27 @@ class ShopAndEmployee:
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
     DUMMY_ACC_ID: int = 106
+    CLIENT_ACTIVITY_DF_COLUMNS: tuple = ("Client ID", "Login", "Oldest order", "Newest order")
+    #EMPLOYEE_ACTIVITY_DF_COLUMNS: dict = dict(
+    #    "ID":"", "Name": "", "Login": "", "Reviews": "", "Place of work": "", "Position": "", "Salary": "", "Phone number": "", "Email": ""
+    #)
+    #employee_id,lastname,firstname,employee_position,salary,phone_number,email,employee_login,place_of_work
+
+    EMPLOYEE_ACTIVITY_DF_COLUMNS = {
+        "ID": "employee_id",
+        "Firstname": "firstname",
+        "Lastname": "lastname",
+        "Login": "employee_login",
+        "Reviews": "",
+        "Place of work": "place_of_work",
+        "Position": "employee_position",
+        "Salary": "salary",
+        "Phone number": "phone_number",
+        "Email": "email"
+    }
+    EMPL_REVIEW_COL = 4
+
+
 
 
 @dataclass
@@ -195,10 +216,20 @@ class Errors:
     NO_SORT_CRITERIA: str = "No sorting criterias were selected!"
 
     # Client deletion error
-    CLIENT_DEL_ERROR: str = f"Error deleting account with ID={0}. Client have unfinished orders."
+    CLIENT_DEL_ERROR: str = "Error deleting account with ID={0}. Client have unfinished orders."
 
     # Attemt to delete dummy account
     DUMMY_ACC_DEL_ERROR: str = "You cannot delete special account!"
+
+    # Attemp to delete yout own account
+    SELF_ACC_DEL_ERROR: str = "You cannot delete your own account!"
+
+    # Wrong update_subject
+    ERROR_UPD_SUBJ: str = "Wrong update subject!"
+
+    # Error updating employee data
+    ERROR_EMPL_UPDATE: str = "Error occurred while trying to update data for employee #{0}. " \
+                             "Row: {1}, Col: {2}, Update value: {3}, Update subject: {4}"
 
 @dataclass
 class ReviewsMessages:
@@ -225,8 +256,6 @@ class Sales:
 
     ORDERS_STATUSES_COUNT_DF_COLUMNS: tuple = ("State", "Counted")
     PAYMENT_TYPES_COUNT_DF_COLUMNS: tuple = ("Payment type", "Counted")
-
-    CLIENT_ACTIVITY_DF_COLUMNS: tuple = ("Client ID", "Login", "Oldest order", "Newest order")
 
     GENRE_SALES: str = "_genre_sales"
     MY_SALES: str = "_all_sales_by_{0}"

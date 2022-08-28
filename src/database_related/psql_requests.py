@@ -612,3 +612,28 @@ def client_activity(connection):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def employee_activity(connection):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("employee_activity")
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def update_employee_data(connection, update_subject, data, id):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("update_employee_data", (update_subject, data, id))
+            connection.commit()
+            result = cursor.fetchone()
+            return result[0]
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

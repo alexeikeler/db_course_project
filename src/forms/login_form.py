@@ -1,3 +1,4 @@
+import argparse
 import logging
 from functools import partial
 from time import sleep
@@ -60,8 +61,8 @@ class LoginForm(login_form, login_base):
         # For client test
         # ----------------------------------------------------------
 
-        #self.username_line_edit.setText("test_login")
-       # self.password_line_edit.setText("test_password")
+        # self.username_line_edit.setText("test_login")
+        # self.password_line_edit.setText("test_password")
 
         # self.username_line_edit.setText("TamaraKanaeva605")
         # self.password_line_edit.setText("dnFfoXzs06WX")
@@ -73,8 +74,8 @@ class LoginForm(login_form, login_base):
         # ----------------------------------------------------------
 
         # SHOP 1
-        self.username_line_edit.setText("petrov_vasilii")
-        self.password_line_edit.setText("ptrvV1988")
+        # self.username_line_edit.setText("petrov_vasilii")
+        # self.password_line_edit.setText("ptrvV1988")
 
         # SHOP 2
         # self.username_line_edit.setText("PavlovSergei")
@@ -125,8 +126,8 @@ class LoginForm(login_form, login_base):
         # self.password_line_edit.setText("mkrvdnl83492")
 
         # SHOP 2
-        #self.username_line_edit.setText("eleonora_kruj")
-        #self.password_line_edit.setText("JUKSeKdDG6v6")
+        # self.username_line_edit.setText("eleonora_kruj")
+        # self.password_line_edit.setText("JUKSeKdDG6v6")
 
         # SHOP 3
         # self.username_line_edit.setText("ribakova_marija")
@@ -140,7 +141,7 @@ class LoginForm(login_form, login_base):
         # self.username_line_edit.setText("kropotovAndrei")
         # self.password_line_edit.setText("MdRKPBpzkuWM")
 
-    def __role_start(self, login, role):
+    def _role_start(self, login, role):
         conn = db_conn.establish_db_connection(role)
         logging.info(f"Logging in as {login} - {role}.")
 
@@ -177,7 +178,7 @@ class LoginForm(login_form, login_base):
             user_checker.connection.close()
 
             logging.info(f"\n user_checker logged off successfully.\n")
-            self.__role_start(user_login, user_role[0])
+            self._role_start(user_login, user_role[0])
 
     def create_account(self):
         self.account_form = AccountForm()

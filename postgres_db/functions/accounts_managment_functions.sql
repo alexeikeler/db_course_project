@@ -429,3 +429,144 @@ GRANT EXECUTE ON FUNCTION
     get_employee_main_data(login varchar) TO user_manager;
 
 ---------------------------------------------------------------------------------------
+
+DROP FUNCTION delete_client(id integer);
+CREATE OR REPLACE FUNCTION delete_client(id integer)
+RETURNS BOOL AS
+    $$
+        DECLARE
+            dummy_client_id integer;
+
+        BEGIN
+            IF EXISTS(
+
+                SELECT order_id  FROM client_order
+                WHERE reciever = id AND order_status SIMILAR TO '(Оплачен|Обработан|Доставляется)'
+                ) THEN
+
+                RETURN FALSE;
+
+            END IF;
+
+            SELECT client_id INTO dummy_client_id FROM client WHERE client_login = 'DeletedAccount';
+
+            UPDATE client_order
+                SET reciever = dummy_client_id
+                WHERE reciever = id;
+
+            UPDATE client_review
+                SET review_by = dummy_client_id
+                WHERE review_by = id;
+
+            DELETE FROM client WHERE client_id = id;
+            DELETE FROM client_review WHERE review_by = id;
+
+           RETURN TRUE;
+
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    delete_client(id integer) FROM public;
+
+GRANT EXECUTE ON FUNCTION
+    delete_client(id integer) TO user_admin;
+---------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------
+DROP FUNCTION employee_activity();
+CREATE OR REPLACE FUNCTION employee_activity()
+RETURNS TABLE(
+    empl_id_ integer,
+    empl_firstname varchar,
+    empl_lastname varchar,
+    empl_login varchar,
+    counted_reviews_ integer,
+    name_of_shop_ varchar,
+    empl_pos_ varchar,
+    salary numeric(7, 2),
+    phone_num varchar,
+    email varchar
+             )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+                employee.employee_id,
+                employee.firstname,
+                employee.lastname,
+                employee.employee_login,
+                empl_reviews_ctr.counted_reviews::int,
+                book_shop.name_of_shop,
+                employee.employee_position,
+                employee.salary,
+                employee.phone_number,
+                employee.email
+            FROM
+                book_shop, employee
+            LEFT JOIN
+                    (
+                        SELECT
+                            review_about_employee, count(review_about_employee) AS counted_reviews
+                        FROM
+                            client_review
+                        GROUP BY
+                            review_about_employee
+                    ) AS empl_reviews_ctr
+            ON
+                employee.employee_id = empl_reviews_ctr.review_about_employee
+
+            WHERE
+                employee.place_of_work = book_shop.shop_id;
+
+        END;
+
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION employee_activity() FROM public;
+GRANT EXECUTE ON FUNCTION employee_activity() TO user_admin;
+---------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------
+DROP FUNCTION update_employee_data(update_subject varchar, data varchar, id integer);
+CREATE OR REPLACE FUNCTION update_employee_data(update_subject varchar, data varchar, id integer)
+RETURNS BOOLEAN AS
+
+    $$
+        DECLARE
+            exists integer = -1;
+
+        BEGIN
+            EXECUTE format(
+                'UPDATE employee SET %1$s = %2$L WHERE %3$s = %4$s', update_subject, data, 'employee_id', id
+                );
+
+            EXECUTE FORMAT(
+                'SELECT employee_id FROM employee WHERE %1$s = %2$L', update_subject, data
+                ) INTO exists;
+
+            IF exists > 0 THEN
+                RAISE INFO '%', exists;
+                RETURN TRUE;
+            ELSE
+                RETURN FALSE;
+
+            END IF;
+        END
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION update_employee_data(update_subject varchar, data varchar, id integer)FROM public;
+GRANT EXECUTE ON FUNCTION update_employee_data(update_subject varchar, data varchar, id integer) TO user_admin;
+---------------------------------------------------------------------------------------

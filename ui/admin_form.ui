@@ -24,7 +24,7 @@
      </rect>
     </property>
     <layout class="QGridLayout" name="tab_widget_layout">
-     <item row="0" column="1">
+     <item row="0" column="0">
       <widget class="QTabWidget" name="tab_widget">
        <widget class="QWidget" name="accounts_managment_tab">
         <attribute name="title">
@@ -36,7 +36,7 @@
            <x>20</x>
            <y>22</y>
            <width>316</width>
-           <height>430</height>
+           <height>429</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="create_account_grid_layout">
@@ -205,32 +205,36 @@
         <widget class="QWidget" name="gridLayoutWidget_3">
          <property name="geometry">
           <rect>
-           <x>370</x>
+           <x>368</x>
            <y>8</y>
            <width>1051</width>
-           <height>742</height>
+           <height>741</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="1" column="0">
-           <widget class="QTableWidget" name="employees_table"/>
+           <widget class="QTableWidget" name="clients_table"/>
           </item>
-          <item row="2" column="0" alignment="Qt::AlignHCenter">
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Clients table</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QTableWidget" name="clients_table"/>
-          </item>
-          <item row="0" column="0" alignment="Qt::AlignHCenter">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Employees table</string>
-            </property>
-           </widget>
+          <item row="2" column="0">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="0">
+             <widget class="QTableWidget" name="employees_table"/>
+            </item>
+            <item row="0" column="0" alignment="Qt::AlignHCenter">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Employees table</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -238,9 +242,9 @@
          <property name="geometry">
           <rect>
            <x>350</x>
-           <y>-10</y>
+           <y>-9</y>
            <width>20</width>
-           <height>791</height>
+           <height>771</height>
           </rect>
          </property>
          <property name="orientation">
@@ -250,9 +254,9 @@
         <widget class="Line" name="line_2">
          <property name="geometry">
           <rect>
-           <x>-2</x>
-           <y>470</y>
-           <width>361</width>
+           <x>-11</x>
+           <y>450</y>
+           <width>371</width>
            <height>16</height>
           </rect>
          </property>
@@ -260,16 +264,94 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-        <widget class="QWidget" name="gridLayoutWidget_4">
+        <widget class="QWidget" name="gridLayoutWidget_5">
          <property name="geometry">
           <rect>
-           <x>11</x>
-           <y>490</y>
-           <width>339</width>
-           <height>251</height>
+           <x>60</x>
+           <y>500</y>
+           <width>241</width>
+           <height>127</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="gridLayout_2"/>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="1" column="0">
+           <widget class="QLabel" name="search_criteria_label">
+            <property name="text">
+             <string>Search criteria</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="search_employee_button">
+            <property name="maximumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../frontend/images/loop_search.png</normaloff>../frontend/images/loop_search.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLineEdit" name="search_line_edit"/>
+          </item>
+          <item row="0" column="0" alignment="Qt::AlignHCenter">
+           <widget class="QLabel" name="search_employee_label">
+            <property name="text">
+             <string>Search employee</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QComboBox" name="criterias_combo_box"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="search_text_label">
+            <property name="text">
+             <string>Search text</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QPushButton" name="update_employees_table">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>700</y>
+           <width>158</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Update employees </string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../frontend/images/update_icon.png</normaloff>../frontend/images/update_icon.png</iconset>
+         </property>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>-3</x>
+           <y>660</y>
+           <width>363</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
         </widget>
        </widget>
        <widget class="QWidget" name="tab_2">
