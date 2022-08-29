@@ -11,6 +11,7 @@ import src.custom_qt_widgets.message_boxes as msg
 import src.database_related.db_connection as db_conn
 import src.database_related.psql_requests as Requests
 from config.constants import Const, Errors
+from src.forms.director_form import DirectorForm
 from src.forms.admin_form import AdminForm
 from src.forms.create_account_form import AccountForm
 from src.forms.manager_form import ManagerForm
@@ -21,6 +22,7 @@ from src.roles.client_role import ClientRole
 from src.roles.manager_role import ManagerRole
 from src.roles.shop_assistant_role import ShopAssistantRole
 from src.roles.user_checker_role import UserCheckerRole
+from src.roles.director_role import DirectorRole
 
 login_form, login_base = uic.loadUiType(uifile=Const.LOGIN_UI_PATH)
 
@@ -48,6 +50,7 @@ class LoginForm(login_form, login_base):
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantRole,
             Const.ROLES.MANAGER_ROLE: ManagerRole,
             Const.ROLES.ADMIN_ROLE: AdminRole,
+            Const.ROLES.DIRECTOR_ROLE: DirectorRole
         }
 
         self.forms = {
@@ -55,6 +58,7 @@ class LoginForm(login_form, login_base):
             Const.ROLES.SHOP_ASSISTANT_ROLE: ShopAssistantForm,
             Const.ROLES.MANAGER_ROLE: ManagerForm,
             Const.ROLES.ADMIN_ROLE: AdminForm,
+            Const.ROLES.DIRECTOR_ROLE: DirectorForm
         }
 
         # ----------------------------------------------------------

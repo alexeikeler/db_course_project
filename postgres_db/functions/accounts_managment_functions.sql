@@ -475,7 +475,7 @@ REVOKE ALL ON FUNCTION
     get_employee_main_data(login varchar) FROM public;
 
 GRANT EXECUTE ON FUNCTION
-    get_employee_main_data(login varchar) TO user_manager;
+    get_employee_main_data(login varchar) TO user_manager, user_director;
 
 ---------------------------------------------------------------------------------------
 

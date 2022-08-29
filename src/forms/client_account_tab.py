@@ -46,13 +46,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
             columns=Order.CLIENT_ORDERS_COLUMNS,
         ).fillna("-")
 
-        print(
-            tabulate(
-                self.orders,
-                headers=self.orders.columns,
-                tablefmt="pretty"
-            )
-        )
+        print(tabulate(self.orders, headers=self.orders.columns, tablefmt="pretty"))
         self.orders.insert(0, "Book", "")
 
     def config_widgets(self):

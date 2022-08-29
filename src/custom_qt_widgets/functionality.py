@@ -1,7 +1,8 @@
+from typing import Iterable, List, Tuple
+
 import pandas as pd
-from tabulate import tabulate
 from PyQt5 import QtWidgets
-from typing import List, Tuple, Iterable
+from tabulate import tabulate
 
 
 def config_table(
@@ -10,7 +11,7 @@ def config_table(
     cols: int,
     columns: Iterable,
     areas_to_stretch: List[Tuple[int, QtWidgets.QHeaderView.ResizeMode]],
-    enable_column_sort: bool
+    enable_column_sort: bool,
 ) -> None:
 
     table.setRowCount(rows)
@@ -36,10 +37,4 @@ def hide_password(password_line_edit: QtWidgets.QLineEdit) -> None:
 
 
 def print_dataframe(df: pd.DataFrame) -> None:
-    print(
-        tabulate(
-            df,
-            headers=df.columns,
-            tablefmt="pretty"
-        )
-    )
+    print(tabulate(df, headers=df.columns, tablefmt="pretty"))

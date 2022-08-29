@@ -1,11 +1,23 @@
 import sys
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import Qt, pyqtSignal as Signal
 
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtCore import pyqtSignal as Signal
 
 PALETTES = {
     # bokeh paired 12
-    'paired12':['#000000', '#a6cee3', '#1f78b4', '#b2df8a', '#33a02c', '#fb9a99', '#e31a1c', '#fdbf6f', '#ff7f00', '#ffffff'],
+    "paired12": [
+        "#000000",
+        "#a6cee3",
+        "#1f78b4",
+        "#b2df8a",
+        "#33a02c",
+        "#fb9a99",
+        "#e31a1c",
+        "#fdbf6f",
+        "#ff7f00",
+        "#ffffff",
+    ],
 }
 
 
@@ -37,9 +49,7 @@ class _PaletteLinearBase(_PaletteBase):
 
         for c in colors:
             b = _PaletteButton(c)
-            b.pressed.connect(
-                lambda c=c: self._emit_color(c)
-            )
+            b.pressed.connect(lambda c=c: self._emit_color(c))
             palette.addWidget(b)
 
         self.setLayout(palette)
@@ -54,7 +64,6 @@ class PaletteVertical(_PaletteLinearBase):
 
 
 class PaletteGrid(_PaletteBase):
-
     def __init__(self, colors, n_columns=5, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -67,9 +76,7 @@ class PaletteGrid(_PaletteBase):
 
         for c in colors:
             b = _PaletteButton(c)
-            b.pressed.connect(
-                lambda c=c: self._emit_color(c)
-            )
+            b.pressed.connect(lambda c=c: self._emit_color(c))
             palette.addWidget(b, row, col)
             col += 1
             if col == n_columns:

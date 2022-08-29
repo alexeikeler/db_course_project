@@ -1,18 +1,15 @@
 import logging
+from functools import partial
 
 import pandas as pd
-
 # noinspection PyUnresolvedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from functools import partial
-from tabulate import tabulate
+
 import src.custom_qt_widgets.functionality as widget_funcs
-from src.custom_qt_widgets import message_boxes as msg
 import src.database_related.psql_requests as Requests
-
+from config.constants import Const, Errors, Order, Sales, ShopAndEmployee
+from src.custom_qt_widgets import message_boxes as msg
 from src.forms.orders_history_form import OrdersHistoryForm
-from config.constants import Const, Sales, Errors, Order, ShopAndEmployee
-
 
 admin_form, admin_base = uic.loadUiType(uifile=Const.ADMIN_UI_PATH)
 
@@ -45,7 +42,9 @@ class AdminForm(admin_form, admin_base):
         self.criterias_combo_box.addItems(ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS)
         self.criterias_combo_box.currentTextChanged.connect(
             lambda criteria: self.search_line_edit.setCompleter(
-                QtWidgets.QCompleter(self._get_empl_data()[criteria].unique().astype(str))
+                QtWidgets.QCompleter(
+                    self._get_empl_data()[criteria].unique().astype(str)
+                )
             )
         )
         self.criterias_combo_box.setCurrentText("Login")
@@ -53,10 +52,7 @@ class AdminForm(admin_form, admin_base):
 
         self.load_clients_table()
         self.load_employees_table()
- #       self.prep_autocompler()
-
-
-
+        #       self.prep_autocompler()
 
         # TETS DATA
         self.empl_login_line_edit.setText("test_admin_role")
@@ -72,13 +68,13 @@ class AdminForm(admin_form, admin_base):
     def _get_empl_data(self):
         return pd.DataFrame(
             Requests.employee_activity(self.user.connection),
-            columns=ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS
+            columns=ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS,
         ).fillna(0)
 
     def _get_cli_data(self):
         return pd.DataFrame(
             Requests.client_activity(self.user.connection),
-            columns=ShopAndEmployee.CLIENT_ACTIVITY_DF_COLUMNS
+            columns=ShopAndEmployee.CLIENT_ACTIVITY_DF_COLUMNS,
         ).fillna(Errors.NO_ORDER)
 
     def create_employee_account(self):
@@ -120,19 +116,23 @@ class AdminForm(admin_form, admin_base):
                 (2, QtWidgets.QHeaderView.Stretch),
                 (3, QtWidgets.QHeaderView.Stretch),
                 (4, QtWidgets.QHeaderView.ResizeToContents),
-                (5, QtWidgets.QHeaderView.ResizeToContents)
+                (5, QtWidgets.QHeaderView.ResizeToContents),
             ],
-            enable_column_sort=True
+            enable_column_sort=True,
         )
 
         for i in range(rows):
 
             review_orders_button = QtWidgets.QPushButton("")
-            review_orders_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("order_icon")))
+            review_orders_button.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("order_icon"))
+            )
             review_orders_button.clicked.connect(self.view_client_orders)
 
             delete_acc_button = QtWidgets.QPushButton("")
-            delete_acc_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
+            delete_acc_button.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon"))
+            )
             delete_acc_button.clicked.connect(self.delete_client_account)
 
             for j in range(cols - 2):
@@ -179,11 +179,8 @@ class AdminForm(admin_form, admin_base):
             return
 
         data = pd.DataFrame(
-            Requests.get_client_orders(
-                self.user.connection,
-                client_login
-            ),
-            columns=Order.CLIENT_ORDERS_COLUMNS
+            Requests.get_client_orders(self.user.connection, client_login),
+            columns=Order.CLIENT_ORDERS_COLUMNS,
         ).fillna(Const.EMPTY_CELL)
 
         self.orders_history_form = OrdersHistoryForm(data)
@@ -207,23 +204,26 @@ class AdminForm(admin_form, admin_base):
             cols,
             empl_data.columns,
             [
-                *[(i, QtWidgets.QHeaderView.ResizeToContents) for i in range(cols-1)],
-                (cols-1, QtWidgets.QHeaderView.Stretch)
-             ],
-            enable_column_sort=False
+                *[(i, QtWidgets.QHeaderView.ResizeToContents) for i in range(cols - 1)],
+                (cols - 1, QtWidgets.QHeaderView.Stretch),
+            ],
+            enable_column_sort=False,
         )
 
         for i in range(rows):
 
             delete_button = QtWidgets.QPushButton("")
-            delete_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
+            delete_button.setIcon(
+                QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon"))
+            )
             delete_button.clicked.connect(self.delete_employee_account)
 
             for j in range(cols - 1):
                 item = QtWidgets.QTableWidgetItem(str(empl_data.iloc[i][j]))
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
 
-                if j == ShopAndEmployee.EMPL_REVIEW_COL: item.setFlags(QtCore.Qt.ItemIsEnabled)
+                if j == ShopAndEmployee.EMPL_REVIEW_COL:
+                    item.setFlags(QtCore.Qt.ItemIsEnabled)
 
                 self.employees_table.setItem(i, j, item)
 
@@ -236,7 +236,9 @@ class AdminForm(admin_form, admin_base):
         row, col = item.row(), item.column()
 
         hor_name = self.employees_table.horizontalHeaderItem(col).text()
-        update_subject = ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS.get(hor_name, None)
+        update_subject = ShopAndEmployee.EMPLOYEE_ACTIVITY_DF_COLUMNS.get(
+            hor_name, None
+        )
 
         data = self.employees_table.item(row, col).text()
         id = int(self.employees_table.item(row, 0).text())
@@ -245,10 +247,14 @@ class AdminForm(admin_form, admin_base):
             msg.error_message(Errors.ERROR_UPD_SUBJ)
             return
 
-        result = Requests.update_employee_data(self.user.connection, update_subject, data, id)
+        result = Requests.update_employee_data(
+            self.user.connection, update_subject, data, id
+        )
 
         if not result:
-            msg.error_message(Errors.ERROR_EMPL_UPDATE.format(id, row, col, data, update_subject))
+            msg.error_message(
+                Errors.ERROR_EMPL_UPDATE.format(id, row, col, data, update_subject)
+            )
 
     def search_employees(self):
         criteria = self.criterias_combo_box.currentText()
@@ -279,9 +285,13 @@ class AdminForm(admin_form, admin_base):
             msg.error_message(Errors.DUMMY_ACC_DEL_ERROR)
             return
 
-        logging.info(f"Deleting employee with {empl_id=}, {type(empl_id)}, {pos=}, {pow=}.")
+        logging.info(
+            f"Deleting employee with {empl_id=}, {type(empl_id)}, {pos=}, {pow=}."
+        )
 
-        msg.warning_message("Warning! All reviews about this employee also will be deleted!")
+        msg.warning_message(
+            "Warning! All reviews about this employee also will be deleted!"
+        )
 
         result = Requests.delete_employee(self.user.connection, empl_id, pos, pow)
 
@@ -290,4 +300,3 @@ class AdminForm(admin_form, admin_base):
             return
 
         msg.info_message(f"Employee #{empl_id} deleted successfully")
-

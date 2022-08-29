@@ -27,6 +27,7 @@ class Const:
     SHOP_ASSISTANT_UI_PATH: str = "ui/shop_assistant_form.ui"
     MANAGER_UI_PATH: str = "ui/manager_form.ui"
     ADMIN_UI_PATH: str = "ui/admin_form.ui"
+    DIRECTOR_UI_PATH: str = "ui/director_form.ui"
 
     # ROLES PATH CONST #
     SHOP_ASSISTANT_CONFIG_PATH: str = "config/shop_assistant_role_config.ini"
@@ -34,6 +35,7 @@ class Const:
     USER_CHECKER_ROLE_CONFIG_PATH: str = "config/user_checker_role_config.ini"
     MANAGER_ROLE_CONFIG_PATH: str = "config/manager_role_config.ini"
     ADMIN_ROLE_CONFIG_PATH: str = "config/admin_role_config.ini"
+    DIRECTOR_ROLE_CONFIG_PATH: str = "config/director_role_config.ini"
 
     # IMAGE AND HTML FILES PATH
     IMAGES_PATH: str = "frontend/images/{0}.png"
@@ -79,7 +81,7 @@ class Order:
         "Order status",
         "Ordering date",
         "Returning date",
-        "Delivering date"
+        "Delivering date",
     )
 
     ORDER_IN_CART: str = "В корзине"
@@ -138,11 +140,16 @@ class ShopAndEmployee:
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
     DUMMY_ACC_IDS: tuple = (106, 53, 54, 55, 56, 57)
-    CLIENT_ACTIVITY_DF_COLUMNS: tuple = ("Client ID", "Login", "Oldest order", "Newest order")
-    #EMPLOYEE_ACTIVITY_DF_COLUMNS: dict = dict(
+    CLIENT_ACTIVITY_DF_COLUMNS: tuple = (
+        "Client ID",
+        "Login",
+        "Oldest order",
+        "Newest order",
+    )
+    # EMPLOYEE_ACTIVITY_DF_COLUMNS: dict = dict(
     #    "ID":"", "Name": "", "Login": "", "Reviews": "", "Place of work": "", "Position": "", "Salary": "", "Phone number": "", "Email": ""
-    #)
-    #employee_id,lastname,firstname,employee_position,salary,phone_number,email,employee_login,place_of_work
+    # )
+    # employee_id,lastname,firstname,employee_position,salary,phone_number,email,employee_login,place_of_work
 
     EMPLOYEE_ACTIVITY_DF_COLUMNS = {
         "ID": "employee_id",
@@ -154,11 +161,9 @@ class ShopAndEmployee:
         "Position": "employee_position",
         "Salary": "salary",
         "Phone number": "phone_number",
-        "Email": "email"
+        "Email": "email",
     }
     EMPL_REVIEW_COL = 4
-
-
 
 
 @dataclass
@@ -216,7 +221,9 @@ class Errors:
     NO_SORT_CRITERIA: str = "No sorting criterias were selected!"
 
     # Client deletion error
-    CLIENT_DEL_ERROR: str = "Error deleting account with ID={0}. Client have unfinished orders."
+    CLIENT_DEL_ERROR: str = (
+        "Error deleting account with ID={0}. Client have unfinished orders."
+    )
 
     # Attemt to delete dummy account
     DUMMY_ACC_DEL_ERROR: str = "You cannot delete special account!"
@@ -228,10 +235,13 @@ class Errors:
     ERROR_UPD_SUBJ: str = "Wrong update subject!"
 
     # Error updating employee data
-    ERROR_EMPL_UPDATE: str = "Error occurred while trying to update data for employee #{0}. " \
-                             "Row: {1}, Col: {2}, Update value: {3}, Update subject: {4}"
+    ERROR_EMPL_UPDATE: str = (
+        "Error occurred while trying to update data for employee #{0}. "
+        "Row: {1}, Col: {2}, Update value: {3}, Update subject: {4}"
+    )
 
     ERROR_EMPL_DELETION: str = "Error deleting employee #{0}."
+
 
 @dataclass
 class ReviewsMessages:

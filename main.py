@@ -13,19 +13,15 @@ def parse_arguments():
     )
 
     parser.add_argument(
-        '-l',
-        '--login',
-        dest='user_login',
-        help='Login argument.',
-        required=False
+        "-l", "--login", dest="user_login", help="Login argument.", required=False
     )
 
     parser.add_argument(
-        '-p',
-        '--password',
-        dest='user_password',
-        help='Password argument.',
-        required=False
+        "-p",
+        "--password",
+        dest="user_password",
+        help="Password argument.",
+        required=False,
     )
 
     return parser.parse_args()

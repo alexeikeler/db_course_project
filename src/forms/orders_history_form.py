@@ -4,7 +4,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 import src.custom_qt_widgets.functionality as widget_funcs
 import src.custom_qt_widgets.message_boxes as msg
-
 from config.constants import Const, Errors, Order
 
 orders_hist_form, orders_hist_base = uic.loadUiType(Const.VIEW_CLIENT_ORDERS_UI_PATH)
@@ -24,8 +23,11 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
             self.sort_criteria_table.rowCount(),
             self.sort_criteria_table.columnCount(),
             ("Criteria", "Delete"),
-            [(0, QtWidgets.QHeaderView.ResizeToContents), (1, QtWidgets.QHeaderView.Stretch)],
-            enable_column_sort=True
+            [
+                (0, QtWidgets.QHeaderView.ResizeToContents),
+                (1, QtWidgets.QHeaderView.Stretch),
+            ],
+            enable_column_sort=True,
         )
 
         self.states_combo_box.addItems(
@@ -34,7 +36,7 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
                 Order.ORDER_PROCESSED,
                 Order.ORDER_DELIVERING,
                 Order.ORDER_FINISHED,
-                Order.ORDER_DECLINED
+                Order.ORDER_DECLINED,
             )
         )
         self.find_orders_by_state_button.clicked.connect(self.state_search)
@@ -48,9 +50,9 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
 
     def _get_criterias(self):
         return [
-                    self.sort_criteria_table.item(i, 0).text()
-                    for i in range(self.sort_criteria_table.rowCount())
-               ]
+            self.sort_criteria_table.item(i, 0).text()
+            for i in range(self.sort_criteria_table.rowCount())
+        ]
 
     def _add_sort_criteria(self):
         criteria = self.columns_combo_box.currentText()
@@ -63,7 +65,9 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
         self.sort_criteria_table.insertRow(criteria_row)
 
         delete_criteria_button = QtWidgets.QPushButton("")
-        delete_criteria_button.setIcon(QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon")))
+        delete_criteria_button.setIcon(
+            QtGui.QIcon(Const.IMAGES_PATH.format("del_file_icon"))
+        )
         delete_criteria_button.clicked.connect(self._detele_sort_criteria)
 
         item = QtWidgets.QTableWidgetItem(criteria)
@@ -89,9 +93,10 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
         self.load_orders_history(sorted_data)
 
     def state_search(self):
-        data = self._data[self._data["Order status"] == self.states_combo_box.currentText()]
-        print(data
-        )
+        data = self._data[
+            self._data["Order status"] == self.states_combo_box.currentText()
+        ]
+        print(data)
         self.load_orders_history(data)
 
     def load_orders_history(self, orders_history: pd.DataFrame):
@@ -102,7 +107,6 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
             self.all_client_orders_table,
             rows,
             cols,
-
             orders_history.columns,
             [
                 (0, QtWidgets.QHeaderView.Stretch),
@@ -114,7 +118,7 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
                 (6, QtWidgets.QHeaderView.ResizeToContents),
                 (7, QtWidgets.QHeaderView.ResizeToContents),
             ],
-            enable_column_sort=False
+            enable_column_sort=False,
         )
 
         for i in range(rows):

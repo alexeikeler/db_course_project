@@ -210,7 +210,7 @@ class ManagerForm(manager_form, manager_base):
                 (1, QtWidgets.QHeaderView.ResizeToContents),
                 (2, QtWidgets.QHeaderView.Stretch),
             ],
-            enable_column_sort=True
+            enable_column_sort=True,
         )
 
         self.reports_table.resizeRowsToContents()
@@ -274,7 +274,7 @@ class ManagerForm(manager_form, manager_base):
                 (1, QtWidgets.QHeaderView.Stretch),
                 (cols - 1, QtWidgets.QHeaderView.ResizeToContents),
             ],
-            enable_column_sort=True
+            enable_column_sort=True,
         )
 
         for i in range(rows):
@@ -414,7 +414,7 @@ class ManagerForm(manager_form, manager_base):
                 (2, QtWidgets.QHeaderView.Stretch),
                 (3, QtWidgets.QHeaderView.ResizeToContents),
             ],
-            enable_column_sort=True
+            enable_column_sort=True,
         )
 
         for i in range(rows):
@@ -455,7 +455,7 @@ class ManagerForm(manager_form, manager_base):
                 (3, QtWidgets.QHeaderView.ResizeToContents),
                 (4, QtWidgets.QHeaderView.ResizeToContents),
             ],
-            enable_column_sort=True
+            enable_column_sort=True,
         )
 
         for i in range(rows):
