@@ -643,6 +643,7 @@ RETURNS BOOLEAN AS
                             SELECT order_id FROM client_order
                                             WHERE sender = id AND order_status NOT IN ('Доставлен', 'Отменён')
                             ) THEN
+                                RAISE INFO 'FIRST IF';
                                 RETURN FALSE;
                         END IF;
 
@@ -657,6 +658,9 @@ RETURNS BOOLEAN AS
                         DELETE FROM employee WHERE employee_id = id;
 
                         RETURN TRUE;
+                ELSE
+                    RETURN FALSE;
+
             END CASE;
 
         END
@@ -669,9 +673,4 @@ REVOKE ALL ON FUNCTION
     delete_employee(id integer, pos varchar, place_of_work integer) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION
     delete_employee(id integer, pos varchar, place_of_work integer) TO user_admin;
-
-
-select employee_id, employee_login, order_id, order_status, place_of_work from employee, client_order
-where sender = employee.employee_id
-order by place_of_work;
 ---------------------------------------------------------------------------------------
