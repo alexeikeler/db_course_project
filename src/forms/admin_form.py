@@ -1,3 +1,5 @@
+import logging
+
 import pandas as pd
 
 # noinspection PyUnresolvedReferences
@@ -154,7 +156,7 @@ class AdminForm(admin_form, admin_base):
         current_row = self.clients_table.currentRow()
         id = int(self.clients_table.item(current_row, 0).text())
 
-        if id == ShopAndEmployee.DUMMY_ACC_ID:
+        if id in ShopAndEmployee.DUMMY_ACC_IDS:
             msg.error_message(Errors.DUMMY_ACC_DEL_ERROR)
             return
 
@@ -265,11 +267,27 @@ class AdminForm(admin_form, admin_base):
 
     def delete_employee_account(self):
         curr_row = self.employees_table.currentRow()
-        id = int(self.employees_table.item(curr_row, 0).text())
+        empl_id = int(self.employees_table.item(curr_row, 0).text())
+        pow = int(self.employees_table.item(curr_row, 5).text()[-1])
+        pos = self.employees_table.item(curr_row, 6).text()
 
-        if self.user.id == id:
+        if self.user.id == empl_id:
             msg.error_message(Errors.SELF_ACC_DEL_ERROR)
             return
 
-        print(f"Deleting employee with {id=}.")
+        if empl_id in ShopAndEmployee.DUMMY_ACC_IDS:
+            msg.error_message(Errors.DUMMY_ACC_DEL_ERROR)
+            return
+
+        logging.info(f"Deleting employee with {empl_id=}, {type(empl_id)}, {pos=}, {pow=}.")
+
+        msg.warning_message("Warning! All reviews about this employee also will be deleted!")
+
+        result = Requests.delete_employee(self.user.connection, empl_id, pos, pow)
+
+        if not result:
+            msg.error_message(Errors.ERROR_EMPL_DELETION.format(empl_id))
+            return
+
+        msg.info_message(f"Employee #{empl_id} deleted successfully")
 

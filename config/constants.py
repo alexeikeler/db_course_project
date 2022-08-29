@@ -137,7 +137,7 @@ class ShopAndEmployee:
     PAPER_QUALITY_TYPES: tuple = ("Для глубокой печати", "Типографическая", "Офсетная")
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
-    DUMMY_ACC_ID: int = 106
+    DUMMY_ACC_IDS: tuple = (106, 53, 54, 55, 56, 57)
     CLIENT_ACTIVITY_DF_COLUMNS: tuple = ("Client ID", "Login", "Oldest order", "Newest order")
     #EMPLOYEE_ACTIVITY_DF_COLUMNS: dict = dict(
     #    "ID":"", "Name": "", "Login": "", "Reviews": "", "Place of work": "", "Position": "", "Salary": "", "Phone number": "", "Email": ""
@@ -230,6 +230,8 @@ class Errors:
     # Error updating employee data
     ERROR_EMPL_UPDATE: str = "Error occurred while trying to update data for employee #{0}. " \
                              "Row: {1}, Col: {2}, Update value: {3}, Update subject: {4}"
+
+    ERROR_EMPL_DELETION: str = "Error deleting employee #{0}."
 
 @dataclass
 class ReviewsMessages:

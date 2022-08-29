@@ -102,10 +102,7 @@ RETURNS TRIGGER AS
 
         ELSIF (TG_TABLE_NAME = 'employee')
             THEN
-                DELETE FROM
-                        users
-                WHERE
-                    users.user_login = OLD.employee_login;
+                DELETE FROM users WHERE users.user_login = OLD.employee_login;
 
             RAISE INFO 'Deleted employee %', OLD.employee_login;
 
@@ -207,6 +204,23 @@ GRANT EXECUTE ON FUNCTION
 --------------------------------------------------------------------------------------
 --Function to create employee account
 --------------------------------------------------------------------------------------
+
+select * from employee where place_of_work = 4;
+
+select * from delete_employee(59, 'shop_assistant', 4);
+
+select * from create_employee(
+    'Павлов',
+    'Алексей',
+    'shop_assistant',
+    10000.00,
+    '+380765765765',
+    'pavlovAlexei@gmail.com',
+    'alexeipavlov',
+    '123456789',
+    4
+                  );
+
 DROP FUNCTION create_employee(employee_lastname_ varchar, employee_firstname_ varchar, employee_position_ varchar, employee_salary_ numeric(7,2), employee_phone_num_ varchar, employee_email_ varchar, employee_login_ varchar, employee_password_ varchar, employee_place_of_work integer);
 CREATE OR REPLACE FUNCTION create_employee(
     employee_lastname_ varchar,
@@ -221,34 +235,60 @@ CREATE OR REPLACE FUNCTION create_employee(
 )
     RETURNS VOID AS
     $$
+        DECLARE
+            sa_count integer;
+            sa_flag boolean = FALSE;
+            dummy_sa_id integer;
+            new_emp_id integer;
+            error_message varchar = format(
+                'Employee with position %s already exists in shop # %s. '
+                'If you need new employee with this position in this shop, '
+                'please delete old one first.',
+                employee_position_, employee_place_of_work
+                );
+
         BEGIN
 
-           IF EXISTS(
-               SELECT
-                   employee_id
-               FROM
-                   employee
-               WHERE
-                   employee_position = employee_position_ AND place_of_work = employee_place_of_work
-               ) THEN
-                   RAISE WARNING
-                       'Employee with position % already exists in shop # %. '
-                         'If you need new employee with this position in this shop, '
-                         'please delete old one first.', employee_position_, employee_place_of_work;
-                   RETURN;
-           END IF;
+            IF employee_position_ LIKE 'shop_assistant'
+                 THEN
+                     sa_flag = TRUE;
+                     SELECT COUNT(employee_position) INTO sa_count FROM employee
+                     WHERE employee_position = 'shop_assistant' AND place_of_work = employee_place_of_work;
+                        RAISE INFO 'sa_count: %', sa_count;
+                     IF sa_count = 2
+                         THEN
+                             RAISE WARNING '%', error_message;
+                             RETURN;
+                     END IF;
 
-           IF EXISTS(SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
-                RAISE WARNING
-                    'Employee with login % already exists!', employee_login_;
-                RETURN;
-           END IF;
+                     SELECT employee_id INTO dummy_sa_id FROM employee
+                     WHERE employee_position = 'shop_assistant' AND place_of_work = employee_place_of_work;
 
+            ELSE
+                IF EXISTS(
+                    SELECT
+                        employee_id
+                    FROM
+                        employee
+                    WHERE
+                        employee_position = employee_position_ AND place_of_work = employee_place_of_work
+                    ) THEN
+                        RAISE WARNING '%', error_message;
+                        RETURN;
+                END IF;
 
-           INSERT INTO employee
-               (lastname, firstname, employee_position, salary, phone_number, email, employee_login, place_of_work)
-           VALUES
-               (
+                IF EXISTS(SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
+                     RAISE WARNING
+                         'Employee with login % already exists!', employee_login_;
+                     RETURN;
+                END IF;
+
+            END IF;
+
+            INSERT INTO employee
+                (lastname, firstname, employee_position, salary, phone_number, email, employee_login, place_of_work)
+            VALUES
+                (
                  employee_lastname_,
                  employee_firstname_,
                  employee_position_,
@@ -257,24 +297,33 @@ CREATE OR REPLACE FUNCTION create_employee(
                  employee_email_,
                  employee_login_,
                  employee_place_of_work
-               );
-
-           INSERT INTO
-               users(user_login, user_role, user_password)
-           VALUES
-               (employee_login_, employee_position_, employee_password_);
+                )
+             RETURNING
+                employee_id INTO new_emp_id;
 
 
-        IF EXISTS( SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
-            RAISE INFO 'New account: ROLE - % | LOGIN - % created.', employee_position_, employee_login_;
-            RETURN;
-        ELSE
-            RAISE WARNING
-                'Error occured while creating account: ROLE - % | LOGIN - %', employee_position_, employee_login_;
-            RETURN;
-        END IF;
+            INSERT INTO
+                users(user_login, user_role, user_password)
+            VALUES
+                (employee_login_, employee_position_, employee_password_);
 
-        END
+            IF sa_flag THEN
+                RAISE INFO 'IN SA_FLAG CHECK| sa_flag: % | new_emp_id: % | dummy_sa_id: %', sa_flag, new_emp_id, dummy_sa_id;
+                UPDATE client_order
+                    SET sender = new_emp_id
+                    WHERE sender = dummy_sa_id;
+            END IF;
+
+            IF EXISTS( SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
+                RAISE INFO 'New account: ROLE - % | LOGIN - % created.', employee_position_, employee_login_;
+                RETURN;
+            ELSE
+                RAISE WARNING
+                    'Error occured while creating account: ROLE - % | LOGIN - %', employee_position_, employee_login_;
+                RETURN;
+            END IF;
+
+            END
     $$
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -522,8 +571,8 @@ AS
                 employee.employee_id = empl_reviews_ctr.review_about_employee
 
             WHERE
-                employee.place_of_work = book_shop.shop_id;
-
+                employee.place_of_work = book_shop.shop_id
+            ORDER BY employee.employee_position;
         END;
 
     $$
@@ -569,4 +618,60 @@ SET search_path = public;
 
 REVOKE ALL ON FUNCTION update_employee_data(update_subject varchar, data varchar, id integer)FROM public;
 GRANT EXECUTE ON FUNCTION update_employee_data(update_subject varchar, data varchar, id integer) TO user_admin;
+---------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------
+DROP FUNCTION delete_employee(id integer, pos varchar, place_of_work integer);
+CREATE OR REPLACE FUNCTION delete_employee(id integer, pos varchar, pow integer)
+RETURNS BOOLEAN AS
+    $$
+        DECLARE
+            new_sender integer;
+
+        BEGIN
+            CASE
+                WHEN pos LIKE '(manager|director)'
+                    THEN
+                        DELETE FROM client_review WHERE review_about_employee = id;
+                        DELETE FROM employee WHERE employee_id = id;
+                        RETURN TRUE;
+
+                WHEN pos LIKE 'shop_assistant'
+                    THEN
+                        IF EXISTS(
+                            SELECT order_id FROM client_order
+                                            WHERE sender = id AND order_status NOT IN ('Доставлен', 'Отменён')
+                            ) THEN
+                                RETURN FALSE;
+                        END IF;
+
+                        SELECT employee_id INTO new_sender FROM employee
+                        WHERE employee_login = format('dummy_shop_assistant_%s', pow);
+
+                        UPDATE client_order
+                        SET sender = new_sender
+                        WHERE sender = id;
+
+                        DELETE FROM client_review WHERE review_about_employee = id;
+                        DELETE FROM employee WHERE employee_id = id;
+
+                        RETURN TRUE;
+            END CASE;
+
+        END
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION
+    delete_employee(id integer, pos varchar, place_of_work integer) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION
+    delete_employee(id integer, pos varchar, place_of_work integer) TO user_admin;
+
+
+select employee_id, employee_login, order_id, order_status, place_of_work from employee, client_order
+where sender = employee.employee_id
+order by place_of_work;
 ---------------------------------------------------------------------------------------

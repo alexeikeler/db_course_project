@@ -637,3 +637,16 @@ def update_employee_data(connection, update_subject, data, id):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def delete_employee(connection, id, pos, pow):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("delete_employee", (id, pos, pow))
+            connection.commit()
+            result = cursor.fetchone()
+            return result[0]
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

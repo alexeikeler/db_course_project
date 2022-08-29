@@ -348,10 +348,10 @@ class ManagerForm(manager_form, manager_base):
         author_id = self.author_id_spin_box.value()
 
         ids = [
-            self.authors_table.item(i, 0).text
+            self.authors_table.item(i, 0).text()
             for i in range(self.authors_table.rowCount())
         ]
-
+        print(ids)
         if str(author_id) not in ids:
             msg.error_message(Errors.NO_AUTHOR_ID.format(author_id))
             return
