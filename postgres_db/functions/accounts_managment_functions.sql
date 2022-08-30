@@ -267,6 +267,23 @@ CREATE OR REPLACE FUNCTION create_employee(
                      SELECT employee_id INTO dummy_sa_id FROM employee
                      WHERE employee_position = 'shop_assistant' AND place_of_work = employee_place_of_work;
 
+            ELSIF employee_position_ LIKE 'manager'
+                THEN
+                    m_flag = TRUE;
+                    SELECT COUNT(employee_position) INTO m_count FROM employee
+                    WHERE employee_position = 'manager' AND place_of_work = employee_place_of_work;
+
+                    RAISE INFO 'm_count: %', m_count;
+
+                    IF m_count = 2
+                        THEN
+                            RAISE WARNING '%', error_message;
+                            RETURN;
+                    END IF;
+
+                    SELECT employee_id INTO dummy_m_id FROM employee
+                    WHERE employee_position = 'manager' AND place_of_work = employee_place_of_work;
+
             ELSE
                 IF EXISTS(
                     SELECT
@@ -315,7 +332,13 @@ CREATE OR REPLACE FUNCTION create_employee(
                 UPDATE client_order
                     SET sender = new_emp_id
                     WHERE sender = dummy_sa_id;
-            END IF;
+
+            ELSIF m_flag THEN
+                RAISE INFO 'IN M_FLAG CHECK| m_flag: % | new_emp_id: % | dummy_m_id: %', m_flag, new_emp_id, dummy_m_id;
+                UPDATE book_shop
+                    SET manager = new_emp_id
+                    WHERE manager = dummy_m_id;
+                END IF;
 
             IF EXISTS( SELECT employee_id FROM employee WHERE employee_login = employee_login_) THEN
                 RAISE INFO 'New account: ROLE - % | LOGIN - % created.', employee_position_, employee_login_;
@@ -575,7 +598,7 @@ AS
 
             WHERE
                 employee.place_of_work = book_shop.shop_id
-            ORDER BY employee.employee_position;
+            ORDER BY employee.employee_position, employee.employee_login;
         END;
 
     $$
@@ -630,40 +653,54 @@ CREATE OR REPLACE FUNCTION delete_employee(id integer, pos varchar, pow integer)
 RETURNS BOOLEAN AS
     $$
         DECLARE
-            new_sender integer;
+            dummy_sender integer;
+            dummy_manager integer;
 
         BEGIN
-            CASE
-                WHEN pos LIKE '(manager|director)'
+            CASE pos
+                WHEN 'director'
                     THEN
                         DELETE FROM client_review WHERE review_about_employee = id;
                         DELETE FROM employee WHERE employee_id = id;
                         RETURN TRUE;
 
-                WHEN pos LIKE 'shop_assistant'
+                WHEN 'shop_assistant'
                     THEN
                         IF EXISTS(
                             SELECT order_id FROM client_order
                                             WHERE sender = id AND order_status NOT IN ('Доставлен', 'Отменён')
                             ) THEN
-                                RAISE INFO 'FIRST IF';
+
                                 RETURN FALSE;
                         END IF;
 
-                        SELECT employee_id INTO new_sender FROM employee
+                        SELECT employee_id INTO dummy_sender FROM employee
                         WHERE employee_login = format('dummy_shop_assistant_%s', pow);
 
                         UPDATE client_order
-                        SET sender = new_sender
+                        SET sender = dummy_sender
                         WHERE sender = id;
 
                         DELETE FROM client_review WHERE review_about_employee = id;
                         DELETE FROM employee WHERE employee_id = id;
 
                         RETURN TRUE;
+
+                WHEN 'manager'
+                    THEN
+                        SELECT employee_id INTO dummy_manager FROM employee
+                        WHERE employee_login = format('dummy_manager_%s', pow);
+
+                        UPDATE book_shop
+                        SET manager = dummy_manager
+                        WHERE manager = id;
+
+                        DELETE FROM employee WHERE employee_id = id;
+
+                        RETURN TRUE;
+
                 ELSE
                     RETURN FALSE;
-
             END CASE;
 
         END

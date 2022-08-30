@@ -143,7 +143,7 @@ class ShopAndEmployee:
     PAPER_QUALITY_TYPES: tuple = ("Для глубокой печати", "Типографическая", "Офсетная")
     BINDING_TYPES: tuple = ("Твёрдый", "Мягкий")
 
-    DUMMY_ACC_IDS: tuple = (106, 53, 54, 55, 56, 57)
+    DUMMY_ACC_IDS: tuple = (106, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69)
     CLIENT_ACTIVITY_DF_COLUMNS: tuple = (
         "Client ID",
         "Login",

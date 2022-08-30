@@ -41,7 +41,7 @@ class DirectorForm(director_form, director_base):
         for i in range(self.model.rowCount(root)):
             index = self.model.index(i, 0, root)
             f_name = self.model.fileName(index)
- 
+
     def on_item_clicked(self, item):
         file_name: str = item.data()
 
