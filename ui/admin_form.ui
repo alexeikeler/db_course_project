@@ -26,6 +26,9 @@
     <layout class="QGridLayout" name="tab_widget_layout">
      <item row="0" column="0">
       <widget class="QTabWidget" name="tab_widget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
        <widget class="QWidget" name="accounts_managment_tab">
         <attribute name="title">
          <string>Tab 1</string>
@@ -36,7 +39,7 @@
            <x>9</x>
            <y>8</y>
            <width>263</width>
-           <height>391</height>
+           <height>429</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="create_account_grid_layout">
@@ -359,11 +362,6 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Tab 2</string>
-        </attribute>
        </widget>
       </widget>
      </item>

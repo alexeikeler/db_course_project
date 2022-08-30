@@ -22,6 +22,7 @@ class AdminForm(admin_form, admin_base):
 
         self.user = user
 
+        self.tab_widget.setTabText(0, "Admin panel")
         self.orders_history_form = None
 
         self.update_employees_table.clicked.connect(self.load_employees_table)

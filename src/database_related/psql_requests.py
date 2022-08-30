@@ -668,6 +668,7 @@ def change_employee_salary(connection, id, new_salary):
     try:
         with connection.cursor() as cursor:
             cursor.callproc("change_employee_salary", (id, new_salary))
+            connection.commit()
             result = cursor.fetchone()
             return result[0]
 
