@@ -236,11 +236,14 @@ CREATE OR REPLACE FUNCTION create_employee(
     RETURNS VOID AS
     $$
         DECLARE
-            sa_count integer;
-            sa_flag boolean = FALSE;
-            dummy_sa_id integer;
-            new_emp_id integer;
-            error_message varchar = format(
+            sa_count INTEGER;
+            sa_flag BOOLEAN = FALSE;
+            m_count INTEGER;
+            m_flag BOOLEAN = FALSE;
+            dummy_sa_id INTEGER;
+            dummy_m_id INTEGER;
+            new_emp_id INTEGER;
+            error_message VARCHAR = format(
                 'Employee with position %s already exists in shop # %s. '
                 'If you need new employee with this position in this shop, '
                 'please delete old one first.',

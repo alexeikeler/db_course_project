@@ -24,7 +24,7 @@ AS
             WHERE
                 employee.employee_position = pos
             AND
-                employee.firstname !~'([0-9]$)'
+                employee.firstname !~ '\d+$'
             AND
                 employee.place_of_work = shop_num
             AND

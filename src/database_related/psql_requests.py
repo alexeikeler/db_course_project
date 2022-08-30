@@ -650,3 +650,27 @@ def delete_employee(connection, id, pos, pow):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_employees_salary(connection):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_employees_salary")
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def change_employee_salary(connection, id, new_salary):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("change_employee_salary", (id, new_salary))
+            result = cursor.fetchone()
+            return result[0]
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

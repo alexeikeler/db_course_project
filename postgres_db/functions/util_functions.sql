@@ -172,3 +172,73 @@ GRANT EXECUTE ON FUNCTION
     client_activity() TO user_admin;
 
 -----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+DROP FUNCTION get_employees_salary();
+CREATE OR REPLACE FUNCTION get_employees_salary()
+RETURNS TABLE
+    (
+        empl_id integer,
+        empl_name varchar,
+        empl_pos varchar,
+        empl_salary numeric(7, 2),
+        empl_pow varchar
+    ) AS
+    $$
+        BEGIN
+            RETURN QUERY
+
+            SELECT
+                employee_id,
+                CAST(firstname || ' ' || lastname AS varchar) name,
+                employee_position,
+                salary,
+                name_of_shop
+            FROM
+                employee, book_shop
+            WHERE
+                employee.firstname !~ '\d+$'
+            AND
+                employee.place_of_work = book_shop.shop_id
+            ORDER BY place_of_work;
+        END
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_employees_salary() FROM public;
+GRANT EXECUTE ON FUNCTION get_employees_salary() TO user_director;
+
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION change_employee_salary(id integer, new_salary numeric(7, 2))
+RETURNS BOOLEAN AS
+    $$
+
+        BEGIN
+           UPDATE employee
+           SET salary = new_salary
+           WHERE employee_id = id;
+
+           IF EXISTS(SELECT id FROM employee WHERE employee_id = id AND salary = new_salary) THEN
+                RETURN TRUE;
+           ELSE
+                RETURN FALSE;
+           END IF;
+
+        END
+    $$
+
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION change_employee_salary(id integer, new_salary numeric(7, 2)) FROM public;
+GRANT EXECUTE ON FUNCTION change_employee_salary(id integer, new_salary numeric(7, 2)) TO user_director;
+
+select * from book_shop;
+-----------------------------------------------------------------------

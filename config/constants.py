@@ -1,3 +1,4 @@
+import os.path
 from collections import namedtuple
 from dataclasses import dataclass
 
@@ -43,6 +44,9 @@ class Const:
 
     PDF_REPORTS_FOLDER: str = "pdf_reports/{0}/"
     PDF_REPORTS_FILE: str = "{0}.pdf"
+    ABS_REPORTS_PATH: str = os.path.abspath("pdf_reports")
+    REPORTS_REGEX: str = "^(\d{4}-\d{2}-\d{2}_\d{2}:\d{2}:\d{2}).*"
+    FOLDERS_REGEX: str = "^(m\d*)_reports"
 
     ROLES_NMD_TPL: namedtuple = namedtuple(
         "ROLES_NMD_TPL",
@@ -165,6 +169,8 @@ class ShopAndEmployee:
     }
     EMPL_REVIEW_COL = 4
 
+    EMPLOYEE_SALARY_DF_COLUMNS: tuple = ("ID", "Name", "Position", "Salary", "Place of work")
+
 
 @dataclass
 class WindowsNames:
@@ -241,6 +247,8 @@ class Errors:
     )
 
     ERROR_EMPL_DELETION: str = "Error deleting employee #{0}."
+
+    ERROR_SALARY_UPDATE: str = "Error updating salary for employee # {0}."
 
 
 @dataclass
