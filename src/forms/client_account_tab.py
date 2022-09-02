@@ -10,7 +10,7 @@ import src.database_related.psql_requests as Requests
 import src.plotter.plotter as Plotter
 from config.constants import Const, Order
 from src.forms.change_password_form import ChangePasswordForm
-
+from src.custom_qt_widgets import functionality as widget_funcs
 user_acc_form, user_acc_base = uic.loadUiType(
     uifile=Const.USER_ACCOUNT_TAB_FORM_UI_PATH
 )
@@ -128,11 +128,23 @@ class ClientAccountTab(user_acc_form, user_acc_base):
         self.all_orders.resizeRowsToContents()
 
     def load_client_stats(self):
-        try:
-            Plotter.order_statuses_piechart(self.web_view, self.orders)
 
-        except Exception as e:
-            msg.error_message(str(e))
+        orders_statuses_distr = pd.DataFrame(
+            Requests.get_client_orders_statuses_distribution(self.user.connection, self.user.login),
+            columns=Order.ORDER_STATUSES_DISTR_DF_COLUMNS
+        )
+
+        order_distr_by_month = pd.DataFrame(
+            Requests.get_orders_distribtuion_by_month(self.user.connection, self.user.login),
+            columns=Order.ORDERS_DISTR_BY_MONTH_DF_COLUMNS
+        )
+
+        genre_sales = pd.DataFrame(
+            Requests.get_client_sales_by_genre(self.user.connection, self.user.login),
+            columns=Order.GENRE_SALES_DF_COLUMNS
+        )
+
+        Plotter.order_statuses_piechart(self.web_view, order_distr_by_month, orders_statuses_distr, genre_sales)
 
     def update_client_info(self, update_subject):
 

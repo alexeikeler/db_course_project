@@ -10,20 +10,9 @@ from plotly.subplots import make_subplots
 
 import src.custom_qt_widgets.message_boxes as msg
 from config.constants import Const, Errors
+from src.custom_qt_widgets.functionality import print_dataframe
 
-
-def order_statuses_piechart(web_view, orders: pd.DataFrame):
-
-    order_statuses = orders["Order status"].value_counts()
-    order_dates = (
-        orders["Ordering date"]
-        .apply(lambda x: "%d-%d" % (x.year, x.month))
-        .value_counts()
-        .to_frame()
-        .reset_index()
-    )
-
-    order_dates.columns = ["Date", "Quantity"]
+def order_statuses_piechart(web_view, orders_by_month: pd.DataFrame, orders_statuses: pd.DataFrame, genre_sales:pd.DataFrame):
 
     fig = make_subplots(
         rows=1,
@@ -39,8 +28,8 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     fig.add_trace(
         go.Pie(
-            labels=order_dates["Date"],
-            values=order_dates["Quantity"],
+            labels=orders_by_month["Month"],
+            values=orders_by_month["Counted"],
             legendgroup="group1",
             legendgrouptitle=dict(text="Number of orders by month"),
             name="",
@@ -51,8 +40,8 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     fig.add_trace(
         go.Pie(
-            labels=orders["Genre"],
-            values=orders["Paid price"],
+            labels=genre_sales["Genre"],
+            values=genre_sales["Sum per genre"],
             legendgroup="group2",
             legendgrouptitle=dict(text="Money spent on specific genres"),
             name="",
@@ -63,8 +52,8 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
 
     fig.add_trace(
         go.Pie(
-            labels=order_statuses.index,
-            values=order_statuses,
+            labels=orders_statuses["Status"],
+            values=orders_statuses["Counted"],
             legendgroup="group3",
             legendgrouptitle=dict(text="Distribution of client order statuses"),
             name="",
@@ -72,7 +61,7 @@ def order_statuses_piechart(web_view, orders: pd.DataFrame):
         row=1,
         col=3,
     )
-
+#3
     fig.update_layout(
         height=319,
         width=1249,

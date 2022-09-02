@@ -115,6 +115,11 @@ class Order:
 
     ORDER_STATE_CHANGED: str = "Order # {0} state changed to {1}."
 
+ #   get_client_orders_statuses_distribution
+    ORDER_STATUSES_DISTR_DF_COLUMNS: tuple = ("Status", "Counted")
+    ORDERS_DISTR_BY_MONTH_DF_COLUMNS: tuple = ("Month", "Counted")
+    GENRE_SALES_DF_COLUMNS: tuple = ("Genre", "Sum per genre")
+
 
 @dataclass
 class HtmlFiles:

@@ -242,3 +242,36 @@ GRANT EXECUTE ON FUNCTION change_employee_salary(id integer, new_salary numeric(
 
 select * from book_shop;
 -----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+DROP FUNCTION update_number_of_employees();
+DROP TRIGGER update_number_of_employees_trigger ON employee;
+
+
+CREATE TRIGGER update_number_of_employees_trigger
+    AFTER INSERT OR DELETE
+    ON employee
+    FOR EACH ROW
+    EXECUTE PROCEDURE update_number_of_employees();
+
+
+CREATE OR REPLACE FUNCTION update_number_of_employees()
+RETURNS TRIGGER AS
+    $$
+        BEGIN
+            CASE TG_OP
+                WHEN 'INSERT' THEN
+                    UPDATE book_shop
+                    SET number_of_employees = number_of_employees + 1
+                    WHERE NEW.place_of_work = shop_id;
+                WHEN 'DELETE' THEN
+                    UPDATE book_shop
+                    SET number_of_employees = number_of_employees - 1
+                    WHERE OLD.place_of_work = shop_id;
+            END CASE;
+        RETURN NEW;
+        END;
+    $$
+LANGUAGE plpgsql;
+-----------------------------------------------------------------------

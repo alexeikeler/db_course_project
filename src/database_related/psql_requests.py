@@ -675,3 +675,39 @@ def change_employee_salary(connection, id, new_salary):
     except (Exception, pc2.DatabaseError) as error:
         msg.error_message(str(error))
         connection.rollback()
+
+
+def get_client_orders_statuses_distribution(connection, login):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_client_orders_statuses_distribution", (login,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_orders_distribtuion_by_month(connection, login):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_orders_distribtuion_by_month", (login,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()
+
+
+def get_client_sales_by_genre(connection, login):
+    try:
+        with connection.cursor() as cursor:
+            cursor.callproc("get_client_sales_by_genre", (login,))
+            result = cursor.fetchall()
+            return result
+
+    except (Exception, pc2.DatabaseError) as error:
+        msg.error_message(str(error))
+        connection.rollback()

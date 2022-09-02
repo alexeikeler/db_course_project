@@ -79,7 +79,7 @@ SET search_path = public;
 
 REVOKE ALL ON FUNCTION get_shop_info(shop_num integer) FROM public;
 
-GRANT EXECUTE ON FUNCTION get_shop_info(shop_num integer) TO user_client
+GRANT EXECUTE ON FUNCTION get_shop_info(shop_num integer) TO user_client;
 
 -----------------------------------------------------------------------------------------------------
 
