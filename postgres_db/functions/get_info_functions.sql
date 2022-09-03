@@ -423,3 +423,99 @@ GRANT EXECUTE ON FUNCTION
     get_authors(author_name varchar) TO user_manager;
 
 ------------------------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_client_orders_statuses_distribution(client_login_ varchar);
+CREATE OR REPLACE FUNCTION get_client_orders_statuses_distribution(client_login_ varchar)
+RETURNS TABLE(
+    order_status_ varchar,
+    couned_ integer
+             )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+                SELECT
+                    order_status, count(order_status)::int
+                FROM
+                    client_order, client
+                WHERE
+                    reciever = client.client_id
+                AND
+                    client.client_login = client_login_
+                GROUP BY
+                    order_status;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_client_orders_statuses_distribution(client_login_ varchar) FROM public;
+GRANT EXECUTE ON FUNCTION get_client_orders_statuses_distribution(client_login_ varchar) TO user_client;
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION get_orders_distribtuion_by_month(client_login_ varchar)
+RETURNS TABLE(
+    date_ timestamp(0),
+    counted_ integer
+             )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+               DATE_TRUNC('month', date_of_order) AS  production_to_month,
+               COUNT(order_id):: int
+            FROM
+                client_order, client
+            WHERE
+                reciever = client.client_id
+            AND
+                client.client_login = client_login_
+            GROUP BY DATE_TRUNC('month', date_of_order);
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_orders_distribtuion_by_month(client_id integer)FROM public;
+GRANT EXECUTE ON FUNCTION get_orders_distribtuion_by_month(client_id integer) TO user_client;
+------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------------------------
+DROP FUNCTION get_client_sales_by_genre(client_login_ varchar);
+CREATE OR REPLACE FUNCTION get_client_sales_by_genre(client_login_ varchar)
+RETURNS TABLE(
+    genre_ varchar,
+    money_spend_ numeric(10, 2)
+             )
+AS
+    $$
+        BEGIN
+            RETURN QUERY
+            SELECT
+               genre_type AS genre,
+               SUM(SUM(sales.sum_to_pay)) OVER(PARTITION BY genre_type) AS sum_per_genre
+            FROM
+                sales, client_order, client, chosen
+            WHERE
+                sales.order_id = chosen.order_id
+            AND
+                chosen.order_id = client_order.order_id
+            AND
+                client_order.reciever = client.client_id
+            AND
+                client.client_login = client_login_
+            GROUP BY genre_type;
+        END;
+    $$
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+REVOKE ALL ON FUNCTION get_client_sales_by_genre(clien_login_ varchar)FROM public;
+GRANT EXECUTE ON FUNCTION get_client_sales_by_genre(clien_login_ varchar) TO user_client;
+------------------------------------------------------------------------------------------------------------------------
