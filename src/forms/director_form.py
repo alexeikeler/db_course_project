@@ -15,7 +15,7 @@ class DirectorForm(director_form, director_base):
 
         super(director_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Director window")
         self.user = user
         self.dirs = []
 

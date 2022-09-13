@@ -21,7 +21,7 @@ class ManagerForm(manager_form, manager_base):
 
         super(manager_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Manager window")
         self.user = user
         self.add_copies_form = None
         self.reports_folder = Const.PDF_REPORTS_FOLDER.format(

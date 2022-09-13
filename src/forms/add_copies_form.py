@@ -10,7 +10,7 @@ class AddCopiesForm(form, base):
     def __init__(self):
         super(base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Add book copies")
         self.add_button.clicked.connect(self.update_value)
         self.cancel_button.clicked.connect(self.close)
 

@@ -22,7 +22,7 @@ class ShopAssistantForm(shop_assistant_form, shop_assistant_base):
 
         super(shop_assistant_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Shop assistant window")
         self.tab_widget.setTabText(0, WindowsNames.ORDERS_TAB)
         self.tab_widget.setTabText(1, WindowsNames.EMPLOYEES_REVIEWS_TAB)
         self.tab_widget.setTabText(2, WindowsNames.BOOKS_REVIEWS_TAB)

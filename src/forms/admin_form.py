@@ -19,7 +19,7 @@ class AdminForm(admin_form, admin_base):
 
         super(admin_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Admin window")
         self.user = user
 
         self.tab_widget.setTabText(0, "Admin panel")

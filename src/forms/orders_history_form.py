@@ -14,7 +14,7 @@ class OrdersHistoryForm(orders_hist_form, orders_hist_base):
 
         super(orders_hist_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Client orders history")
         self._data = data
 
         self.sort_criteria_table.setColumnCount(2)

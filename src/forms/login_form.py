@@ -32,7 +32,7 @@ class LoginForm(login_form, login_base):
 
         super(login_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Authorization")
         self.account_form = None
         self.role_form = None
 

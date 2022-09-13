@@ -423,8 +423,8 @@ GRANT EXECUTE ON FUNCTION
     get_authors(author_name varchar) TO user_manager;
 
 ------------------------------------------------------------------------------------------------------------------------
-DROP FUNCTION get_client_orders_statuses_distribution(client_login_ varchar);
-CREATE OR REPLACE FUNCTION get_client_orders_statuses_distribution(client_login_ varchar)
+DROP FUNCTION get_cli_orders_statuses(client_login_ varchar);
+CREATE OR REPLACE FUNCTION get_cli_orders_statuses(client_login_ varchar)
 RETURNS TABLE(
     order_status_ varchar,
     couned_ integer
@@ -449,8 +449,8 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public;
 
-REVOKE ALL ON FUNCTION get_client_orders_statuses_distribution(client_login_ varchar) FROM public;
-GRANT EXECUTE ON FUNCTION get_client_orders_statuses_distribution(client_login_ varchar) TO user_client;
+REVOKE ALL ON FUNCTION get_cli_orders_statuses(client_login_ varchar) FROM public;
+GRANT EXECUTE ON FUNCTION get_cli_orders_statuses(client_login_ varchar) TO user_client;
 ------------------------------------------------------------------------------------------------------------------------
 
 

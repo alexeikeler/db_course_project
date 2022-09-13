@@ -130,7 +130,7 @@ class ClientAccountTab(user_acc_form, user_acc_base):
     def load_client_stats(self):
 
         orders_statuses_distr = pd.DataFrame(
-            Requests.get_client_orders_statuses_distribution(self.user.connection, self.user.login),
+            Requests.get_cli_orders_statuses(self.user.connection, self.user.login),
             columns=Order.ORDER_STATUSES_DISTR_DF_COLUMNS
         )
 

@@ -11,6 +11,7 @@ class ReviewForm(review_form_review, review_base):
     def __init__(self):
         super(review_base, self).__init__()
         self.setupUi(self)
+        self.setWindowTitle("Add review")
         self.user_review_text = None
         self.add_review_button.clicked.connect(self.add_review)
         self.cancel_review_button.clicked.connect(self.cancel_review)

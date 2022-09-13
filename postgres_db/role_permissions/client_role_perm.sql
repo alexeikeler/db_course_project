@@ -84,12 +84,7 @@ GRANT EXECUTE ON FUNCTION get_employee_info(place_of_work integer, pos varchar) 
 
 GRANT EXECUTE ON FUNCTION get_reviews_about_employee(employee_id integer)TO user_client;
 
-GRANT EXECUTE ON FUNCTION add_employee_review(
-    user_login varchar,
-    employee_id integer,
-    review_text text
-)
-    TO user_client;
+GRANT EXECUTE ON FUNCTION add_employee_review(user_login varchar, employee_id integer, review_text text) TO user_client;
 
 GRANT EXECUTE ON FUNCTION get_shop_info(shop_num integer) TO user_client;
 

@@ -20,6 +20,7 @@ class EmployeeReviewForm(empl_review_form, empl_review_base):
         self.setupUi(self)
         self.user = user
         self.empl_info = empl_info
+        self.setWindowTitle("Employee reviews")
 
         self.review_form = None
 

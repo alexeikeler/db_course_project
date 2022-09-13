@@ -16,7 +16,7 @@ class ChangePasswordForm(chg_pswd_form, chg_pswd_base):
 
         super(chg_pswd_form, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Change password")
         self.old_password = ""
         self.new_password = ""
         self.user = user
