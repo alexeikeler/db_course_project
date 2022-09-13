@@ -20,6 +20,7 @@ class ShopReviewForm(shop_review_form, shop_review_base):
         self.setupUi(self)
         self.user = user
         self.shop_info = shop_info
+        self.setWindowTitle("Shop reviews")
 
         self.review_form = None
 

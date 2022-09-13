@@ -677,10 +677,10 @@ def change_employee_salary(connection, id, new_salary):
         connection.rollback()
 
 
-def get_client_orders_statuses_distribution(connection, login):
+def get_cli_orders_statuses(connection, login):
     try:
         with connection.cursor() as cursor:
-            cursor.callproc("get_client_orders_statuses_distribution", (login,))
+            cursor.callproc("get_cli_orders_statuses", (login,))
             result = cursor.fetchall()
             return result
 

@@ -1,4 +1,4 @@
-# noinspection PyUnresolvedReferences
+# noinspection PyUnresol    vedReferences
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
 from config.constants import Const, Order
@@ -10,7 +10,7 @@ class BuyBookForm(buy_book_form, buy_book_base):
     def __init__(self, max_books):
         super(buy_book_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Buy book")
         self.data = {}
         self.closed = False
 

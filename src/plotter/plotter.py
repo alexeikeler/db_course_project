@@ -12,6 +12,7 @@ import src.custom_qt_widgets.message_boxes as msg
 from config.constants import Const, Errors
 from src.custom_qt_widgets.functionality import print_dataframe
 
+
 def order_statuses_piechart(web_view, orders_by_month: pd.DataFrame, orders_statuses: pd.DataFrame, genre_sales:pd.DataFrame):
 
     fig = make_subplots(

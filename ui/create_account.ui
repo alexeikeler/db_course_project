@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>431</width>
-    <height>600</height>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>440</y>
+      <y>439</y>
       <width>89</width>
       <height>25</height>
      </rect>
@@ -30,7 +30,7 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>95</x>
       <y>30</y>
       <width>251</width>
       <height>374</height>
@@ -132,7 +132,7 @@
       <x>40</x>
       <y>20</y>
       <width>16</width>
-      <height>491</height>
+      <height>451</height>
      </rect>
     </property>
     <property name="orientation">
@@ -142,8 +142,8 @@
    <widget class="Line" name="line_3">
     <property name="geometry">
      <rect>
-      <x>49</x>
-      <y>501</y>
+      <x>48</x>
+      <y>462</y>
       <width>341</width>
       <height>20</height>
      </rect>
@@ -156,13 +156,43 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>20</y>
+      <y>19</y>
       <width>20</width>
-      <height>491</height>
+      <height>453</height>
      </rect>
     </property>
     <property name="orientation">
      <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>48</x>
+      <y>420</y>
+      <width>341</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="show_password_button">
+    <property name="geometry">
+     <rect>
+      <x>358</x>
+      <y>325</y>
+      <width>25</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../frontend/images/password_eye.jpg</normaloff>../frontend/images/password_eye.jpg</iconset>
     </property>
    </widget>
   </widget>

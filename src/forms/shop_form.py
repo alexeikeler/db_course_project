@@ -27,6 +27,7 @@ class ShopForm(shop_form, shop_base):
         super(shop_base, self).__init__()
         self.setupUi(self)
         self.user = user
+        self.setWindowTitle("Shop application")
 
         self.slider = None
         self.full_book_info_form = None

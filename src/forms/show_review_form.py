@@ -11,7 +11,7 @@ class ShowReview(review_form, review_base):
 
         super(review_base, self).__init__()
         self.setupUi(self)
-
+        self.setWindowTitle("Review text")
         self.ok_button.clicked.connect(self.close)
 
     def set_text(self, review_text):

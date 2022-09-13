@@ -19,6 +19,7 @@ class BookInfoForm(book_info_form, book_info_base):
 
         super(book_info_base, self).__init__()
         self.setupUi(self)
+        self.setWindowTitle("Book information")
 
         self.user = user
         self.book_data = book_data
