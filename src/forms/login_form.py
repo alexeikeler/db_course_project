@@ -172,8 +172,6 @@ class LoginForm(login_form, login_base):
             user_checker.connection, user_login, user_password
         )
 
-        # To assure that user checker exists.
-        # sleep(10)
 
         if user_role is None:
             msg.error_message(Errors.WRONG_USR_NAME_OR_PASS)
